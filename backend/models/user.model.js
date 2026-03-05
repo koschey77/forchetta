@@ -43,10 +43,18 @@ const userSchema = new mongoose.Schema(
 )
 
 // Pre-save хук для хеширования пароля перед сохранением в базу данных
+// Умный хук: проверяет не захеширован ли уже пароль, чтобы избежать двойного хеширования
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next()
 
+  // Проверяем не захеширован ли уже пароль (bcrypt хеши начинаются с $2a$, $2b$ или $2y$)
+  if (this.password.startsWith('$2')) {
+    console.log('Password already hashed, skipping hash step for user:', this.email)
+    return next() // Если пароль уже захеширован, пропускаем хеширование
+  }
+
   try {
+    console.log('Hashing password for user:', this.email)
     const salt = await bcrypt.genSalt(10)
     this.password = await bcrypt.hash(this.password, salt)
     next()
