@@ -21,6 +21,81 @@ export const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString()
 }
 
+// Отправка email с кодом восстановления пароля
+export const sendPasswordResetEmail = async (email, resetCode, name) => {
+  console.log('📧 Отправка кода восстановления пароля через Gmail SMTP...')
+  console.log('📮 Email получателя:', email)
+  
+  try {
+    // Создаем транспортер для Gmail
+    const transporter = createTransporter()
+    
+    // Настройки письма
+    const mailOptions = {
+      from: {
+        name: 'Forchetta',
+        address: process.env.GMAIL_USER
+      },
+      to: email,
+      subject: 'Відновлення пароля в Forchetta',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px;">
+          <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            
+            <!-- Логотип -->
+            <div style="text-align: center; margin-bottom: 30px;">
+              <img src="cid:forchetta-logo" alt="Forchetta" style="height: 150px;">
+            </div>
+            
+            <h2 style="color: #333; text-align: center; margin-bottom: 20px;">🔐 Відновлення пароля</h2>
+            <p style="color: #666; font-size: 16px; line-height: 1.5;">Привіт, ${name || 'шановний клієнт'}!</p>
+            <p style="color: #666; font-size: 16px; line-height: 1.5;">Ви запросили відновлення пароля для вашого акаунту в <strong>Forchetta</strong>.</p>
+            <p style="color: #666; font-size: 16px; line-height: 1.5;">Ваш код для відновлення пароля:</p>
+            
+            <div style="background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); padding: 25px; text-align: center; margin: 25px 0; border-radius: 8px;">
+              <h1 style="color: white; font-size: 36px; letter-spacing: 8px; margin: 0; font-family: monospace;">${resetCode}</h1>
+            </div>
+            
+            <p style="color: #666; font-size: 14px; line-height: 1.5;">Введіть цей код на сторінці відновлення пароля протягом <strong>15 хвилин</strong>.</p>
+            <p style="color: #666; font-size: 14px; line-height: 1.5;">Якщо ви не запросили відновлення пароля, просто проігноруйте цей лист. Ваш пароль залишиться без змін.</p>
+            
+            <div style="background: #FFE4E1; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #DC143C;">
+              <p style="color: #8B0000; font-size: 14px; margin: 0; font-weight: bold;">🔒 З безпеки ніколи не повідомляйте цей код нікому!</p>
+            </div>
+            
+            <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;">
+            <p style="color: #999; font-size: 12px; text-align: center; margin: 0;">
+              Це автоматичний лист, не відповідайте на нього.<br>
+              © ${new Date().getFullYear()} Forchetta - Магазин солодощів
+            </p>
+          </div>
+        </div>
+      `,
+      attachments: [{
+        filename: 'forchetta-logo.png',
+        path: path.join(process.cwd(), 'frontend', 'public', 'forchetta-logo.png'),
+        cid: 'forchetta-logo'
+      }]
+    }
+
+    // Отправляем письмо
+    const result = await transporter.sendMail(mailOptions)
+    
+    console.log('✅ Email с кодом восстановления успешно отправлен!')
+    console.log('📬 Message ID:', result.messageId)
+    
+    // Возвращаем успешный результат
+    return { 
+      success: true, 
+      messageId: result.messageId,
+      testMode: false
+    }
+  } catch (error) {
+    console.error('❌ Ошибка отправки email с кодом восстановления:', error)
+    throw new Error(`Не удалось отправить email: ${error.message}`)
+  }
+}
+
 // Отправка email с кодом верификации новото пользователю
 export const sendVerificationEmail = async (email, verificationCode, name) => {
   try {

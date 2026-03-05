@@ -1,5 +1,5 @@
 import express from 'express'
-import {login, logout, signup, refreshToken, getProfile, verifyEmail, resendVerificationCode} from '../controllers/auth.controller.js'
+import {login, logout, signup, refreshToken, getProfile, verifyEmail, resendVerificationCode, forgotPassword, resetPassword} from '../controllers/auth.controller.js'
 import {protectRoute} from '../middleware/auth.middleware.js'
 
 const router = express.Router()
@@ -12,5 +12,9 @@ router.get('/profile', protectRoute, getProfile)
 
 router.post('/verify-email', verifyEmail)
 router.post('/resend-verification', resendVerificationCode)
+
+// Роуты для восстановления пароля
+router.post('/forgot-password', forgotPassword)
+router.post('/reset-password', resetPassword)
 
 export default router

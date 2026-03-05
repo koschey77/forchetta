@@ -2,7 +2,7 @@ import {redis} from '../lib/redis.js'
 import User from '../models/user.model.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import { generateVerificationCode, sendVerificationEmail, sendWelcomeEmail } from '../lib/email.service.js'
+import { generateVerificationCode, sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail } from '../lib/email.service.js'
 
 // Функция генерации access и refresh токенов с использованием JWT
 const generateTokens = (userId) => {
@@ -298,5 +298,180 @@ export const resendVerificationCode = async (req, res) => {
   } catch (error) {
     console.log('Error in resendVerificationCode controller', error.message)
     res.status(500).json({message: error.message})
+  }
+}
+
+// Контроллер для отправки кода восстановления пароля на email
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body
+  
+  try {
+    console.log('📧 Запрос на восстановление пароля для email:', email)
+    
+    // Проверяем существует ли пользователь с таким email
+    const user = await User.findOne({ email })
+    if (!user) {
+      // По соображениям безопасности не раскрываем, существует ли email в системе
+      return res.json({
+        message: 'Якщо email існує в системі, код відновлення буде відправлено',
+        sent: true
+      })
+    }
+    
+    // Проверяем не превышен ли лимит запросов - максимум 3 запроса в час
+    const resetRequestsKey = `reset_requests:${email}`
+    const requestCount = await redis.get(resetRequestsKey) || 0
+    
+    if (parseInt(requestCount) >= 3) {
+      return res.status(429).json({
+        message: 'Забагато спроб відновлення пароля. Спробуйте через годину',
+        tooManyRequests: true,
+        retryAfter: 3600 // 1 час в секундах
+      })
+    }
+    
+    // Проверяем есть ли активный код восстановления для этого email
+    const existingResetCode = await redis.get(`password_reset:${email}`)
+    if (existingResetCode) {
+      const ttl = await redis.ttl(`password_reset:${email}`)
+      return res.status(400).json({
+        message: `Код вже відправлено. Спробуйте через ${Math.ceil(ttl / 60)} хвилин`,
+        codeAlreadySent: true,
+        retryAfter: ttl
+      })
+    }
+    
+    // Генерируем 6-значный код восстановления
+    const resetCode = generateVerificationCode()
+    console.log('🔐 Сгенерирован код восстановления для:', email)
+    
+    // Сохраняем код восстановления в Redis на 15 минут с дополнительными данными
+    const resetData = {
+      email,
+      resetCode,
+      userId: user._id.toString(),
+      attempts: 0,
+      createdAt: new Date().toISOString()
+    }
+    
+    await redis.setex(`password_reset:${email}`, 15 * 60, JSON.stringify(resetData)) // 15 минут
+    
+    // Увеличиваем счетчик запросов на восстановление (сбрасывается через час)
+    const newRequestCount = parseInt(requestCount) + 1
+    await redis.setex(resetRequestsKey, 60 * 60, newRequestCount) // 1 час
+    
+    // Отправляем код восстановления на email
+    await sendPasswordResetEmail(email, resetCode, user.name)
+    
+    console.log('✅ Код восстановления пароля отправлен на:', email)
+    
+    res.json({
+      message: 'Код відновлення пароля відправлено на email',
+      sent: true,
+      expiresInMinutes: 15
+    })
+    
+  } catch (error) {
+    console.log('Error in forgotPassword controller', error.message)
+    res.status(500).json({ message: 'Server error', error: error.message })
+  }
+}
+
+// Контроллер для сброса пароля по коду восстановления
+export const resetPassword = async (req, res) => {
+  const { email, resetCode, newPassword } = req.body
+  
+  try {
+    console.log('🔐 Попытка сброса пароля для email:', email)
+    
+    // Валидация входных данных
+    if (!email || !resetCode || !newPassword) {
+      return res.status(400).json({
+        message: 'Всі поля обов\'язкові: email, код відновлення, новий пароль'
+      })
+    }
+    
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        message: 'Новий пароль повинен містити мінімум 6 символів'
+      })
+    }
+    
+    // Проверяем существует ли код восстановления в Redis
+    const resetDataRaw = await redis.get(`password_reset:${email}`)
+    if (!resetDataRaw) {
+      return res.status(400).json({
+        message: 'Код відновлення пароля истёк або не найден. Запросіть новий код',
+        expired: true
+      })
+    }
+    
+    // Парсим данные восстановления
+    const resetData = JSON.parse(resetDataRaw)
+    const { resetCode: savedCode, userId, attempts } = resetData
+    
+    // Защита от брут-форс атак - максимум 5 попыток ввода кода
+    if (attempts >= 5) {
+      // Удаляем данные восстановления при превышении лимита
+      await redis.del(`password_reset:${email}`)
+      return res.status(429).json({
+        message: 'Перевищено кількість спроб. Запросіть новий код відновлення',
+        attemptsExceeded: true
+      })
+    }
+    
+    // Проверяем правильность кода восстановления
+    if (savedCode !== resetCode) {
+      // При неверном коде увеличиваем счетчик попыток
+      const updatedData = JSON.stringify({ 
+        ...resetData, 
+        attempts: attempts + 1 
+      })
+      
+      // Получаем оставшееся время жизни ключа и сохраняем обновленные данные
+      const ttl = await redis.ttl(`password_reset:${email}`)
+      await redis.setex(`password_reset:${email}`, ttl, updatedData)
+      
+      return res.status(400).json({
+        message: `Невірний код відновлення. Залишилось спроб: ${4 - attempts}`,
+        attemptsLeft: 4 - attempts
+      })
+    }
+    
+    // Проверяем существует ли пользователь
+    const user = await User.findById(userId)
+    if (!user) {
+      await redis.del(`password_reset:${email}`)
+      return res.status(404).json({
+        message: 'Користувач не знайдений'
+      })
+    }
+    
+    // Хешируем новый пароль
+    const saltRounds = 10
+    const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds)
+    
+    // Обновляем пароль в базе данных
+    await User.findByIdAndUpdate(userId, {
+      password: hashedNewPassword,
+      lastPasswordChange: new Date()
+    })
+    
+    // Удаляем использованный код восстановления из Redis
+    await redis.del(`password_reset:${email}`)
+    
+    // Опционально: инвалидируем все активные refresh токены пользователя
+    await redis.del(`refresh_token:${userId}`)
+    
+    console.log('✅ Пароль успешно изменен для пользователя:', email)
+    
+    res.json({
+      message: 'Пароль успішно змінено. Увійдіть з новим паролем',
+      passwordChanged: true
+    })
+    
+  } catch (error) {
+    console.log('Error in resetPassword controller', error.message)
+    res.status(500).json({ message: 'Server error', error: error.message })
   }
 }
