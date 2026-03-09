@@ -7,13 +7,11 @@ export const useUserStore = create((set, get) => ({
   loading: false,
   checkingAuth: true,
   verificationEmail: null,
-  verificationLoading: false,
 
   signup: async ({ name, email, password }) => {
     set({ loading: true })
 
     try {
-      // Новая логика: signup теперь только отправляет код, не создает пользователя
       await axios.post("/auth/signup", { name, email, password })
       
       // Сохраняем email для верификации
@@ -22,19 +20,23 @@ export const useUserStore = create((set, get) => ({
         loading: false 
       })
       
-      toast.success("Код надіслано на email. Перевірте пошту!")
+      toast.success("Код надіслано на email.")
       
-      return { needsVerification: true, email }
+      return { 
+        needsVerification: true, 
+        email
+      }
     } catch (error) {
       set({ loading: false })
-      toast.error(error.response?.data?.message || "Помилка під час реєстрації")
+      const errorData = error.response?.data
+      toast.error(errorData?.message || "Помилка під час реєстрації")
       throw error
     }
   },
 
   // Функция для верификации email кода
   verifyEmail: async ({ email, verificationCode }) => {
-    set({ verificationLoading: true })
+    set({ loading: true })
 
     try {
       // При успешной верификации пользователь создается и автоматически авторизируется
@@ -43,29 +45,38 @@ export const useUserStore = create((set, get) => ({
       set({ 
         user: res.data.user, 
         verificationEmail: null,
-        verificationLoading: false
+        loading: false
       })
       
       toast.success("Реєстрація завершена! Ласкаво просимо!")
       return res.data
     } catch (error) {
-      set({ verificationLoading: false })
-      toast.error(error.response?.data?.message || "Невірний код верифікації")
+      set({ loading: false })
+      const errorData = error.response?.data
+      
+      if (errorData?.attemptsExceeded || errorData?.shouldClear) {
+        // Попытки исчерпаны - очищаем email
+        set({ verificationEmail: null })
+      }
       throw error
     }
   },
 
-  // Функция для повторной отправки кода
+  // Функция для повторной отправки кода верификации (один раз)
   resendVerificationCode: async (email) => {
-    set({ verificationLoading: true })
+    set({ loading: true })
 
     try {
-      await axios.post("/auth/resend-verification", { email })
-      set({ verificationLoading: false })
-      toast.success("Новий код надіслано на email. Перевірте пошту!")
+      const res = await axios.post("/auth/resend-verification-code", { email })
+      
+      set({ loading: false })
+      
+      toast.success("Новий код надіслано на email!")
+      return res.data
     } catch (error) {
-      set({ verificationLoading: false })
-      toast.error(error.response?.data?.message || "Помилка при повторній відправці коду")
+      set({ loading: false })
+      const errorData = error.response?.data
+      toast.error(errorData?.message || "Помилка повторної відправки коду")
       throw error
     }
   },
@@ -91,6 +102,38 @@ export const useUserStore = create((set, get) => ({
     } catch (error) {
       toast.error(error.response?.data?.message || "Помилка при виході")
 
+    }
+  },
+
+  // Функция для отправки кода восстановления пароля на email
+  forgotPassword: async (email) => {
+    set({ loading: true })
+
+    try {
+      const res = await axios.post("/auth/forgot-password", { email })
+      set({ loading: false })
+      toast.success(res.data.message || "Код відновлення відправлено на email. Перевірте пошту!")
+      return res.data
+    } catch (error) {
+      set({ loading: false })
+      toast.error(error.response?.data?.message || "Помилка при відправці коду відновлення")
+      throw error
+    }
+  },
+
+  // Функция для сброса пароля по коду восстановления
+  resetPassword: async ({ email, resetCode, newPassword }) => {
+    set({ loading: true })
+
+    try {
+      const res = await axios.post("/auth/reset-password", { email, resetCode, newPassword })
+      set({ loading: false })
+      toast.success(res.data.message || "Пароль успішно змінено! Увійдіть з новим паролем")
+      return res.data
+    } catch (error) {
+      set({ loading: false })
+      toast.error(error.response?.data?.message || "Помилка при зміні пароля")
+      throw error
     }
   },
 

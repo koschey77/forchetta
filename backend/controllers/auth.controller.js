@@ -45,40 +45,39 @@ export const signup = async (req, res) => {
     // Проверяем не существует ли уже пользователь с таким email
     const userExists = await User.findOne({email})
     if (userExists) {
-      return res.status(400).json({message: 'Пользователь с таким email уже зарегистрирован'})
+      return res.status(400).json({ message: "Користувач з таким email вже існує." })
     }
+
     // Проверяем нет ли уже процесса верификации для этого email
     const existingVerification = await redis.get(`verification:${email}`)
     if (existingVerification) {
-      return res.status(400).json({
-        message: 'Код верификации уже отправлен. Проверьте почту или запросите новый код',
-        canResendAfter: 15 * 60 * 1000 // 15 минут до возможности повторной отправки
-      })
-    }
+      return res.status(400).json({message: 'Код верификации уже отправлен. Проверьте почту или запросите новый код'})}
+
     // Генерируем 6-значный код верификации
     const verificationCode = generateVerificationCode()
+
     // Хешируем пароль для сохранения в Redis
     const hashedPassword = await bcrypt.hash(password, 10)
-    // Сохраняем в Redis данные для создания пользователя + код верификации
+
+    // Создаем минимальные данные для пользователя + код верификации
     const registrationData = JSON.stringify({
       name,
-      email, 
       hashedPassword,
       verificationCode,
-      attempts: 0, // Счетчик попыток ввода кода
-      createdAt: new Date().toISOString() // Для отслеживания времени создания
+      attempts: 0,
+      resendUsed: false
     })
-    // Сохраняем данные регистрации в Redis с TTL 15 минут
-    await redis.setex(`verification:${email}`, 15 * 60, registrationData)
+    
+    // Сохраняем данные пользователя в Redis с TTL 2 минуты
+    await redis.setex(`verification:${email}`, 120, registrationData)
     
     // Отправляем код верификации на email через Gmail
     await sendVerificationEmail(email, verificationCode, name)
     
     res.status(200).json({
-      message: 'Код подтверждения отправлен на email. Подтвердите email для завершения регистрации',
+      message: 'Код подтверждения отправлен на email. У вас 2 минуты и 3 попытки.',
       email: email,
-      needsVerification: true,
-      expiresInMinutes: 15
+      needsVerification: true
     })
   } catch (error) {
     console.log('Error in signup controller', error.message)
@@ -166,7 +165,7 @@ export const getProfile = async (req, res) => {
   }
 }
 
-// Контроллер для подтверждения email кодом (создание пользователя в MongoDB)
+// Контроллер для подтверждения email кодом
 export const verifyEmail = async (req, res) => {
   try {
     const { email, verificationCode } = req.body
@@ -174,36 +173,79 @@ export const verifyEmail = async (req, res) => {
     const registrationDataRaw = await redis.get(`verification:${email}`)
     if (!registrationDataRaw) {
       return res.status(400).json({
-        message: 'Код верификации истек или не найден. Попробуйте зарегистрироваться заново',
-        expired: true
+        message: 'Код верификации истек. Можете начать регистрацию заново.',
+        expired: true,
+        canResend: false
       })
     }
-    // Парсим данные регистрации из Redis
+    // Парсим минимальные данные регистрации из Redis
     const registrationData = JSON.parse(registrationDataRaw)
-    const { name, hashedPassword, verificationCode: savedCode, attempts } = registrationData
-    // Защита от брут-форс атак - максимум 5 попыток ввода кода
-    if (attempts >= 5) {
-      // Удаляем данные регистрации при превышении лимита
-      await redis.del(`verification:${email}`)
+    const { name, hashedPassword, verificationCode: savedCode, attempts, resendUsed } = registrationData
+    // Защита от брут-форс атак - максимум 3 попытки ввода кода
+    if (attempts >= 3) {
+      // Если resend уже использован - удаляем данные
+      if (resendUsed) {
+        await redis.del(`verification:${email}`)
+        return res.status(429).json({
+          message: 'Попытки закончились. Можете начать регистрацию заново.',
+          attemptsExceeded: true,
+          canResend: false,
+          email: email
+        })
+      }
+      // Если resend еще не использован - НЕ удаляем данные, даем возможность resend
       return res.status(429).json({
-        message: 'Превышено количество попыток. Попробуйте зарегистрироваться заново',
-        attemptsExceeded: true
+        message: 'Попытки закончились. Можете надіслати код ще раз або почати заново.',
+        attemptsExceeded: true,
+        canResend: true,
+        email: email
       })
     }
     // Сравниваем введенный код с сохраненным в Redis
     if (savedCode !== verificationCode) {
       // При неверном коде увеличиваем счетчик попыток
+      const newAttempts = attempts + 1
+      
+      if (newAttempts >= 3) {
+        // Последняя неудачная попытка
+        // Если resend уже использован - очищаем данные
+        if (resendUsed) {
+          await redis.del(`verification:${email}`)
+          return res.status(400).json({
+            message: 'Попытки закончились. Можете начать регистрацию заново.',
+            attemptsLeft: 0,
+            shouldClear: true,
+            canResend: false,
+            email: email
+          })
+        }
+        // Если resend еще не использован - сохраняем данные для resend
+        const updatedData = JSON.stringify({ 
+          ...registrationData, 
+          attempts: newAttempts 
+        })
+        await redis.setex(`verification:${email}`, 120, updatedData)
+        
+        return res.status(400).json({
+          message: 'Попытки закончились. Можете надіслати код ще раз.',
+          attemptsLeft: 0,
+          shouldClear: true,
+          canResend: true,
+          email: email
+        })
+      }
+      
+      // Еще есть попытки - сохраняем обновленные данные
       const updatedData = JSON.stringify({ 
         ...registrationData, 
-        attempts: attempts + 1 
+        attempts: newAttempts 
       })
-      // Получаем оставшееся время жизни ключа и сохраняем обновленные данные
-      const ttl = await redis.ttl(`verification:${email}`)
-      await redis.setex(`verification:${email}`, ttl, updatedData)
+      // Сбрасываем TTL на полные 2 минуты при каждом неверном коде
+      await redis.setex(`verification:${email}`, 120, updatedData)
       
       return res.status(400).json({
-        message: `Неверный код подтверждения. Осталось попыток: ${4 - attempts}`,
-        attemptsLeft: 4 - attempts
+        message: `Невірний код. Залишилось спроб: ${3 - newAttempts}`,
+        attemptsLeft: 3 - newAttempts
       })
     }
     // Если код верен, проверяем не существует ли еще пользователь с таким email
@@ -212,7 +254,7 @@ export const verifyEmail = async (req, res) => {
       // Удаляем данные верификации и сообщаем об ошибке
       await redis.del(`verification:${email}`)
       return res.status(400).json({
-        message: 'Пользователь с таким email уже существует',
+        message: 'Користувач з таким email вже існує.',
         alreadyExists: true
       })
     }
@@ -249,52 +291,57 @@ export const verifyEmail = async (req, res) => {
     res.status(500).json({message: error.message})
   }
 }
-// Контроллер для повторной отправки кода верификации (для незавершенных регистраций)
+
+// Контроллер для повторной отправки кода верификации
 export const resendVerificationCode = async (req, res) => {
+  const { email } = req.body
+  
   try {
-    const { email } = req.body
-    // Проверяем нет ли уже полностью зарегистрированного пользователя с таким email
-    const existingUser = await User.findOne({ email })
-    if (existingUser) {
+    // Проверяем существуют ли данные верификации
+    const registrationDataRaw = await redis.get(`verification:${email}`)
+    if (!registrationDataRaw) {
       return res.status(400).json({
-        message: 'Пользователь с таким email уже зарегистрирован. Используйте вход в систему.',
-        shouldLogin: true
+        message: 'Сессия верификации истекла. Начните регистрацию заново.',
+        expired: true
       })
     }
-    // Проверяем есть ли незавершенная регистрация в Redis
-    const existingRegistration = await redis.get(`verification:${email}`)
-    if (!existingRegistration) {
-      return res.status(404).json({
-        message: 'Не найдено незавершенной регистрации. Попробуйте зарегистрироваться заново.',
-        shouldSignup: true
+    
+    // Парсим данные
+    const registrationData = JSON.parse(registrationDataRaw)
+    const { name, hashedPassword, resendUsed } = registrationData
+    
+    // Проверяем не использовался ли уже resend
+    if (resendUsed) {
+      return res.status(400).json({
+        message: 'Повторная отправка уже использована. Begin registration again.',
+        resendAlreadyUsed: true
       })
     }
-    // Парсим существующие данные регистрации
-    const registrationData = JSON.parse(existingRegistration)
-    const { name, hashedPassword } = registrationData
-    // Генерируем новый 6-значный код верификации
-    const newVerificationCode = generateVerificationCode()
-    // Обновляем данные регистрации с новым кодом
-    // Важно: сбрасываем счетчик попыток к нулю при повторной отправке
-    const updatedRegistrationData = JSON.stringify({
+    
+    // Генерируем новый код
+    const verificationCode = generateVerificationCode()
+    
+    // Создаем обновленные данные с новым кодом и отметкой о resend
+    const updatedData = JSON.stringify({
       name,
-      email, 
-      hashedPassword, // ✅ Используем уже захешированный пароль
-      verificationCode: newVerificationCode,
-      attempts: 0, // Обнуляем количество попыток при новом коде
-      createdAt: new Date().toISOString()
+      hashedPassword,
+      verificationCode,
+      attempts: 0,
+      resendUsed: true
     })
-    // Перезаписываем данные в Redis с новым кодом и обновленным TTL (15 минут)
-    await redis.setex(`verification:${email}`, 15 * 60, updatedRegistrationData)
     
-    // Отправляем новый код верификации на email через Gmail
-    await sendVerificationEmail(email, newVerificationCode, name)
+    // Сохраняем с полным TTL на 2 минуты
+    await redis.setex(`verification:${email}`, 120, updatedData)
     
-    // Возвращаем подтверждение успешной отправки
-    res.json({
-      message: 'Новый код верификации отправлен на email',
-      expiresInMinutes: 15
+    // Отправляем новый код
+    await sendVerificationEmail(email, verificationCode, name)
+    
+    res.status(200).json({
+      message: 'Новий код надіслано на email. Це остання спроба.',
+      codeSent: true,
+      resendUsed: true
     })
+    
   } catch (error) {
     console.log('Error in resendVerificationCode controller', error.message)
     res.status(500).json({message: error.message})
@@ -306,8 +353,6 @@ export const forgotPassword = async (req, res) => {
   const { email } = req.body
   
   try {
-    console.log('📧 Запрос на восстановление пароля для email:', email)
-    
     // Проверяем существует ли пользователь с таким email
     const user = await User.findOne({ email })
     if (!user) {
@@ -330,20 +375,8 @@ export const forgotPassword = async (req, res) => {
       })
     }
     
-    // Проверяем есть ли активный код восстановления для этого email
-    const existingResetCode = await redis.get(`password_reset:${email}`)
-    if (existingResetCode) {
-      const ttl = await redis.ttl(`password_reset:${email}`)
-      return res.status(400).json({
-        message: `Код вже відправлено. Спробуйте через ${Math.ceil(ttl / 60)} хвилин`,
-        codeAlreadySent: true,
-        retryAfter: ttl
-      })
-    }
-    
     // Генерируем 6-значный код восстановления
     const resetCode = generateVerificationCode()
-    console.log('🔐 Сгенерирован код восстановления для:', email)
     
     // Сохраняем код восстановления в Redis на 15 минут с дополнительными данными
     const resetData = {
@@ -362,9 +395,7 @@ export const forgotPassword = async (req, res) => {
     
     // Отправляем код восстановления на email
     await sendPasswordResetEmail(email, resetCode, user.name)
-    
-    console.log('✅ Код восстановления пароля отправлен на:', email)
-    
+        
     res.json({
       message: 'Код відновлення пароля відправлено на email',
       sent: true,
@@ -382,8 +413,6 @@ export const resetPassword = async (req, res) => {
   const { email, resetCode, newPassword } = req.body
   
   try {
-    console.log('🔐 Попытка сброса пароля для email:', email)
-    
     // Валидация входных данных
     if (!email || !resetCode || !newPassword) {
       return res.status(400).json({
@@ -391,17 +420,11 @@ export const resetPassword = async (req, res) => {
       })
     }
     
-    if (newPassword.length < 6) {
-      return res.status(400).json({
-        message: 'Новий пароль повинен містити мінімум 6 символів'
-      })
-    }
-    
     // Проверяем существует ли код восстановления в Redis
     const resetDataRaw = await redis.get(`password_reset:${email}`)
     if (!resetDataRaw) {
       return res.status(400).json({
-        message: 'Код відновлення пароля истёк або не найден. Запросіть новий код',
+        message: 'Код відновлення паролю минув або не знайден. Запросіть новий код',
         expired: true
       })
     }
@@ -448,8 +471,7 @@ export const resetPassword = async (req, res) => {
     }
     
     // Хешируем новый пароль
-    const saltRounds = 10
-    const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds)
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10)
     
     // Обновляем пароль в базе данных
     await User.findByIdAndUpdate(userId, {
@@ -460,11 +482,12 @@ export const resetPassword = async (req, res) => {
     // Удаляем использованный код восстановления из Redis
     await redis.del(`password_reset:${email}`)
     
-    // Опционально: инвалидируем все активные refresh токены пользователя
+    // Сбрасываем счетчик запросов на восстановление
+    await redis.del(`reset_requests:${email}`)
+    
+    // инвалидируем все активные refresh токены пользователя
     await redis.del(`refresh_token:${userId}`)
-    
-    console.log('✅ Пароль успешно изменен для пользователя:', email)
-    
+        
     res.json({
       message: 'Пароль успішно змінено. Увійдіть з новим паролем',
       passwordChanged: true

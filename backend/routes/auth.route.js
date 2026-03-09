@@ -11,7 +11,7 @@ router.post('/refresh-token', refreshToken)
 router.get('/profile', protectRoute, getProfile)
 
 router.post('/verify-email', verifyEmail)
-router.post('/resend-verification', resendVerificationCode)
+router.post('/resend-verification-code', resendVerificationCode)
 
 // Роуты для восстановления пароля
 router.post('/forgot-password', forgotPassword)

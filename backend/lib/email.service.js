@@ -21,82 +21,7 @@ export const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString()
 }
 
-// Отправка email с кодом восстановления пароля
-export const sendPasswordResetEmail = async (email, resetCode, name) => {
-  console.log('📧 Отправка кода восстановления пароля через Gmail SMTP...')
-  console.log('📮 Email получателя:', email)
-  
-  try {
-    // Создаем транспортер для Gmail
-    const transporter = createTransporter()
-    
-    // Настройки письма
-    const mailOptions = {
-      from: {
-        name: 'Forchetta',
-        address: process.env.GMAIL_USER
-      },
-      to: email,
-      subject: 'Відновлення пароля в Forchetta',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px;">
-          <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            
-            <!-- Логотип -->
-            <div style="text-align: center; margin-bottom: 30px;">
-              <img src="cid:forchetta-logo" alt="Forchetta" style="height: 150px;">
-            </div>
-            
-            <h2 style="color: #333; text-align: center; margin-bottom: 20px;">🔐 Відновлення пароля</h2>
-            <p style="color: #666; font-size: 16px; line-height: 1.5;">Привіт, ${name || 'шановний клієнт'}!</p>
-            <p style="color: #666; font-size: 16px; line-height: 1.5;">Ви запросили відновлення пароля для вашого акаунту в <strong>Forchetta</strong>.</p>
-            <p style="color: #666; font-size: 16px; line-height: 1.5;">Ваш код для відновлення пароля:</p>
-            
-            <div style="background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); padding: 25px; text-align: center; margin: 25px 0; border-radius: 8px;">
-              <h1 style="color: white; font-size: 36px; letter-spacing: 8px; margin: 0; font-family: monospace;">${resetCode}</h1>
-            </div>
-            
-            <p style="color: #666; font-size: 14px; line-height: 1.5;">Введіть цей код на сторінці відновлення пароля протягом <strong>15 хвилин</strong>.</p>
-            <p style="color: #666; font-size: 14px; line-height: 1.5;">Якщо ви не запросили відновлення пароля, просто проігноруйте цей лист. Ваш пароль залишиться без змін.</p>
-            
-            <div style="background: #FFE4E1; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #DC143C;">
-              <p style="color: #8B0000; font-size: 14px; margin: 0; font-weight: bold;">🔒 З безпеки ніколи не повідомляйте цей код нікому!</p>
-            </div>
-            
-            <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;">
-            <p style="color: #999; font-size: 12px; text-align: center; margin: 0;">
-              Це автоматичний лист, не відповідайте на нього.<br>
-              © ${new Date().getFullYear()} Forchetta - Магазин солодощів
-            </p>
-          </div>
-        </div>
-      `,
-      attachments: [{
-        filename: 'forchetta-logo.png',
-        path: path.join(process.cwd(), 'frontend', 'public', 'forchetta-logo.png'),
-        cid: 'forchetta-logo'
-      }]
-    }
-
-    // Отправляем письмо
-    const result = await transporter.sendMail(mailOptions)
-    
-    console.log('✅ Email с кодом восстановления успешно отправлен!')
-    console.log('📬 Message ID:', result.messageId)
-    
-    // Возвращаем успешный результат
-    return { 
-      success: true, 
-      messageId: result.messageId,
-      testMode: false
-    }
-  } catch (error) {
-    console.error('❌ Ошибка отправки email с кодом восстановления:', error)
-    throw new Error(`Не удалось отправить email: ${error.message}`)
-  }
-}
-
-// Отправка email с кодом верификации новото пользователю
+// Отправка email с кодом верификации нового пользователю
 export const sendVerificationEmail = async (email, verificationCode, name) => {
   try {
     // Создаем транспортер для Gmail
@@ -104,55 +29,89 @@ export const sendVerificationEmail = async (email, verificationCode, name) => {
     // Настройки письма
     const mailOptions = {
       from: {
-        name: 'Forchetta',
-        address: process.env.GMAIL_USER
+        name: "Forchetta Sweet Shop",
+        address: process.env.GMAIL_USER,
       },
       to: email,
-      subject: 'Підтвердження реєстрації в Forchetta',
+      subject: "Підтвердження реєстрації - Forchetta",
+      headers: {
+        "X-Priority": "1",
+        "X-Entity-ID": "forchetta-registration",
+      },
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px;">
-          <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <head>
+          <style type="text/css">
+            @import url('https://fonts.googleapis.com');
+          </style>
+        </head>
+        <body style="font-family: 'Montserrat', Arial, sans-serif; font-style: normal;">
+        <div style="max-width: 800px; background-color: #F5EEE0; padding: 0; margin: 0 auto; letter-spacing: 0.5px;">
+          <div style="padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
             
             <!-- Логотип -->
+            <div style="text-align: center; margin-bottom: 35px;">
+              <img src="cid:forchetta-logo" alt="Forchetta" style="height: 120px;">
+            </div>
+            
+            <!-- Заголовок приветствия -->
+            <div style="text-align: center; margin-bottom: 25px;">
+              <h2 style="color: #6B4423; font-size: 24px; margin: 0; font-family: 'Montserrat';">🎉 Вітаємо, ${name}!</h2>
+            </div>
+            
+            <!-- Основной текст -->
+            <div style="margin-bottom: 25px;">
+              <p style="color: #705A5A; font-size: 16px; line-height: 1.6; text-align: center; margin: 12px 0;">Дякуємо за реєстрацію в нашому</p>
+              <p style="color: #705A5A; font-size: 16px; line-height: 1.6; text-align: center; margin: 12px 0;">магазині солодощів Forchetta!</p>
+            </div>
+            
+            <!-- Текст перед кодом -->
+            <div style="text-align: center; margin-bottom: 20px;">
+              <p style="color: #705A5A; font-size: 16px; margin: 0; font-weight: 500;">Ваш код підтвердження:</p>
+            </div>
+            
+            <!-- Код подтверждения -->
+            <div style="background: #893E3E; font-family: 'Cormorant Garamond', Georgia, serif; padding: 24px; text-align: center; margin: 30px auto; border-radius: 12px; max-width: 280px; box-shadow: 0 4px 12px rgba(122, 63, 42, 0.2);">
+              <h1 style="color: #F5EEE0; font-size: 36px; letter-spacing: 8px; margin: 0; font-weight: bold;">${verificationCode}</h1>
+            </div>
+            
+            <!-- Инструкции -->
+            <div style="text-align: center; margin: 25px 0;">
+              <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">Введіть цей код на сторінці</p>
+              <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">підтвердження протягом <strong>2 хвилин</strong>.</p>
+            </div>
+            
             <div style="text-align: center; margin-bottom: 30px;">
-              <img src="cid:forchetta-logo" alt="Forchetta" style="height: 150px;">
+              <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">Якщо ви не реєструвалися в магазині</p>
+              <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">Forchetta, просто проігнноруйте цей лист.</p>
             </div>
             
-            <h2 style="color: #333; text-align: center; margin-bottom: 20px;">🎉 Вітаємо, ${name}!</h2>
-            <p style="color: #666; font-size: 16px; line-height: 1.5;">Дякуємо за реєстрацію в нашому магазині солодощів <strong>Forchetta</strong>!</p>
-            <p style="color: #666; font-size: 16px; line-height: 1.5;">Ваш код підтвердження:</p>
-            
-            <div style="background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); padding: 25px; text-align: center; margin: 25px 0; border-radius: 8px;">
-              <h1 style="color: white; font-size: 36px; letter-spacing: 8px; margin: 0; font-family: monospace;">${verificationCode}</h1>
+            <!-- Блок с информацией -->
+            <div style="background: #E3D6BF; padding: 20px; border-radius: 12px; margin: 25px 0; text-align: center;">
+              <p style="color: #6B4423; font-size: 14px; margin: 0; font-weight: 500; line-height: 1.4;">🍭 Після підтвердження</p>
+              <p style="color: #6B4423; font-size: 14px; margin: 0; font-weight: 500; line-height: 1.4;">ви отримаєте доступ до</p>
+              <p style="color: #6B4423; font-size: 14px; margin: 0; font-weight: 500; line-height: 1.4;"><strong>ексклюзивних солодощів!</strong></p>
             </div>
             
-            <p style="color: #666; font-size: 14px; line-height: 1.5;">Введіть цей код на сторінці підтвердження протягом <strong>15 хвилин</strong>.</p>
-            <p style="color: #666; font-size: 14px; line-height: 1.5;">Якщо ви не реєструвалися в магазині Forchetta, просто проігноруйте цей лист.</p>
-            
-            <div style="background: #FFF8DC; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #D2691E;">
-              <p style="color: #8B4513; font-size: 14px; margin: 0; font-weight: bold;">🍭 Після підтвердження ви отримаете доступ до ексклюзивних солодощів!</p>
+            <!-- Подпись -->
+            <div style="text-align: center; margin-top: 35px; padding-top: 20px; border-top: 1px solid #E5DCC9;">
+              <p style="color: #A1926B; font-size: 12px; line-height: 1.4; margin: 0;">Це автоматичний лист, не відповідайте на нього.</p>
+              <p style="color: #A1926B; font-size: 12px; line-height: 1.4; margin: 0;">© ${new Date().getFullYear()} Forchetta - Магазин солодощів</p>
             </div>
-            
-            <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;">
-            <p style="color: #999; font-size: 12px; text-align: center; margin: 0;">
-              Це автоматичний лист, не відповідайте на нього.<br>
-              © ${new Date().getFullYear()} Forchetta - Магазин солодощів
-            </p>
           </div>
         </div>
+        </body>
       `,
-      attachments: [{
-        filename: 'forchetta-logo.png',
-        path: path.join(process.cwd(), 'frontend', 'public', 'forchetta-logo.png'),
-        cid: 'forchetta-logo'
-      }]
+      attachments: [
+        {
+          filename: "forchetta-logo.png",
+          path: path.join(process.cwd(), "frontend", "public", "forchetta-logo.png"),
+          cid: "forchetta-logo",
+        },
+      ],
     }
 
     // Отправляем письмо
     const result = await transporter.sendMail(mailOptions)
-    
-    console.log('✅ Email успешно отправлен!')
-    console.log('📬 Message ID:', result.messageId)
     
     // Возвращаем успешный результат
     return { 
@@ -166,17 +125,8 @@ export const sendVerificationEmail = async (email, verificationCode, name) => {
   }
 }
 
-/**
- * Отправка приветственного письма пользователю после успешной верификации email
- * Отправляется автоматически после подтверждения верификационного кода
- * @param {string} email - Email адрес пользователя
- * @param {string} name - Имя пользователя для персонализации
- * @returns {Promise<Object>} - Объект с результатом отправки (не прерывает процесс при ошибке)
- */
-export const sendWelcomeEmail = async (email, name) => {
-  console.log('📧 Отправка приветственного письма через Gmail SMTP...')
-  console.log('📮 Email получателя:', email)
-  
+// Отправка приветственного email после успешной верификации нового пользователя
+export const sendWelcomeEmail = async (email, name) => {  
   try {
     // Создаем транспортер для Gmail
     const transporter = createTransporter()
@@ -184,70 +134,90 @@ export const sendWelcomeEmail = async (email, name) => {
     // Настройки письма
     const mailOptions = {
       from: {
-        name: 'Forchetta',
-        address: process.env.GMAIL_USER
+        name: "Forchetta Sweet Shop",
+        address: process.env.GMAIL_USER,
       },
       to: email,
-      subject: '🎉 Ласкаво просимо до Forchetta!',
+      subject: "Ласкаво просимо до Forchetta Sweet Shop!",
+      headers: {
+        "X-Priority": "3",
+        "X-Entity-ID": "forchetta-welcome",
+      },
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px;">
-          <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <head>
+          <style type="text/css">
+            @import url('https://fonts.googleapis.com');
+          </style>
+        </head>
+        <body style="font-family: 'Montserrat', Arial, sans-serif; font-style: normal;">
+        <div style="max-width: 800px; background-color: #F5EEE0; padding: 0; margin: 0 auto; letter-spacing: 0.5px;">
+          <div style="padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
             
             <!-- Логотип -->
-            <div style="text-align: center; margin-bottom: 30px;">
-              <img src="cid:forchetta-logo" alt="Forchetta" style="height: 150px;">
+            <div style="text-align: center; margin-bottom: 35px;">
+              <img src="cid:forchetta-logo" alt="Forchetta" style="height: 120px;">
             </div>
             
-            <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #333; margin: 0; font-size: 28px;">🎉 Вітаємо, ${name}!</h1>
+            <!-- Заголовок приветствия -->
+            <div style="text-align: center; margin-bottom: 25px;">
+              <h2 style="color: #6B4423; font-size: 24px; margin: 0; font-family: 'Montserrat';">🎉 Вітаємо, ${name}!</h2>
             </div>
             
-            <div style="background: linear-gradient(135deg, #228B22 0%, #32CD32 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
-              <h2 style="margin: 0; font-size: 24px;">✅ Email успішно підтверджено!</h2>
+            <!-- Статус подтверждения -->
+            <div style="background: #E3D6BF; padding: 20px; border-radius: 12px; margin: 25px 0; text-align: center;">
+              <h2 style="color: #6B4423; font-size: 18px; margin: 0; font-weight: 600;">✅ Email успішно підтверджено!</h2>
             </div>
             
-            <p style="color: #666; font-size: 16px; line-height: 1.6;">Тепер ви можете повною мірою користуватися нашим магазином солодощів <strong>Forchetta</strong>:</p>
+            <!-- Основной текст -->
+            <div style="margin-bottom: 25px;">
+              <p style="color: #705A5A; font-size: 16px; line-height: 1.6; text-align: center; margin: 12px 0;">Тепер ви можете повною мірою</p>
+              <p style="color: #705A5A; font-size: 16px; line-height: 1.6; text-align: center; margin: 12px 0;">користуватися магазином <strong>Forchetta</strong>:</p>
+            </div>
             
-            <div style="background: #FFF8DC; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <ul style="list-style: none; padding: 0; margin: 0;">
-                <li style="padding: 8px 0; color: #333;">🍬 Замовляти ексклюзивні цукерки</li>
-                <li style="padding: 8px 0; color: #333;">🍰 Обирати торти на замовлення</li>
-                <li style="padding: 8px 0; color: #333;">🎁 Отримувати спеціальні пропозиції</li>
-                <li style="padding: 8px 0; color: #333;">🚚 Отримувати швидку доставку</li>
-                <li style="padding: 8px 0; color: #333;">⭐ Залишати відгуки та оцінки</li>
+            <!-- Список возможностей -->
+            <div style="background: #E3D6BF; padding: 20px; border-radius: 12px; margin: 25px 0;">
+              <ul style="list-style: none; padding: 0; margin: 0; text-align: center;">
+                <li style="padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">🍬 Замовляти ексклюзивні цукерки</li>
+                <li style="padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">🍰 Обирати торти на замовлення</li>
+                <li style="padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">🎁 Отримувати спеціальні пропозиції</li>
+                <li style="padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">🚚 Отримувати швидку доставку</li>
+                <li style="padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">⭐ Залишати відгуки та оцінки</li>
               </ul>
             </div>
             
-            <div style="background: linear-gradient(135deg, #FFB6C1 0%, #FFC0CB 100%); padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
-              <p style="color: #8B4513; font-size: 16px; margin: 0; font-weight: bold;">🍭 Спеціальна пропозиція: знижка 10% на перше замовлення!</p>
-              <p style="color: #8B4513; font-size: 14px; margin: 5px 0 0 0;">Використовуйте код: WELCOME10</p>
+            <!-- Специальное предложение -->
+            <div style="background: #893E3E; font-family: 'Cormorant Garamond', Georgia, serif; padding: 24px; text-align: center; margin: 30px auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(122, 63, 42, 0.2);">
+              <p style="color: #F5EEE0; font-size: 16px; margin: 0; font-weight: bold;">🍭 Спеціальна пропозиція:</p>
+              <p style="color: #F5EEE0; font-size: 18px; margin: 8px 0; font-weight: bold;">знижка 10% на перше замовлення!</p>
+              <p style="color: #F5EEE0; font-size: 14px; margin: 8px 0 0 0; letter-spacing: 2px;">Код: WELCOME10</p>
             </div>
             
-            <div style="text-align: center; margin: 30px 0;">
-              <p style="color: #333; font-size: 18px; font-weight: bold;">Ласкаво просимо до родини Forchetta!</p>
-              <p style="color: #666; font-size: 16px;">Насолоджуйтесь найсмачнішими солодощами! 🍯</p>
+            <!-- Заключительный текст -->
+            <div style="text-align: center; margin: 25px 0;">
+              <p style="color: #705A5A; font-size: 16px; line-height: 1.6; margin: 8px 0; font-weight: 500;">Ласкаво просимо до родини Forchetta!</p>
+              <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">Насолоджуйтесь найсмачнішими солодощами! 🍯</p>
             </div>
             
-            <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;">
-            <p style="color: #999; font-size: 12px; text-align: center; margin: 0;">
-              Це автоматичний лист, не відповідайте на нього.<br>
-              © ${new Date().getFullYear()} Forchetta - Магазин солодощів
-            </p>
+            <!-- Подпись -->
+            <div style="text-align: center; margin-top: 35px; padding-top: 20px; border-top: 1px solid #E5DCC9;">
+              <p style="color: #A1926B; font-size: 12px; line-height: 1.4; margin: 0;">Це автоматичний лист, не відповідайте на нього.</p>
+              <p style="color: #A1926B; font-size: 12px; line-height: 1.4; margin: 0;">© ${new Date().getFullYear()} Forchetta - Магазин солодощів</p>
+            </div>
           </div>
         </div>
+        </body>
       `,
-      attachments: [{
-        filename: 'forchetta-logo.png',
-        path: path.join(process.cwd(), 'frontend', 'public', 'forchetta-logo.png'),
-        cid: 'forchetta-logo'
-      }]
+      attachments: [
+        {
+          filename: "forchetta-logo.png",
+          path: path.join(process.cwd(), "frontend", "public", "forchetta-logo.png"),
+          cid: "forchetta-logo",
+        },
+      ],
     }
 
     // Отправляем письмо
     const result = await transporter.sendMail(mailOptions)
-    
-    console.log('✅ Приветственное письмо отправлено!')
-    console.log('📬 Message ID:', result.messageId)
     
     // Возвращаем результат
     return { success: true, messageId: result.messageId }
@@ -255,5 +225,113 @@ export const sendWelcomeEmail = async (email, name) => {
     console.error('❌ Ошибка отправки приветственного письма:', error)
     // Не прерываем процесс верификации, если welcome email не отправился
     return { success: false, error: error.message }
+  }
+}
+
+// Отправка email с кодом восстановления пароля
+export const sendPasswordResetEmail = async (email, resetCode, name) => {
+  try {
+    // Создаем транспортер для Gmail
+    const transporter = createTransporter()
+    
+    // Настройки письма
+    const mailOptions = {
+      from: {
+        name: "Forchetta Sweet Shop",
+        address: process.env.GMAIL_USER,
+      },
+      to: email,
+      subject: "Код відновлення пароля - Forchetta",
+      // Добавляем заголовки для лучшей доставляемости
+      headers: {
+        "X-Priority": "1",
+        "X-MSMail-Priority": "High",
+        "X-Entity-ID": "forchetta-password-reset",
+        "List-Unsubscribe": "<mailto:noreply@forchetta.com>",
+      },
+      html: `
+        <head>
+          <style type="text/css">
+            @import url('https://fonts.googleapis.com');
+          </style>
+        </head>
+        <body style="font-family: 'Montserrat', Arial, sans-serif; font-style: normal;">
+        <div style="max-width: 800px; background-color: #F5EEE0; padding: 0; margin: 0 auto; letter-spacing: 0.5px;">
+          <div style="padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+            
+            <!-- Логотип -->
+            <div style="text-align: center; margin-bottom: 35px;">
+              <img src="cid:forchetta-logo" alt="Forchetta" style="height: 120px;">
+            </div>
+            
+            <!-- Заголовок -->
+            <div style="text-align: center; margin-bottom: 25px;">
+              <h2 style="color: #6B4423; font-size: 24px; margin: 0; font-family: 'Montserrat';">🔐 Відновлення пароля</h2>
+            </div>
+            
+            <!-- Основной текст -->
+            <div style="margin-bottom: 25px;">
+              <p style="color: #705A5A; font-size: 16px; line-height: 1.6; text-align: center; margin: 12px 0;">Привіт, ${name || "шановний клієнт"}!</p>
+              <p style="color: #705A5A; font-size: 16px; line-height: 1.6; text-align: center; margin: 12px 0;">Ви запросили відновлення пароля для</p>
+              <p style="color: #705A5A; font-size: 16px; line-height: 1.6; text-align: center; margin: 12px 0;">вашого акаунту в <strong>Forchetta</strong>.</p>
+            </div>
+            
+            <!-- Текст перед кодом -->
+            <div style="text-align: center; margin-bottom: 20px;">
+              <p style="color: #705A5A; font-size: 16px; margin: 0; font-weight: 500;">Ваш код відновлення:</p>
+            </div>
+            
+            <!-- Код восстановления -->
+            <div style="background: #893E3E; font-family: 'Cormorant Garamond', Georgia, serif; padding: 24px; text-align: center; margin: 30px auto; border-radius: 12px; max-width: 280px; box-shadow: 0 4px 12px rgba(122, 63, 42, 0.2);">
+              <h1 style="color: #F5EEE0; font-size: 36px; letter-spacing: 8px; margin: 0; font-weight: bold;">${resetCode}</h1>
+            </div>
+            
+            <!-- Инструкции -->
+            <div style="text-align: center; margin: 25px 0;">
+              <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">Введіть цей код на сторінці</p>
+              <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">відновлення протягом <strong>15 хвилин</strong>.</p>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 30px;">
+              <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">Якщо ви не запросили відновлення,</p>
+              <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">просто проігноруйте цей лист.</p>
+            </div>
+            
+            <!-- Блок безопасности -->
+            <div style="background: #E3D6BF; padding: 20px; border-radius: 12px; margin: 25px 0; text-align: center;">
+              <p style="color: #6B4423; font-size: 14px; margin: 0; font-weight: 500; line-height: 1.4;">🔒 З міркувань безпеки ніколи не</p>
+              <p style="color: #6B4423; font-size: 14px; margin: 0; font-weight: 500; line-height: 1.4;">повідомляйте цей код нікому!</p>
+            </div>
+            
+            <!-- Подпись -->
+            <div style="text-align: center; margin-top: 35px; padding-top: 20px; border-top: 1px solid #E5DCC9;">
+              <p style="color: #A1926B; font-size: 12px; line-height: 1.4; margin: 0;">Це автоматичний лист, не відповідайте на нього.</p>
+              <p style="color: #A1926B; font-size: 12px; line-height: 1.4; margin: 0;">© ${new Date().getFullYear()} Forchetta - Магазин солодощів</p>
+            </div>
+          </div>
+        </div>
+        </body>
+      `,
+      attachments: [
+        {
+          filename: "forchetta-logo.png",
+          path: path.join(process.cwd(), "frontend", "public", "forchetta-logo.png"),
+          cid: "forchetta-logo",
+        },
+      ],
+    }
+
+    // Отправляем письмо
+    const result = await transporter.sendMail(mailOptions)
+    
+    // Возвращаем успешный результат
+    return { 
+      success: true, 
+      messageId: result.messageId,
+      testMode: false
+    }
+  } catch (error) {
+    console.error('❌ Ошибка отправки email с кодом восстановления:', error)
+    throw new Error(`Не удалось отправить email: ${error.message}`)
   }
 }

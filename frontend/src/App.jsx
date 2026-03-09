@@ -8,6 +8,8 @@ import HomePage from './pages/HomePage'
 import SignUpPage from './pages/SignUpPage'
 import LoginPage from './pages/LoginPage'
 import EmailVerificationPage from './pages/EmailVerificationPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 import CartPage from './pages/CartPage'
 
 import Navbar from './components/Navbar'
@@ -32,6 +34,8 @@ function App() {
           <Route path="/signup" element={!user ? <SignUpPage /> : <Navigate to="/" />} />
           <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
           <Route path="/verify-email" element={!user ? <EmailVerificationPage /> : <Navigate to="/" />} />
+          <Route path="/forgot-password" element={!user ? <ForgotPasswordPage /> : <Navigate to="/" />} />
+          <Route path="/reset-password" element={!user ? <ResetPasswordPage /> : <Navigate to="/" />} />
           <Route path="/cart" element={<CartPage />} />
         </Routes>
       </div>

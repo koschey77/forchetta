@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useUserStore } from "../stores/useUserStore"
 import { getEmailError, getPasswordError, isFormValid } from "../lib/validation"
 
-import { EyeIcon, EyeSlashIcon, CloseIcon } from "../components/icons"
+import { EyeIcon, EyeSlashIcon } from "../components/icons"
 
 const SignUpPage = () => {
   const navigate = useNavigate()
@@ -18,40 +18,55 @@ const SignUpPage = () => {
       return getEmailError(value)
     }
     if (field === 'password') {
-      return getPasswordError(value)
+      return getPasswordError(value) 
     }
     return ''
   }
 
   const handleInputChange = (field, value) => {
+    // Обновляем данные формы с новым значением
     setFormData({ ...formData, [field]: value })
     
+    // Показываем ошибку валидации только если пользователь уже взаимодействовал с полем
+    // Это предотвращает показ ошибок до того, как пользователь начал вводить данные
     if (touched[field]) {
       setErrors({ ...errors, [field]: validateField(field, value) })
     }
   }
 
+  // Обработчик события потери фокуса (blur) для input полей
+  // Помечает поле как "затронутое" и запускает валидацию
   const handleBlur = (field) => {
+    // Помечаем поле как затронутое пользователем
     setTouched({ ...touched, [field]: true })
+    // Запускаем валидацию и показываем ошибку если она есть
     setErrors({ ...errors, [field]: validateField(field, formData[field]) })
   }
 
+  // Проверяет что все обязательные поля заполнены и валидны (name, email, password)
   const isSubmitEnabled = isFormValid(formData.email, formData.password, formData.name)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    // Проверяем все поля перед отправкой
+    // Проверяем валидность всех полей перед отправкой данных на сервер
     if (!isSubmitEnabled) return
     
     try {
+      // Отправляем данные регистрации на backend через useUserStore
+      // formData содержит: { name, email, password }
       const result = await signup(formData)
-      // После успешной регистрации перенаправляем на страницу верификации
+      
+      // Проверяем ответ от сервера - нужна ли верификация email
       if (result?.needsVerification) {
-        navigate(`/verify-email?email=${encodeURIComponent(formData.email)}`)
+        // Перенаправляем на страницу верификации, передавая email
+        const params = new URLSearchParams({
+          email: formData.email
+        })
+        navigate(`/verify-email?${params.toString()}`)
       }
     } catch {
-      // Ошибка уже обработана в store
+      // Все ошибки (network, validation, server errors) уже обработаны в useUserStore
+      // Toast уведомления показываются автоматически, здесь только перехватываем исключение
     }
   }
 
@@ -80,11 +95,6 @@ const SignUpPage = () => {
 
         {/* Right Panel - Form */}
         <div className="w-full md:w-[56%] h-full relative pt-12 sm:pt-10 px-6 sm:px-12 flex flex-col items-center bg-[#F5EEE0] overflow-y-auto">
-          {/* Close Button */}
-          <button className="absolute top-4 right-4 sm:top-6 sm:right-6 text-[#8B7355] hover:text-[#8B7355]/70 transition-colors">
-            <CloseIcon />
-          </button>
-
           {/* Title */}
           <h1 className="text-[#8B7355] text-[18px] font-normal mb-8">Реєстрація</h1>
 
