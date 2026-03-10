@@ -16,8 +16,32 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      // Пароль необязателен для Google OAuth пользователей
+      required: function() {
+        return !this.googleId; // Требуется только если нет Google ID
+      },
       minlength: [6, 'Password must be at least 6 characters long'],
+    },
+    // Google OAuth ID для связи с аккаунтом Google
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true, // Позволяет null/undefined значения быть уникальными
+    },
+    // Ссылка на аватар пользователя (из Google или загруженный)
+    avatar: {
+      type: String,
+      default: null,
+    },
+    // Статус верификации email (Google пользователи автоматически верифицированы)
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    // Флаг отправки welcome email для Google OAuth пользователей
+    googleWelcomeEmailSent: {
+      type: Boolean,
+      default: false,
     },
     cartItems: [
       {
@@ -44,8 +68,10 @@ const userSchema = new mongoose.Schema(
 
 // Pre-save хук для хеширования пароля перед сохранением в базу данных
 // Умный хук: проверяет не захеширован ли уже пароль, чтобы избежать двойного хеширования
+// Для Google OAuth пользователей пароль может отсутствовать
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next()
+  // Если пароль не изменился или отсутствует (Google OAuth), пропускаем хеширование
+  if (!this.isModified('password') || !this.password) return next()
 
   // Проверяем не захеширован ли уже пароль (bcrypt хеши начинаются с $2a$, $2b$ или $2y$)
   if (this.password.startsWith('$2')) {
@@ -64,7 +90,12 @@ userSchema.pre('save', async function (next) {
 })
 
 // Функция проверки вводимого пароля с хэшированным паролем из БД при входе пользователя
+// Для Google OAuth пользователей (без пароля) всегда возвращает false
 userSchema.methods.comparePassword = async function (password) {
+  // Если у пользователя нет пароля (Google OAuth), сравнение невозможно
+  if (!this.password) {
+    return false;
+  }
   return bcrypt.compare(password, this.password)
 }
 

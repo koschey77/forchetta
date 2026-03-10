@@ -149,62 +149,64 @@ export const sendWelcomeEmail = async (email, name) => {
             @import url('https://fonts.googleapis.com');
           </style>
         </head>
-        <body style="font-family: 'Montserrat', Arial, sans-serif; font-style: normal;">
-        <div style="max-width: 800px; background-color: #F5EEE0; padding: 0; margin: 0 auto; letter-spacing: 0.5px;">
-          <div style="padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
-            
-            <!-- Логотип -->
-            <div style="text-align: center; margin-bottom: 35px;">
-              <img src="cid:forchetta-logo" alt="Forchetta" style="height: 120px;">
+        <body>
+          <div style="font-family: 'Montserrat', Arial, sans-serif; font-style: normal; max-width: 800px; min-width: 340px; background-color: #F5EEE0; padding: 0; margin: 0 auto; letter-spacing: 0.1px;">
+            <div style="padding: 40px 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+              
+              <!-- Логотип -->
+              <div style="text-align: center; margin-bottom: 35px;">
+                <img src="cid:forchetta-logo" alt="Forchetta" style="height: 120px;">
+              </div>
+              
+              <!-- Заголовок приветствия -->
+              <div style="text-align: center; margin-bottom: 25px;">
+                <h2 style="color: #6B4423; font-size: 24px; margin: 0; font-family: 'Montserrat';">🎉 Вітаємо, ${name}!</h2>
+              </div>
+              
+              <!-- Статус подтверждения -->
+              <div style="background: #2B1A12; padding: 20px; border-radius: 12px; margin: 25px 0; text-align: center; display: flex; align-items: center; justify-content: center;">
+                <h2 style="color: #F5EEE0; font-size: 18px; font-weight: 600; margin: 0;">✅ Email успішно підтверджено!</h2>
             </div>
-            
-            <!-- Заголовок приветствия -->
-            <div style="text-align: center; margin-bottom: 25px;">
-              <h2 style="color: #6B4423; font-size: 24px; margin: 0; font-family: 'Montserrat';">🎉 Вітаємо, ${name}!</h2>
-            </div>
-            
-            <!-- Статус подтверждения -->
-            <div style="background: #E3D6BF; padding: 20px; border-radius: 12px; margin: 25px 0; text-align: center;">
-              <h2 style="color: #6B4423; font-size: 18px; margin: 0; font-weight: 600;">✅ Email успішно підтверджено!</h2>
-            </div>
-            
-            <!-- Основной текст -->
-            <div style="margin-bottom: 25px;">
-              <p style="color: #705A5A; font-size: 16px; line-height: 1.6; text-align: center; margin: 12px 0;">Тепер ви можете повною мірою</p>
-              <p style="color: #705A5A; font-size: 16px; line-height: 1.6; text-align: center; margin: 12px 0;">користуватися магазином <strong>Forchetta</strong>:</p>
-            </div>
-            
-            <!-- Список возможностей -->
-            <div style="background: #E3D6BF; padding: 20px; border-radius: 12px; margin: 25px 0;">
-              <ul style="list-style: none; padding: 0; margin: 0; text-align: center;">
-                <li style="padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">🍬 Замовляти ексклюзивні цукерки</li>
-                <li style="padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">🍰 Обирати торти на замовлення</li>
-                <li style="padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">🎁 Отримувати спеціальні пропозиції</li>
-                <li style="padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">🚚 Отримувати швидку доставку</li>
-                <li style="padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">⭐ Залишати відгуки та оцінки</li>
-              </ul>
-            </div>
-            
-            <!-- Специальное предложение -->
-            <div style="background: #893E3E; font-family: 'Cormorant Garamond', Georgia, serif; padding: 24px; text-align: center; margin: 30px auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(122, 63, 42, 0.2);">
-              <p style="color: #F5EEE0; font-size: 16px; margin: 0; font-weight: bold;">🍭 Спеціальна пропозиція:</p>
-              <p style="color: #F5EEE0; font-size: 18px; margin: 8px 0; font-weight: bold;">знижка 10% на перше замовлення!</p>
-              <p style="color: #F5EEE0; font-size: 14px; margin: 8px 0 0 0; letter-spacing: 2px;">Код: WELCOME10</p>
-            </div>
-            
-            <!-- Заключительный текст -->
-            <div style="text-align: center; margin: 25px 0;">
-              <p style="color: #705A5A; font-size: 16px; line-height: 1.6; margin: 8px 0; font-weight: 500;">Ласкаво просимо до родини Forchetta!</p>
-              <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">Насолоджуйтесь найсмачнішими солодощами! 🍯</p>
-            </div>
-            
-            <!-- Подпись -->
-            <div style="text-align: center; margin-top: 35px; padding-top: 20px; border-top: 1px solid #E5DCC9;">
-              <p style="color: #A1926B; font-size: 12px; line-height: 1.4; margin: 0;">Це автоматичний лист, не відповідайте на нього.</p>
-              <p style="color: #A1926B; font-size: 12px; line-height: 1.4; margin: 0;">© ${new Date().getFullYear()} Forchetta - Магазин солодощів</p>
+              
+              <!-- Основной текст -->
+              <div style="margin-bottom: 25px;">
+                <p style="color: #705A5A; font-size: 16px; line-height: 1.6; text-align: center; margin: 12px 0;">Тепер ви можете повною мірою</p>
+                <p style="color: #705A5A; font-size: 16px; line-height: 1.6; text-align: center; margin: 12px 0;">користуватися нашим магазином солодощів <strong>Forchetta</strong>:</p>
+              </div>
+              
+              <!-- Список возможностей -->
+              <div style="background: #E3D6BF; padding: 10px; border-radius: 12px; margin: 25px 0;">
+                <ul style="list-style: none; padding: 0; margin: 0 auto; max-width: max-content;">
+                  <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">
+                    <span style="margin-right: 10px; display: flex; align-items: center; justify-content: center; width: 20px;">🍬</span> 
+                     Замовляти ексклюзивні цукерки
+                  </li>
+                  <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">
+                    <span style="margin-right: 10px; display: flex; align-items: center; justify-content: center; width: 20px;">🍰</span> 
+                     Обирати торти на замовлення
+                  </li>
+                  <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">
+                    <span style="margin-right: 10px; display: flex; align-items: center; justify-content: center; width: 20px;">🎁</span> 
+                     Отримувати спеціальні пропозиції
+                  </li>
+                  <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">
+                    <span style="margin-right: 10px; display: flex; align-items: center; justify-content: center; width: 20px;">🚚</span> 
+                     Отримувати швидку доставку
+                  </li>
+                  <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0; color: #6B4423; font-size: 14px; font-weight: 500;">
+                    <span style="margin-right: 10px; display: flex; align-items: center; justify-content: center; width: 20px;">⭐</span> 
+                     Залишати відгуки та оцінки
+                  </li>
+                </ul>
+              </div>
+                                      
+              <!-- Подпись -->
+              <div style="text-align: center; margin-top: 35px; padding-top: 20px; border-top: 1px solid #E5DCC9;">
+                <p style="color: #A1926B; font-size: 12px; line-height: 1.4; margin: 0;">Це автоматичний лист, не відповідайте на нього.</p>
+                <p style="color: #A1926B; font-size: 12px; line-height: 1.4; margin: 0;">© ${new Date().getFullYear()} Forchetta - Магазин солодощів</p>
+              </div>
             </div>
           </div>
-        </div>
         </body>
       `,
       attachments: [

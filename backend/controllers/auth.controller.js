@@ -5,7 +5,8 @@ import bcrypt from 'bcryptjs'
 import { generateVerificationCode, sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail } from '../lib/email.service.js'
 
 // Функция генерации access и refresh токенов с использованием JWT
-const generateTokens = (userId) => {
+// Экспортируем для использования в passport.config.js
+export const generateTokens = (userId) => {
   const accessToken = jwt.sign({userId}, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: '15m',
   })
@@ -498,3 +499,71 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message })
   }
 }
+
+/**
+ * Контроллер для успешной аутентификации через Google OAuth
+ * 
+ * Вызывается Passport.js после успешной аутентификации пользователя через Google.
+ * Пользователь уже создан/найден в passport.config.js и доступен в req.user
+ */
+export const googleAuthCallback = async (req, res) => {
+  try {
+    console.log('🔐 Google OAuth successful, user:', req.user.email);
+    
+    // Пользователь уже авторизован через Google, генерируем JWT токены
+    const { accessToken, refreshToken } = generateTokens(req.user._id);
+    
+    // Сохраняем refresh токен в Redis
+    await storeRefreshToken(req.user._id, refreshToken);
+    
+    // Устанавливаем HTTP-only куки с токенами 
+    setCookies(res, accessToken, refreshToken);
+    
+    // Отправляем welcome email если это новый пользователь (можно определить по дате создания)
+    const isNewUser = new Date() - new Date(req.user.createdAt) < 60000; // создан менее минуты назад
+    if (isNewUser && !req.user.googleWelcomeEmailSent) {
+      try {
+        await sendWelcomeEmail(req.user.email, req.user.name);
+        // Отмечаем, что welcome email отправлен (добавим это поле в модель позже)
+        await User.findByIdAndUpdate(req.user._id, { googleWelcomeEmailSent: true });
+      } catch (emailError) {
+        console.log('📧 Welcome email failed, but OAuth succeeded:', emailError.message);
+      }
+    }
+    
+    // Перенаправляем на frontend с успешным результатом
+    // В продакшене это будет ваш домен: https://yourdomain.com
+    const frontendURL = process.env.NODE_ENV === 'production' 
+      ? process.env.FRONTEND_URL 
+      : (process.env.FRONTEND_URL || 'http://localhost:5173');
+    
+    // Перенаправляем на главную страницу с параметром успеха
+    res.redirect(`${frontendURL}?auth=success`);
+    
+  } catch (error) {
+    console.error('❌ Google OAuth callback error:', error);
+    
+    // Перенаправляем на login с ошибкой
+    const frontendURL = process.env.NODE_ENV === 'production' 
+      ? process.env.FRONTEND_URL 
+      : (process.env.FRONTEND_URL || 'http://localhost:5173');
+      
+    res.redirect(`${frontendURL}/login?auth=error&message=${encodeURIComponent('Помилка входу через Google')}`);
+  }
+};
+
+/**
+ * Контроллер для неуспешной аутентификации через Google OAuth
+ * 
+ * Вызывается когда пользователь отменил аутентификацию или произошла ошибка
+ */
+export const googleAuthFailure = async (req, res) => {
+  console.log('❌ Google OAuth failed or cancelled by user');
+  
+  // Перенаправляем обратно на login с сообщением об ошибке
+  const frontendURL = process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL 
+    : (process.env.FRONTEND_URL || 'http://localhost:5173');
+    
+  res.redirect(`${frontendURL}/login?auth=cancelled&message=${encodeURIComponent('Вхід через Google скасовано')}`);
+};
