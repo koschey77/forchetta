@@ -164,8 +164,8 @@ export const sendWelcomeEmail = async (email, name) => {
               </div>
               
               <!-- Статус подтверждения -->
-              <div style="background: #2B1A12; padding: 20px; border-radius: 12px; margin: 25px 0; text-align: center; display: flex; align-items: center; justify-content: center;">
-                <h2 style="color: #F5EEE0; font-size: 18px; font-weight: 600; margin: 0;">✅ Email успішно підтверджено!</h2>
+              <div style="background: #2B1A12; padding: 20px; border-radius: 12px; margin: 25px 0; display: flex; align-items: center; justify-content: center;">
+                <h2 style="color: #F5EEE0; font-size: 18px; font-weight: 600; margin: 0; text-align: center; ">✅ Email успішно підтверджено!</h2>
             </div>
               
               <!-- Основной текст -->

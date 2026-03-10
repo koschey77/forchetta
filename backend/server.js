@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
 dotenv.config()
+import path from "path"
 
 import express from 'express'
 import cookieParser from 'cookie-parser'
@@ -12,9 +13,16 @@ import {connectDB} from './lib/db.js'
 const app = express()
 const PORT = process.env.PORT || 5000
 
-// Базовый middleware для парсинга JSON и куки
-app.use(express.json())
+const __dirname = path.resolve()
+
+// Базовый middleware для парсинга JSON и куки 
+app.use(express.json({ limit: '10mb' }))
 app.use(cookieParser())
+
+// CORS настройки для продакшена
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1) // Trust Railway proxy
+}
 
 app.use(session({
   // Секретный ключ для подписи сессии (в продакшене должен быть в переменных окружения)
@@ -37,7 +45,19 @@ app.use(passport.session())
 
 app.use('/api/auth', authRoutes)
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/frontend/dist")))
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"))
+  })
+}
+
 app.listen(PORT, () => {
-  console.log('Server is running on http://localhost:' + PORT)
+  const url = process.env.NODE_ENV === 'production' 
+    ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN || 'your-app.railway.app'}` 
+    : `http://localhost:${PORT}`;
+  console.log(`🚀 Server is running on ${url}`);
+  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
   connectDB()
 })
