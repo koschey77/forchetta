@@ -133,7 +133,7 @@ export const sendWelcomeEmail = async (email, name) => {
               
               <!-- Логотип -->
               <div style="text-align: center; margin-bottom: 35px;">
-                <img src="${process.env.BASE_URL || 'http://localhost:5173'}/forchetta-logo.png" alt="Forchetta" style="height: 120px;">
+                <img src="${process.env.BASE_URL || "http://localhost:5173"}/forchetta-logo.png" alt="Forchetta" style="height: 120px;">
               </div>
               
               <!-- Заголовок приветствия -->
@@ -142,10 +142,11 @@ export const sendWelcomeEmail = async (email, name) => {
               </div>
               
               <!-- Статус подтверждения -->
-              <div style="background: #2B1A12; padding: 20px; border-radius: 12px; margin: 25px 0; display: flex; align-items: center; justify-content: center;">
-                <h2 style="color: #F5EEE0; font-size: 18px; font-weight: 600; margin: 0; text-align: center; ">✅ Email успішно підтверджено!</h2>
-            </div>
-              
+<div style="background: #2B1A12; padding: 20px; border-radius: 12px; margin: 25px 0; text-align: center;">
+  <h2 style="color: #F5EEE0; font-size: 18px; font-weight: 600; margin: 0; display: inline-block; vertical-align: middle;">
+    ✅ Email успішно підтверджено!
+  </h2>
+</div>              
               <!-- Основной текст -->
               <div style="margin-bottom: 25px;">
                 <p style="color: #705A5A; font-size: 16px; line-height: 1.6; text-align: center; margin: 12px 0;">Тепер ви можете повною мірою</p>
