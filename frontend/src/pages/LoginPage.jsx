@@ -195,8 +195,11 @@ const LoginPage = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      // Перенаправляем на backend Google OAuth роут
-                      window.location.href = 'http://localhost:5000/api/auth/google';
+                      // Динамический URL: localhost для разработки, текущий домен для продакшена
+                      const baseUrl = window.location.hostname === 'localhost' 
+                        ? 'http://localhost:5000' 
+                        : window.location.origin;
+                      window.location.href = `${baseUrl}/api/auth/google`;
                     }}
                     disabled={loading}
                     className={`w-[48px] h-[48px] rounded-full border border-[#8B7355] transition-all duration-200 flex items-center justify-center ${
