@@ -1,20 +1,10 @@
-import nodemailer from 'nodemailer'
-import fs from 'fs'
-import path from 'path'
+import { Resend } from 'resend'
 
-// Настройка транспорта NodeMailer для Gmail SMTP
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-  })
-}
+// Инициализация Resend с API ключом
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+// Email отправитель с верифицированным доменом
+const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@send.romankos.com'
 
 // Функция генерации случайного 6-значного кода верификации
 export const generateVerificationCode = () => {
@@ -24,20 +14,13 @@ export const generateVerificationCode = () => {
 // Отправка email с кодом верификации нового пользователю
 export const sendVerificationEmail = async (email, verificationCode, name) => {
   try {
-    // Создаем транспортер для Gmail
-    const transporter = createTransporter()
-    // Настройки письма
-    const mailOptions = {
-      from: {
-        name: "Forchetta Sweet Shop",
-        address: process.env.GMAIL_USER,
-      },
-      to: email,
+    console.log('📧 Отправка verification email через Resend для:', email)
+    
+    // Отправляем через Resend API
+    const result = await resend.emails.send({
+      from: `Forchetta Sweet Shop <${FROM_EMAIL}>`,
+      to: [email],
       subject: "Підтвердження реєстрації - Forchetta",
-      headers: {
-        "X-Priority": "1",
-        "X-Entity-ID": "forchetta-registration",
-      },
       html: `
         <head>
           <style type="text/css">
@@ -50,7 +33,7 @@ export const sendVerificationEmail = async (email, verificationCode, name) => {
             
             <!-- Логотип -->
             <div style="text-align: center; margin-bottom: 35px;">
-              <img src="cid:forchetta-logo" alt="Forchetta" style="height: 120px;">
+              <img src="${process.env.BASE_URL || 'http://localhost:5173'}/forchetta-logo.png" alt="Forchetta" style="height: 120px;">
             </div>
             
             <!-- Заголовок приветствия -->
@@ -77,7 +60,7 @@ export const sendVerificationEmail = async (email, verificationCode, name) => {
             <!-- Инструкции -->
             <div style="text-align: center; margin: 25px 0;">
               <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">Введіть цей код на сторінці</p>
-              <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">підтвердження протягом <strong>2 хвилин</strong>.</p>
+              <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 8px 0;">підтвердження протягом <strong>3 хвилин</strong>.</p>
             </div>
             
             <div style="text-align: center; margin-bottom: 30px;">
@@ -101,48 +84,43 @@ export const sendVerificationEmail = async (email, verificationCode, name) => {
         </div>
         </body>
       `,
-      attachments: [
-        {
-          filename: "forchetta-logo.png",
-          path: path.join(process.cwd(), "frontend", "public", "forchetta-logo.png"),
-          cid: "forchetta-logo",
-        },
-      ],
-    }
+    })
 
-    // Отправляем письмо
-    const result = await transporter.sendMail(mailOptions)
+    if (result.error) {
+      console.error('❌ Ошибка отправки verification email:', result.error.message)
+      return { 
+        success: false, 
+        error: result.error.message,
+        testMode: false
+      }
+    }
     
-    // Возвращаем успешный результат
+    console.log('✅ Verification email отправлен! ID:', result.data?.id)
     return { 
       success: true, 
-      messageId: result.messageId,
+      messageId: result.data?.id,
       testMode: false
     }
   } catch (error) {
-    console.error('❌ Ошибка отправки email:', error)
-    throw new Error(`Не удалось отправить email: ${error.message}`)
+    console.error('❌ Ошибка отправки verification email:', error)
+    return { 
+      success: false, 
+      error: error.message,
+      testMode: false
+    }
   }
 }
 
 // Отправка приветственного email после успешной верификации нового пользователя
 export const sendWelcomeEmail = async (email, name) => {  
   try {
-    // Создаем транспортер для Gmail
-    const transporter = createTransporter()
+    console.log('📧 Отправка welcome email через Resend для:', email)
     
-    // Настройки письма
-    const mailOptions = {
-      from: {
-        name: "Forchetta Sweet Shop",
-        address: process.env.GMAIL_USER,
-      },
-      to: email,
+    // Отправляем через Resend API
+    const result = await resend.emails.send({
+      from: `Forchetta Sweet Shop <${FROM_EMAIL}>`,
+      to: [email],
       subject: "Ласкаво просимо до Forchetta Sweet Shop!",
-      headers: {
-        "X-Priority": "3",
-        "X-Entity-ID": "forchetta-welcome",
-      },
       html: `
         <head>
           <style type="text/css">
@@ -155,7 +133,7 @@ export const sendWelcomeEmail = async (email, name) => {
               
               <!-- Логотип -->
               <div style="text-align: center; margin-bottom: 35px;">
-                <img src="cid:forchetta-logo" alt="Forchetta" style="height: 120px;">
+                <img src="${process.env.BASE_URL || 'http://localhost:5173'}/forchetta-logo.png" alt="Forchetta" style="height: 120px;">
               </div>
               
               <!-- Заголовок приветствия -->
@@ -209,48 +187,36 @@ export const sendWelcomeEmail = async (email, name) => {
           </div>
         </body>
       `,
-      attachments: [
-        {
-          filename: "forchetta-logo.png",
-          path: path.join(process.cwd(), "frontend", "public", "forchetta-logo.png"),
-          cid: "forchetta-logo",
-        },
-      ],
-    }
+    })
 
-    // Отправляем письмо
-    const result = await transporter.sendMail(mailOptions)
+    if (result.error) {
+      console.error('❌ Ошибка отправки welcome email:', result.error.message)
+      return { 
+        success: false, 
+        error: result.error.message,
+        testMode: false
+      }
+    }
     
-    // Возвращаем результат
-    return { success: true, messageId: result.messageId }
+    console.log('✅ Welcome email отправлен! ID:', result.data?.id)
+    return { success: true, messageId: result.data?.id }
   } catch (error) {
-    console.error('❌ Ошибка отправки приветственного письма:', error)
-    // Не прерываем процесс верификации, если welcome email не отправился
+    console.error('❌ Ошибка отправки welcome email:', error)
     return { success: false, error: error.message }
   }
 }
 
 // Отправка email с кодом восстановления пароля
+// Отправка email с кодом восстановления пароля
 export const sendPasswordResetEmail = async (email, resetCode, name) => {
   try {
-    // Создаем транспортер для Gmail
-    const transporter = createTransporter()
+    console.log('📧 Отправка password reset email через Resend для:', email)
     
-    // Настройки письма
-    const mailOptions = {
-      from: {
-        name: "Forchetta Sweet Shop",
-        address: process.env.GMAIL_USER,
-      },
-      to: email,
+    // Отправляем через Resend API
+    const result = await resend.emails.send({
+      from: `Forchetta Sweet Shop <${FROM_EMAIL}>`,
+      to: [email],
       subject: "Код відновлення пароля - Forchetta",
-      // Добавляем заголовки для лучшей доставляемости
-      headers: {
-        "X-Priority": "1",
-        "X-MSMail-Priority": "High",
-        "X-Entity-ID": "forchetta-password-reset",
-        "List-Unsubscribe": "<mailto:noreply@forchetta.com>",
-      },
       html: `
         <head>
           <style type="text/css">
@@ -263,7 +229,7 @@ export const sendPasswordResetEmail = async (email, resetCode, name) => {
             
             <!-- Логотип -->
             <div style="text-align: center; margin-bottom: 35px;">
-              <img src="cid:forchetta-logo" alt="Forchetta" style="height: 120px;">
+              <img src="${process.env.BASE_URL || 'http://localhost:5173'}/forchetta-logo.png" alt="Forchetta" style="height: 120px;">
             </div>
             
             <!-- Заголовок -->
@@ -314,26 +280,29 @@ export const sendPasswordResetEmail = async (email, resetCode, name) => {
         </div>
         </body>
       `,
-      attachments: [
-        {
-          filename: "forchetta-logo.png",
-          path: path.join(process.cwd(), "frontend", "public", "forchetta-logo.png"),
-          cid: "forchetta-logo",
-        },
-      ],
-    }
+    })
 
-    // Отправляем письмо
-    const result = await transporter.sendMail(mailOptions)
+    if (result.error) {
+      console.error('❌ Ошибка отправки password reset email:', result.error.message)
+      return { 
+        success: false, 
+        error: result.error.message,
+        testMode: false
+      }
+    }
     
-    // Возвращаем успешный результат
+    console.log('✅ Password reset email отправлен! ID:', result.data?.id)
     return { 
       success: true, 
-      messageId: result.messageId,
+      messageId: result.data?.id,
       testMode: false
     }
   } catch (error) {
-    console.error('❌ Ошибка отправки email с кодом восстановления:', error)
-    throw new Error(`Не удалось отправить email: ${error.message}`)
+    console.error('❌ Ошибка отправки password reset email:', error)
+    return { 
+      success: false, 
+      error: error.message,
+      testMode: false
+    }
   }
 }
