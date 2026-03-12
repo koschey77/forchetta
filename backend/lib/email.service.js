@@ -4,7 +4,7 @@ import { Resend } from 'resend'
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Email отправитель с верифицированным доменом
-const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@send.romankos.com'
+const FROM_EMAIL = process.env.FROM_EMAIL || 'forchetta@romankos.com'
 
 // URL аватара отправителя  
 const SENDER_AVATAR = `${process.env.BASE_URL || 'https://forchetta.romankos.com'}/avatar.png`
@@ -18,16 +18,13 @@ export const generateVerificationCode = () => {
 export const sendVerificationEmail = async (email, verificationCode, name) => {
   try {
     console.log('📧 Отправка verification email через Resend для:', email)
+    console.log('🔍 СТЕК ВЫЗОВА verification email:', new Error().stack)
     
     // Отправляем через Resend API
     const result = await resend.emails.send({
       from: `Forchetta Sweet Shop <${FROM_EMAIL}>`,
       to: [email],
       subject: "Підтвердження реєстрації - Forchetta",
-      headers: {
-        'X-Avatar': SENDER_AVATAR,
-        'X-Sender-Image': SENDER_AVATAR
-      },
       html: `
         <head>
           <style type="text/css">
@@ -122,16 +119,13 @@ export const sendVerificationEmail = async (email, verificationCode, name) => {
 export const sendWelcomeEmail = async (email, name) => {  
   try {
     console.log('📧 Отправка welcome email через Resend для:', email)
+    console.log('🔍 СТЕК ВЫЗОВА welcome email:', new Error().stack)
     
     // Отправляем через Resend API
     const result = await resend.emails.send({
       from: `Forchetta Sweet Shop <${FROM_EMAIL}>`,
       to: [email],
       subject: "Ласкаво просимо до Forchetta Sweet Shop!",
-      headers: {
-        'X-Avatar': SENDER_AVATAR,
-        'X-Sender-Image': SENDER_AVATAR
-      },
       html: `
         <head>
           <style type="text/css">
@@ -229,10 +223,6 @@ export const sendPasswordResetEmail = async (email, resetCode, name) => {
       from: `Forchetta Sweet Shop <${FROM_EMAIL}>`,
       to: [email],
       subject: "Код відновлення пароля - Forchetta",
-      headers: {
-        'X-Avatar': SENDER_AVATAR,
-        'X-Sender-Image': SENDER_AVATAR
-      },
       html: `
         <head>
           <style type="text/css">
