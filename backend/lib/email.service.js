@@ -18,7 +18,6 @@ export const generateVerificationCode = () => {
 export const sendVerificationEmail = async (email, verificationCode, name) => {
   try {
     console.log('📧 Отправка verification email через Resend для:', email)
-    console.log('🔍 СТЕК ВЫЗОВА verification email:', new Error().stack)
     
     // Отправляем через Resend API
     const result = await resend.emails.send({
@@ -119,7 +118,6 @@ export const sendVerificationEmail = async (email, verificationCode, name) => {
 export const sendWelcomeEmail = async (email, name) => {  
   try {
     console.log('📧 Отправка welcome email через Resend для:', email)
-    console.log('🔍 СТЕК ВЫЗОВА welcome email:', new Error().stack)
     
     // Отправляем через Resend API
     const result = await resend.emails.send({

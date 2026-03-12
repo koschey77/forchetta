@@ -12,16 +12,3 @@ export const redis = new Redis(process.env.UPSTASH_REDIS_URL, {
   // Отключаем автоматический select database для connect-redis
   enableAutoPipelining: false
 })
-
-// Обработка ошибок Redis для диагностики
-redis.on('error', (err) => {
-  console.error('❌ Redis connection error:', err.message)
-})
-
-redis.on('connect', () => {
-  console.log('✅ Redis connected successfully')
-})
-
-redis.on('ready', () => {
-  console.log('✅ Redis ready for commands')
-})

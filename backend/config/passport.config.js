@@ -101,7 +101,6 @@ async (accessToken, refreshToken, profile, done) => {
  * @param {Function} done - Callback функция
  */
 passport.serializeUser((user, done) => {
-  console.log('💾 Serializing user:', user._id);
   done(null, user._id);
 });
 
@@ -116,7 +115,6 @@ passport.serializeUser((user, done) => {
  */
 passport.deserializeUser(async (id, done) => {
   try {
-    console.log('🔄 Deserializing user:', id);
     const user = await User.findById(id);
     done(null, user);
   } catch (error) {
