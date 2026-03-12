@@ -6,6 +6,9 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 // Email отправитель с верифицированным доменом
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@send.romankos.com'
 
+// URL аватара отправителя  
+const SENDER_AVATAR = `${process.env.BASE_URL || 'https://forchetta.romankos.com'}/avatar.png`
+
 // Функция генерации случайного 6-значного кода верификации
 export const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString()
@@ -21,6 +24,10 @@ export const sendVerificationEmail = async (email, verificationCode, name) => {
       from: `Forchetta Sweet Shop <${FROM_EMAIL}>`,
       to: [email],
       subject: "Підтвердження реєстрації - Forchetta",
+      headers: {
+        'X-Avatar': SENDER_AVATAR,
+        'X-Sender-Image': SENDER_AVATAR
+      },
       html: `
         <head>
           <style type="text/css">
@@ -121,6 +128,10 @@ export const sendWelcomeEmail = async (email, name) => {
       from: `Forchetta Sweet Shop <${FROM_EMAIL}>`,
       to: [email],
       subject: "Ласкаво просимо до Forchetta Sweet Shop!",
+      headers: {
+        'X-Avatar': SENDER_AVATAR,
+        'X-Sender-Image': SENDER_AVATAR
+      },
       html: `
         <head>
           <style type="text/css">
@@ -218,6 +229,10 @@ export const sendPasswordResetEmail = async (email, resetCode, name) => {
       from: `Forchetta Sweet Shop <${FROM_EMAIL}>`,
       to: [email],
       subject: "Код відновлення пароля - Forchetta",
+      headers: {
+        'X-Avatar': SENDER_AVATAR,
+        'X-Sender-Image': SENDER_AVATAR
+      },
       html: `
         <head>
           <style type="text/css">
