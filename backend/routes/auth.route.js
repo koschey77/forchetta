@@ -40,8 +40,8 @@ router.get('/google',
 router.get('/google/callback',
   // Passport middleware обрабатывает OAuth ответ
   passport.authenticate('google', { 
-    failureRedirect: '/auth/google/failure', // Куда перенаправить при ошибке
-    session: false // Не используем сессии, используем JWT токены
+    failureRedirect: '/api/auth/google/failure', // Полный путь к failure
+    session: true // Используем сессии для OAuth процесса
   }),
   // Если аутентификация успешна, вызывается наш контроллер
   googleAuthCallback
