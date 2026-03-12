@@ -164,30 +164,35 @@ const ResetPasswordPage = () => {
               </div>
 
               {/* New Password Input */}
-              <div className="relative mb-4">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={newPassword}
-                  onChange={(e) => handleInputChange("newPassword", e.target.value)}
-                  onBlur={() => handleBlur("newPassword")}
-                  className={`w-[300px] h-[54px] border rounded-[6px] px-4 pr-12 text-[12px] text-[#8B7355] focus:outline-none transition-colors bg-[#F5EEE0] ${
-                    errors.newPassword ? "border-red-500 focus:border-red-500" : "border-[#8B7355] focus:border-[#8B7355]"
-                  }`}
-                />
-                {!newPassword && (
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B7355]/60 pointer-events-none text-[12px] font-light">
-                    Новий пароль
-                    <span className="text-red-500 ml-0.5">*</span>
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8B7355]/70 hover:text-[#8B7355] transition-colors"
-                >
-                  {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
-                </button>
-                {errors.newPassword && <div className="text-red-500 text-[13px] mt-1 ml-1">{errors.newPassword}</div>}
+              <div className="mb-4">
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => handleInputChange("newPassword", e.target.value)}
+                    onBlur={() => handleBlur("newPassword")}
+                    className={`w-[300px] h-[54px] border rounded-[6px] px-4 pr-12 text-[12px] text-[#8B7355] focus:outline-none transition-colors bg-[#F5EEE0] ${
+                      errors.newPassword ? "border-red-500 focus:border-red-500" : "border-[#8B7355] focus:border-[#8B7355]"
+                    }`}
+                  />
+                  {!newPassword && (
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B7355]/60 pointer-events-none text-[12px] font-light">
+                      Новий пароль
+                      <span className="text-red-500 ml-0.5">*</span>
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8B7355]/70 hover:text-[#8B7355] transition-colors"
+                  >
+                    {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
+                  </button>
+                </div>
+                {/* Резервируемое место для ошибки */}
+                <div className="text-red-500 text-[13px] mt-1 ml-1 h-[20px] flex items-start">
+                  {errors.newPassword || ""}
+                </div>
               </div>
 
               <button

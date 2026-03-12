@@ -12,8 +12,8 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import CartPage from './pages/CartPage'
 
-import Navbar from './components/Navbar'
 import LoadingSpinner from './components/LoadingSpinner'
+import Header from './components/Header'
 
 
 function App() {
@@ -27,8 +27,13 @@ function App() {
   
   return (
     <div className="min-h-screen bg-orange-50 text-black relative overflow-hidden">
-      <div className="relative z-50 pt-20">
-        <Navbar />
+      {/* Fixed Header for all pages */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <Header />
+      </div>
+      
+      {/* Main content with top padding for fixed header */}
+      <div className="relative pt-[87px]">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={!user ? <SignUpPage /> : <Navigate to="/" />} />

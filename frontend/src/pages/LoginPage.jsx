@@ -118,54 +118,64 @@ const LoginPage = () => {
             <form onSubmit={handleSubmit}>
               <div className="w-full flex flex-col fade-in mt-1">
                 {/* Email Input */}
-                <div className="relative mb-4">
-                  <input
-                    id="email"
-                    required
-                    type="email"
-                    value={email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                    onBlur={() => handleBlur("email")}
-                    className={`w-[300px] h-[54px] border rounded-[6px] px-4 text-[12px] text-[#8B7355] focus:outline-none transition-colors bg-[#F5EEE0] ${
-                      errors.email ? "border-red-500 focus:border-red-500" : "border-[#8B7355] focus:border-[#8B7355]"
-                    }`}
-                  />
-                  {!email && (
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B7355]/60 pointer-events-none text-[12px] font-light">
-                      Електронна пошта
-                      <span className="text-red-500 ml-0.5">*</span>
-                    </div>
-                  )}
-                  {errors.email && <div className="text-red-500 text-[13px] mt-1 ml-1">{errors.email}</div>}
+                <div className="mb-4">
+                  <div className="relative">
+                    <input
+                      id="email"
+                      required
+                      type="email"
+                      value={email}
+                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      onBlur={() => handleBlur("email")}
+                      className={`w-[300px] h-[54px] border rounded-[6px] px-4 text-[12px] text-[#8B7355] focus:outline-none transition-colors bg-[#F5EEE0] ${
+                        errors.email ? "border-red-500 focus:border-red-500" : "border-[#8B7355] focus:border-[#8B7355]"
+                      }`}
+                    />
+                    {!email && (
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B7355]/60 pointer-events-none text-[12px] font-light">
+                        Електронна пошта
+                        <span className="text-red-500 ml-0.5">*</span>
+                      </div>
+                    )}
+                  </div>
+                  {/* Резервируемое место для ошибки */}
+                  <div className="text-red-500 text-[13px] mt-1 ml-1 h-[20px] flex items-start">
+                    {errors.email || ""}
+                  </div>
                 </div>
 
                 {/* Password Input */}
-                <div className="relative mb-5">
-                  <input
-                    id="password"
-                    required
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => handleInputChange("password", e.target.value)}
-                    onBlur={() => handleBlur("password")}
-                    className={`w-[300px] h-[54px] border rounded-[6px] px-4 pr-12 text-[12px] text-[#8B7355] focus:outline-none transition-colors bg-[#F5EEE0] ${
-                      errors.password ? "border-red-500 focus:border-red-500" : "border-[#8B7355] focus:border-[#8B7355]"
-                    }`}
-                  />
-                  {!password && (
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B7355]/60 pointer-events-none text-[12px] font-light">
-                      Пароль
-                      <span className="text-red-500 ml-0.5">*</span>
-                    </div>
-                  )}
-                  <button
-                    type="button"
-                    onClick={togglePasswordVisibility}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8B7355]/70 hover:text-[#8B7355] transition-colors"
-                  >
-                    {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
-                  </button>
-                  {errors.password && <div className="text-red-500 text-[13px] mt-1 ml-1">{errors.password}</div>}
+                <div className="mb-5">
+                  <div className="relative">
+                    <input
+                      id="password"
+                      required
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => handleInputChange("password", e.target.value)}
+                      onBlur={() => handleBlur("password")}
+                      className={`w-[300px] h-[54px] border rounded-[6px] px-4 pr-12 text-[12px] text-[#8B7355] focus:outline-none transition-colors bg-[#F5EEE0] ${
+                        errors.password ? "border-red-500 focus:border-red-500" : "border-[#8B7355] focus:border-[#8B7355]"
+                      }`}
+                    />
+                    {!password && (
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B7355]/60 pointer-events-none text-[12px] font-light">
+                        Пароль
+                        <span className="text-red-500 ml-0.5">*</span>
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8B7355]/70 hover:text-[#8B7355] transition-colors"
+                    >
+                      {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
+                    </button>
+                  </div>
+                  {/* Резервируемое место для ошибки */}
+                  <div className="text-red-500 text-[13px] mt-1 ml-1 h-[20px] flex items-start">
+                    {errors.password || ""}
+                  </div>
                 </div>
 
                 {/* Links */}
