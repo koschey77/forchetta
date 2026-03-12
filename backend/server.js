@@ -31,6 +31,7 @@ app.use(session({
   store: process.env.NODE_ENV === 'production' ? new RedisStore({
     client: redis,
     prefix: "forchetta:sess:",
+    ttl: 600, // 10 минут в секундах
   }) : undefined,
   // Секретный ключ для подписи сессии (в продакшене должен быть в переменных окружения)
   secret: process.env.SESSION_SECRET || 'fallback-secret-key-change-in-production',
