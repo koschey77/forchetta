@@ -5,7 +5,6 @@ import path from "path"
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
-import { RedisStore } from 'connect-redis'
 import passport from './config/passport.config.js'
 import { redis } from './lib/redis.js'
 
@@ -27,24 +26,14 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use(session({
-  // Временно отключаем Redis для сессий - есть проблемы с connect-redis v9 + ioredis  
-  // store: process.env.NODE_ENV === 'production' ? new RedisStore({
-  //   client: redis,
-  //   prefix: "forchetta:sess:",
-  //   ttl: 600, // 10 минут в секундах для OAuth процесса
-  // }) : undefined,
-  store: undefined, // Используем MemoryStore временно для стабилизации OAuth
-  // Секретный ключ для подписи сессии (в продакшене должен быть в переменных окружения)
+  // Используем MemoryStore для OAuth процесса (10 минут)
+  store: undefined,
   secret: process.env.SESSION_SECRET || 'fallback-secret-key-change-in-production',
-  // Не пересохранять сессию если она не изменилась
   resave: false,
-  // Не сохранять неинициализированные сессии  
   saveUninitialized: false,
-  name: 'forchetta.sid', // Уникальное имя для Railway
+  name: 'forchetta.sid',
   cookie: {
-    // Время жизни сессии (только для OAuth процесса)
-    maxAge: 10 * 60 * 1000, // 10 минут - достаточно для завершения OAuth
-    // В продакшене требуется HTTPS
+    maxAge: 10 * 60 * 1000, // 10 минут для OAuth
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'none'
