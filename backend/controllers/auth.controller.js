@@ -21,7 +21,14 @@ export const generateTokens = (userId) => {
 // Сохранение refresh токена в Redis с привязкой к userId
 //  для последующей проверки при обновлении токенов и при выходе пользователя
 const storeRefreshToken = async (userId, refreshToken) => {
-  await redis.set(`refresh_token:${userId}`, refreshToken, 'EX', 7 * 24 * 60 * 60) // 7days
+  try {
+    // ioredis синтаксис: setex(key, seconds, value)
+    await redis.setex(`refresh_token:${userId}`, 7 * 24 * 60 * 60, refreshToken) // 7 days
+    console.log('✅ Refresh token stored in Redis for user:', userId)
+  } catch (error) {
+    console.error('❌ Failed to store refresh token in Redis:', error.message)
+    throw error
+  }
 }
 
 // Установка HTTP-only куки для access и refresh токенов при аутентификации пользователя

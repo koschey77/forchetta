@@ -27,12 +27,13 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use(session({
-  // Используем Redis для хранения сессий в продакшене
-  store: process.env.NODE_ENV === 'production' ? new RedisStore({
-    client: redis,
-    prefix: "forchetta:sess:",
-    ttl: 600, // 10 минут в секундах
-  }) : undefined,
+  // Временно отключаем Redis до решения проблемы совместимости с connect-redis v9
+  // store: process.env.NODE_ENV === 'production' ? new RedisStore({
+  //   client: redis,
+  //   prefix: "forchetta:sess:",
+  //   ttl: 600, // 10 минут в секундах
+  // }) : undefined,
+  store: undefined, // Используем MemoryStore временно для OAuth
   // Секретный ключ для подписи сессии (в продакшене должен быть в переменных окружения)
   secret: process.env.SESSION_SECRET || 'fallback-secret-key-change-in-production',
   // Не пересохранять сессию если она не изменилась
