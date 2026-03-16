@@ -11,9 +11,11 @@ import EmailVerificationPage from './pages/EmailVerificationPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import CartPage from './pages/CartPage'
+import ProfilePage from './pages/ProfilePage'
 
 import LoadingSpinner from './components/LoadingSpinner'
 import Header from './components/Header'
+import Footer from './components/Footer'
 
 
 function App() {
@@ -26,14 +28,14 @@ function App() {
   if (checkingAuth) return <LoadingSpinner />
   
   return (
-    <div className="min-h-screen bg-orange-50 text-black relative overflow-hidden">
+    <div className="min-h-screen bg-orange-50 text-black flex flex-col">
       {/* Fixed Header for all pages */}
       <div className="fixed top-0 left-0 right-0 z-50">
         <Header />
       </div>
       
-      {/* Main content with top padding for fixed header */}
-      <div className="relative pt-[87px]">
+      {/* Main content with top padding for header */}
+      <div className="flex-grow pt-[87px]">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={!user ? <SignUpPage /> : <Navigate to="/" />} />
@@ -42,8 +44,13 @@ function App() {
           <Route path="/forgot-password" element={!user ? <ForgotPasswordPage /> : <Navigate to="/" />} />
           <Route path="/reset-password" element={!user ? <ResetPasswordPage /> : <Navigate to="/" />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/profile" element={user ? <ProfilePage /> : <Navigate to="/login" />} />
         </Routes>
       </div>
+      
+      {/* Footer */}
+      <Footer />
+      
       <Toaster />
     </div>
   )

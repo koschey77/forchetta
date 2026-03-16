@@ -1,116 +1,94 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { useUserStore } from "../stores/useUserStore"
+import { Logo } from "./Logos/Logo.jsx"
+import { 
+  SearchIcon,
+  ProfileIcon,
+  HeartIcon,
+  CartIcon,
+  DotsIcon,
+  HomeIcon,
+  MenuIcon
+} from "./icons/index.jsx"
 
-const Header = () => {
-  const { user, logout } = useUserStore()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-    setIsProfileMenuOpen(false) // Закрываем профильное меню при открытии основного
-  }
-
-  const toggleProfileMenu = () => {
-    setIsProfileMenuOpen(!isProfileMenuOpen)
-    setIsMobileMenuOpen(false) // Закрываем основное меню при открытии профильного
-  }
+const DesktopHeader = ({ onMenuToggle, onCatalogClick, onSearchClick, onProfileClick, onFavoritesClick, onCartClick, onLogoClick, userAvatar, user, logout }) => {
+  const navItems = ["Новинки", "Набори", "Акції", "Журнал / Блог"]
 
   return (
-    <header className="w-full h-[87px] bg-[#F5EEE0] relative">
-      <div
-        className="w-full flex items-center justify-between h-[87px] px-4 md:px-[60px] py-[10px]"
-        style={{
-          background: "linear-gradient(180deg, #FFEDCA 0%, #F6DDAA 100%)",
-          maxWidth: "none",
-        }}
-      >
-        {/* Logo */}
-        <Link to="/" className="w-[100px] h-[54px] md:w-[125px] md:h-[67px]">
-          <img src="/forchetta-logo.png" alt="Logo" className="w-full h-full object-contain hover:opacity-80 transition" />
-        </Link>
+    <header className="hidden h-[87px] w-full items-center bg-creamy md:flex">
+      <div className="mx-auto flex h-full w-full max-w-[1440px] items-center justify-between px-[60px]">
+        <button
+          aria-label="Перейти на главную"
+          onClick={onLogoClick}
+          className="h-[67px] w-[125px] shrink-0 transition-transform duration-300 hover:scale-[1.02]"
+        >
+          <Logo />
+        </button>
 
-        {/* Navigation Bar - Hidden on mobile */}
-        <nav className="hidden md:flex items-center gap-8 w-[593px] h-[43px]">
-          {/* Search and Catalog */}
-          <div className="flex items-center gap-2 w-[163px] h-[41px]">
-            {/* Search Icon */}
-            <div className="w-[25px] h-[25px]">
-              <img src="/Swarch.png" alt="Search" className="w-full h-full" />
-            </div>
+        <nav aria-label="Основная навигация" className="flex h-[43px] items-center gap-[30px]">
+          <button aria-label="Открыть поиск" onClick={onSearchClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
+            <SearchIcon className="shrink-0" />
+          </button>
 
-            {/* Catalog Button */}
-            <button className="flex items-center gap-[6px] px-[17px] py-[10px] w-[130px] h-[41px] bg-[#F5EEE0] rounded-[31px] hover:opacity-70 transition">
-              <div className="w-6 h-6">
-                <img src="/dots-menu.png" alt="Menu" className="w-full h-full" />
-              </div>
-              <span className="font-sans text-base leading-5 text-center text-[#2B1A12] w-[66px] h-5">Каталог</span>
+          <button
+            aria-label="Открыть каталог"
+            onClick={onCatalogClick}
+            className="group flex h-[41px] w-[130px] items-center gap-[6px] rounded-[31px] bg-button-primary px-[17px] py-[10px] text-[16px] leading-[20px] text-choco-light transition duration-300 hover:scale-[1.02] hover:bg-choco-light hover:text-creamy"
+          >
+            <DotsIcon className="shrink-0 group-hover:fill-creamy group-hover:stroke-creamy" />
+            <span className="font-normal">Каталог</span>
+          </button>
+
+          {navItems.map((item) => (
+            <button
+              key={item}
+              aria-label={item}
+              onClick={() => console.log(item)}
+              className="whitespace-nowrap text-[16px] leading-[20px] text-choco-light transition duration-300 hover:text-choco-dark hover:opacity-80"
+            >
+              {item}
             </button>
-          </div>
-
-          {/* Navigation Links */}
-          <div className="flex items-center gap-8">
-            <a href="#" className="font-sans text-base leading-5 text-[#2B1A12] w-[76px] h-5 hover:opacity-70 transition">
-              Новинки
-            </a>
-            <a href="#" className="font-sans text-base leading-5 text-[#2B1A12] w-[66px] h-5 hover:opacity-70 transition">
-              Набори
-            </a>
-            <a href="#" className="font-sans text-base leading-5 text-[#2B1A12] w-[41px] h-5 hover:opacity-70 transition">
-              Акції
-            </a>
-            <a href="#" className="font-sans text-base leading-5 text-[#2B1A12] w-[119px] h-5 hover:opacity-70 transition">
-              Журнал / Блог
-            </a>
-          </div>
+          ))}
         </nav>
 
-        {/* Right Side Icons */}
-        <div className="flex items-center px-[8px] py-[5px] gap-3 md:gap-5 w-auto md:w-[211px] h-[50px] relative">
-          {/* Like Icon */}
-          <button className="w-[30px] h-[30px] hover:opacity-70 transition">
-            <img src="/like.png" alt="Favorites" className="w-full h-full" />
-          </button>
-
-          {/* Shopping Cart Icon */}
-          <button className="w-[30px] h-[30px] hover:opacity-70 transition">
-            <img src="/cart.png" alt="Shopping Cart" className="w-full h-full" />
-          </button>
-
-          {/* Profile Avatar/Icon - Unified with responsive behavior */}
+        <div className="flex items-center gap-[30px] px-[8px] py-[5px]">
+          {/* Профиль - аватар или иконка с hover меню */}
           <div className="group relative flex items-center">
             <button 
-              onClick={toggleProfileMenu}
-              className="w-[30px] h-[30px] hover:opacity-70 transition relative md:pointer-events-none flex items-center justify-center"
+              aria-label="Профиль" 
+              onClick={onProfileClick} 
+              className={`rounded-full transition duration-300 ${
+                userAvatar 
+                  ? 'p-0 hover:ring-2 hover:ring-choco-light/30' 
+                  : 'p-1 hover:bg-dark-creamy/60'
+              }`}
             >
-              {user?.avatar ? (
+              {userAvatar ? (
                 <img 
-                  src={user.avatar} 
-                  alt="Profile" 
-                  className="w-full h-full rounded-full object-cover border border-[#8B7355]/20"
+                  src={userAvatar} 
+                  alt="Аватар пользователя" 
+                  className="w-[30px] h-[30px] rounded-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full rounded-full bg-[#8B7355]/10 flex items-center justify-center border border-[#8B7355]/20">
-                  <img src="/people.png" alt="Profile" className="w-[18px] h-[18px]" />
-                </div>
+                <ProfileIcon className="shrink-0" />
               )}
             </button>
 
-            {/* Desktop Profile Menu - CSS Only with group-hover */}
-            <div className="absolute top-[40px] right-0 w-[160px] bg-white shadow-lg rounded-lg py-2 
+            {/* Desktop Profile Hover Menu */}
+            <div className="absolute top-[40px] right-0 w-[180px] bg-creamy shadow-lg rounded-lg py-2 
                             opacity-0 invisible group-hover:opacity-100 group-hover:visible 
-                            transition-all duration-200 ease-in-out z-50 hidden md:block
+                            transition-all duration-200 ease-in-out z-50
                             hover:opacity-100 hover:visible">
               {user ? (
                 <>
-                  <div className="px-4 py-2 border-b border-gray-100">
-                    <p className="text-[#2B1A12] text-sm font-medium">{user.name}</p>
-                    <p className="text-[#8B7355] text-xs">{user.email}</p>
+                  <div className="px-4 py-2 border-b border-choco-light/20">
+                    <p className="text-choco-dark text-sm font-medium truncate">{user.name}</p>
+                    <p className="text-choco-light text-xs truncate">{user.email}</p>
                   </div>
                   <button
                     onClick={logout}
-                    className="w-full text-left px-4 py-2 text-[#2B1A12] text-sm hover:bg-[#F5EEE0] transition-colors"
+                    className="w-full text-left px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
                   >
                     Вихід
                   </button>
@@ -119,117 +97,207 @@ const Header = () => {
                 <>
                   <Link
                     to="/signup"
-                    className="block px-4 py-2 text-[#2B1A12] text-sm hover:bg-[#F5EEE0] transition-colors"
+                    className="block px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
                   >
                     Реєстрація
                   </Link>
                   <Link
                     to="/login"
-                    className="block px-4 py-2 text-[#2B1A12] text-sm hover:bg-[#F5EEE0] transition-colors"
+                    className="block px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
                   >
                     Вхід
                   </Link>
                 </>
               )}
             </div>
-
-            {/* Mobile Profile Menu - Separate menu for mobile profile actions */}
-            {isProfileMenuOpen && (
-              <div 
-                className="absolute top-[40px] right-0 w-[200px] bg-white shadow-lg rounded-lg py-2 z-50 md:hidden"
-              >
-                {user ? (
-                  <>
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-[#2B1A12] text-sm font-medium">{user.name}</p>
-                      <p className="text-[#8B7355] text-xs">{user.email}</p>
-                    </div>
-                    <button
-                      onClick={() => {
-                        logout()
-                        setIsProfileMenuOpen(false)
-                      }}
-                      className="w-full text-left px-4 py-2 text-[#2B1A12] text-sm hover:bg-[#F5EEE0] transition-colors"
-                    >
-                      Вихід
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      to="/login"
-                      className="block px-4 py-2 text-[#2B1A12] text-sm hover:bg-[#F5EEE0] transition-colors"
-                      onClick={() => setIsProfileMenuOpen(false)}
-                    >
-                      Вхід
-                    </Link>
-                    <Link
-                      to="/signup"
-                      className="block px-4 py-2 text-[#2B1A12] text-sm hover:bg-[#F5EEE0] transition-colors"
-                      onClick={() => setIsProfileMenuOpen(false)}
-                    >
-                      Реєстрація
-                    </Link>
-                  </>
-                )}
-              </div>
-            )}
           </div>
-
-          {/* Hamburger Menu - Only visible on mobile */}
-          <button 
-            onClick={toggleMobileMenu}
-            className="block md:hidden w-[40px] h-[35px] hover:opacity-70 transition"
+          <button aria-label="Избранное" onClick={onFavoritesClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
+            <HeartIcon className="shrink-0" />
+          </button>
+          <button aria-label="Корзина" onClick={onCartClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
+            <CartIcon className="shrink-0" />
+          </button>
+          <button
+            aria-label="Открыть меню"
+            onClick={onMenuToggle}
+            className="flex h-[40px] w-[45px] items-center justify-center rounded-xl transition duration-300 hover:bg-dark-creamy/60"
           >
-            <img src="/icon_more.png" alt="Menu" className="w-full h-full" />
+            <MenuIcon className="shrink-0" />
           </button>
         </div>
       </div>
+    </header>
+  )
+}
 
-      {/* Main Mobile Menu - Navigation only */}
-      {isMobileMenuOpen && (
-        <div 
-          className="absolute top-[87px] left-0 w-full bg-[#F5EEE0] shadow-lg z-40 md:hidden"
-          style={{
-            background: "linear-gradient(180deg, #FFEDCA 0%, #F6DDAA 100%)",
-          }}
-        >
-          <div className="px-4 py-6 space-y-6">
-            {/* Search Section */}
-            <div className="flex items-center gap-4">
-              <div className="w-[25px] h-[25px]">
-                <img src="/Swarch.png" alt="Search" className="w-full h-full" />
-              </div>
-              <span className="font-sans text-base text-[#2B1A12]">Пошук</span>
-            </div>
+const MobileHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick, onProfileClick, onFavoritesClick, onCartClick, onLogoClick, userAvatar }) => {
+  return (
+    <>
+      <header className="bg-[#F5EEE0] md:hidden">
+        <div className="flex h-[100px] flex-col justify-end px-[16px] pb-[15px] pt-[20px]">
+          <div className="flex h-[53.75px] items-center justify-between">
+            <button
+              aria-label="Перейти на главную"
+              onClick={onLogoClick}
+              className="h-[53.75px] w-[100px] transition-transform duration-300 hover:scale-[1.02]"
+            >
+              <img 
+                src="/forchetta-logo.png" 
+                alt="Forchetta Logo" 
+                className="w-full h-full object-contain"
+              />
+            </button>
 
-            {/* Catalog Section */}
-            <div className="flex items-center gap-4">
-              <div className="w-6 h-6">
-                <img src="/dots-menu.png" alt="Menu" className="w-full h-full" />
-              </div>
-              <span className="font-sans text-base text-[#2B1A12]">Каталог</span>
-            </div>
-
-            {/* Navigation Links */}
-            <div className="space-y-4 pl-2">
-              <a href="#" className="block font-sans text-base text-[#2B1A12] hover:opacity-70 transition py-2">
-                Новинки
-              </a>
-              <a href="#" className="block font-sans text-base text-[#2B1A12] hover:opacity-70 transition py-2">
-                Набори
-              </a>
-              <a href="#" className="block font-sans text-base text-[#2B1A12] hover:opacity-70 transition py-2">
-                Акції
-              </a>
-              <a href="#" className="block font-sans text-base text-[#2B1A12] hover:opacity-70 transition py-2">
-                Журнал / Блог
-              </a>
+            <div className="flex items-center gap-[20px]">
+              <button aria-label="Открыть поиск" onClick={onSearchClick} className="rounded-full p-1 transition duration-300 hover:bg-[#E3D6BF]/60">
+                <SearchIcon className="shrink-0" />
+              </button>
+              {/* Профиль - аватар или иконка */}
+              <button 
+                aria-label="Профиль" 
+                onClick={onProfileClick} 
+                className={`rounded-full transition duration-300 ${
+                  userAvatar 
+                    ? 'p-0 hover:ring-2 hover:ring-choco-light/30' 
+                    : 'p-1 hover:bg-[#E3D6BF]/60'
+                }`}
+              >
+                {userAvatar ? (
+                  <img 
+                    src={userAvatar} 
+                    alt="Аватар пользователя" 
+                    className="w-[30px] h-[30px] rounded-full object-cover"
+                  />
+                ) : (
+                  <ProfileIcon className="shrink-0" />
+                )}
+              </button>
             </div>
           </div>
         </div>
-      )}
-    </header>
+
+        <nav
+          aria-label="Нижняя мобильная навигация"
+          className="fixed bottom-0 left-0 right-0 z-50 h-[107px] bg-[#F5EEE0] px-[16px] pb-[40px] pt-[12px] shadow-[0_-2px_10px_rgba(0,0,0,0.05)] md:hidden"
+        >
+          <div className="flex items-center justify-between">
+            <button
+              aria-label="Главная"
+              onClick={onLogoClick}
+              className="flex w-[48px] flex-col items-center gap-[2px] transition duration-300 hover:opacity-80"
+            >
+              <HomeIcon className="shrink-0 w-[30px] h-[30px]" />
+              <span className="text-center text-[10px] font-light leading-[12px] text-[#705A5A]">Головна</span>
+            </button>
+
+            <button
+              aria-label="Избранное"
+              onClick={onFavoritesClick}
+              className="flex w-[41px] flex-col items-center gap-[1px] transition duration-300 hover:opacity-80"
+            >
+              <HeartIcon className="shrink-0" />
+              <span className="text-center text-[10px] font-light leading-[12px] text-[#705A5A]">Обране</span>
+            </button>
+
+            <button
+              aria-label="Каталог"
+              onClick={onCatalogClick}
+              className="group flex h-[41px] w-[120px] items-center gap-[6px] rounded-[22.5px] bg-[#E3D6BF] px-[17px] py-[11px] pl-[22px] text-[12px] font-medium leading-[15px] text-[#705A5A] transition duration-300 hover:scale-[1.02] hover:bg-[#705A5A] hover:text-[#F5EEE0]"
+            >
+              <DotsIcon className="shrink-0 group-hover:fill-[#F5EEE0] group-hover:stroke-[#F5EEE0]" />
+              <span>Каталог</span>
+            </button>
+
+            <button
+              aria-label="Корзина"
+              onClick={onCartClick}
+              className="flex w-[36px] flex-col items-center gap-[3px] transition duration-300 hover:opacity-80"
+            >
+              <CartIcon className="shrink-0" />
+              <span className="text-center text-[10px] font-light leading-[12px] text-[#705A5A]">Кошик</span>
+            </button>
+
+            <button
+              aria-label={isMenuOpen ? "Закрыть меню" : "Открыть меню"}
+              onClick={onMenuToggle}
+              className="flex w-[37px] flex-col items-center gap-[3px] transition duration-300 hover:opacity-80"
+            >
+              <div className="flex h-[30px] items-center justify-center">
+                <MenuIcon className="shrink-0 w-[37px] h-[30px]" />
+              </div>
+              <span className="text-center text-[10px] font-light leading-[12px] text-[#705A5A]">Більше</span>
+            </button>
+          </div>
+        </nav>
+
+        <div
+          className={`fixed inset-x-0 top-[100px] z-40 overflow-hidden bg-[#F5EEE0] px-4 transition-all duration-300 ${isMenuOpen ? "max-h-[260px] border-t border-[#705A5A]/10 py-4" : "max-h-0 py-0"}`}
+        >
+          <nav aria-label="Мобильное меню" className="flex flex-col gap-3 text-[#705A5A]">
+            {["Новинки", "Набори", "Акції", "Журнал / Блог"].map((item) => (
+              <button
+                key={item}
+                aria-label={item}
+                onClick={() => console.log(item)}
+                className="rounded-xl px-3 py-2 text-left text-[16px] leading-[20px] transition duration-300 hover:bg-[#E3D6BF]/70"
+              >
+                {item}
+              </button>
+            ))}
+          </nav>
+        </div>
+      </header>
+    </>
+  )
+}
+
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const navigate = useNavigate()
+  const { user, logout } = useUserStore()
+
+  const handleMenuToggle = () => setIsMenuOpen((prev) => !prev)
+  const handleSearchClick = () => console.log("search")
+  const handleFavoritesClick = () => console.log("favorites")
+  const handleCartClick = () => navigate('/cart')
+  const handleCatalogClick = () => console.log("catalog")
+  const handleLogoClick = () => navigate('/')
+  
+  // Логика для профиля: если есть пользователь - на профиль, иначе на логин
+  const handleProfileClick = () => {
+    if (user) {
+      navigate('/profile')
+    } else {
+      navigate('/login')
+    }
+  }
+
+  return (
+    <div className="font-[Montserrat]">
+      <DesktopHeader
+        onMenuToggle={handleMenuToggle}
+        onCatalogClick={handleCatalogClick}
+        onSearchClick={handleSearchClick}
+        onProfileClick={handleProfileClick}
+        onFavoritesClick={handleFavoritesClick}
+        onCartClick={handleCartClick}
+        onLogoClick={handleLogoClick}
+        userAvatar={user?.avatar}
+        user={user}
+        logout={logout}
+      />
+      <MobileHeader
+        isMenuOpen={isMenuOpen}
+        onMenuToggle={handleMenuToggle}
+        onCatalogClick={handleCatalogClick}
+        onSearchClick={handleSearchClick}
+        onProfileClick={handleProfileClick}
+        onFavoritesClick={handleFavoritesClick}
+        onCartClick={handleCartClick}
+        onLogoClick={handleLogoClick}
+        userAvatar={user?.avatar}
+      />
+    </div>
   )
 }
 

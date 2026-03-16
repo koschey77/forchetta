@@ -121,11 +121,11 @@ const SignUpPage = () => {
           background-color: #F5EEE0 !important;
         }
       `}</style>
-      <div className="min-h-screen flex items-center justify-center p-0 sm:p-4 bg-[#F5EEE0]">
+      <div className="min-h-[calc(100vh-87px)] flex items-center justify-center p-0 sm:p-4 bg-[#F5EEE0]">
         <div className="bg-[#F5EEE0] w-full sm:w-[840px] h-screen sm:h-[550px] sm:rounded-[16px] shadow-none sm:shadow-[0_8px_30px_rgb(0,0,0,0.06)] flex overflow-hidden relative">
           {/* Left Panel - Image - Hidden on mobile */}
           <div className="hidden md:block w-[60%] h-full relative">
-            <img src="./sweet_61 1.png" alt="Pink marshmallows on sticks" className="w-full h-full object-fill" />
+            <img src="./sweet_61 1.png" alt="desert" className="w-full h-full object-fill" />
           </div>
 
           {/* Right Panel - Form */}
