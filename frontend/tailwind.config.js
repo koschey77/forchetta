@@ -4,7 +4,6 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Цвета из дизайн-системы Figma
         // Основные цвета бренда
         'light-gray': '#F5F7F8',      // Светлый серый фон
         'creamy': '#F5EEE0',          // Кремовый (основной светлый)
