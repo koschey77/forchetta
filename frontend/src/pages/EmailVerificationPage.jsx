@@ -96,30 +96,30 @@ const EmailVerificationPage = () => {
         }
       `}
       </style>
-      <div className="min-h-[calc(100vh-87px)] flex items-center justify-center p-0 sm:p-4 bg-[#F5EEE0]">
-        <div className="bg-[#F5EEE0] w-full sm:w-[840px] h-screen sm:h-[550px] sm:rounded-[16px] shadow-none sm:shadow-[0_8px_30px_rgb(0,0,0,0.06)] flex overflow-hidden relative">
+      <div className="min-h-[calc(100vh-87px)] flex items-center justify-center p-0 sm:p-4 bg-creamy">
+        <div className="bg-creamy w-full sm:w-[840px] h-screen sm:h-[550px] sm:rounded-[16px] shadow-none sm:shadow-[0_8px_30px_rgb(0,0,0,0.06)] flex overflow-hidden relative">
           {/* Left Panel - Image - Hidden on mobile */}
           <div className="hidden md:block w-[60%] h-full relative">
             <img src="./sweet_61 1.png" alt="desert" className="w-full h-full object-fill" />
           </div>
 
           {/* Right Panel - Form */}
-          <div className="w-full md:w-[56%] h-full relative pt-12 sm:pt-10 px-6 sm:px-12 flex flex-col items-center bg-[#F5EEE0] overflow-y-auto">
+          <div className="w-full md:w-[56%] h-full relative pt-12 sm:pt-10 px-6 sm:px-12 flex flex-col items-center bg-creamy overflow-y-auto">
             {/* Title */}
-            <h1 className="text-[#8B7355] text-[18px] font-normal mb-8">Перевірте вашу пошту</h1>
+            <h1 className="font-montserrat font-semibold text-figma-lg text-choco-light mb-8">Перевірте вашу пошту</h1>
 
             {/* Info Text */}
             <div className="text-center mb-6">
-              <p className="text-[#8B7355] text-[12px] font-light">
+              <p className="text-choco-light text-[12px] font-light">
                 Ми відправили 6-значний код на
               </p>
-              <p className="text-[#8B7355] text-[12px] font-semibold mt-1">{email}</p>
+              <p className="text-choco-light text-[12px] font-semibold mt-1">{email}</p>
               
               {/* Таймер */}
               {!isExpired && timeLeft > 0 && (
                 <div className="mt-3">
-                  <p className="text-[#8B7355] text-[11px] font-light">Час, що залишився:</p>
-                  <div className="text-[#705A5A] text-[16px] font-mono font-semibold mt-1">
+                  <p className="text-choco-light text-[11px] font-light">Час, що залишився:</p>
+                  <div className="text-choco-light text-[16px] font-mono font-semibold mt-1">
                     {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
                   </div>
                 </div>
@@ -157,7 +157,7 @@ const EmailVerificationPage = () => {
                       if (errorMessage && !isExpired) setErrorMessage("")
                     }}
                     placeholder="123456"
-                    className="w-[300px] h-[54px] border border-[#8B7355] rounded-[6px] px-4 text-[12px] text-[#8B7355] focus:outline-none focus:border-[#8B7355] transition-colors bg-[#F5EEE0] text-center font-mono tracking-widest"
+                    className="w-[300px] h-[54px] border border-choco-light rounded-[6px] px-4 text-[12px] text-choco-light focus:outline-none focus:border-choco-light transition-colors bg-creamy text-center font-mono tracking-widest"
                     maxLength={6}
                     autoComplete="off"
                   />
@@ -169,8 +169,8 @@ const EmailVerificationPage = () => {
                   disabled={verificationCode.length !== 6 || loading || isExpired}
                   className={`w-[300px] h-[62px] rounded-full font-light text-[18px] transition-all duration-200 ${
                     verificationCode.length === 6 && !loading && !isExpired
-                      ? "bg-[#705A5A] hover:bg-[#705A5A]/90 text-[#F5EEE0] cursor-pointer"
-                      : "bg-[#705A5A]/50 text-[#F5EEE0]/70 cursor-not-allowed"
+                      ? "bg-choco-light hover:bg-choco-light/90 text-creamy cursor-pointer"
+                      : "bg-choco-light/50 text-creamy/70 cursor-not-allowed"
                   }`}
                 >
                   {loading ? "Перевірка..." : isExpired ? (attemptsExceeded ? "Спроби закінчилися" : "Час закінчився") : "Підтвердити код"}
@@ -187,7 +187,7 @@ const EmailVerificationPage = () => {
                     <button
                       onClick={handleResend}
                       disabled={loading}
-                      className="px-8 py-3 rounded-full text-[14px] font-medium transition-all duration-200 bg-[#8B7355] hover:bg-[#8B7355]/90 text-[#F5EEE0] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-8 py-3 rounded-full text-[14px] font-medium transition-all duration-200 bg-choco-light hover:bg-choco-light/90 text-creamy cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {loading ? "Надсилання..." : "Надіслати код ще раз"}
                     </button>
@@ -196,7 +196,7 @@ const EmailVerificationPage = () => {
                   {/* Кнопка "начать заново" - всегда доступна */}
                   <button
                     onClick={() => navigate('/signup')}
-                    className="px-8 py-3 rounded-full text-[14px] font-medium transition-all duration-200 bg-[#705A5A] hover:bg-[#705A5A]/90 text-[#F5EEE0] cursor-pointer"
+                    className="px-8 py-3 rounded-full text-[14px] font-medium transition-all duration-200 bg-choco-light hover:bg-choco-light/90 text-creamy cursor-pointer"
                   >
                     Зареєструватися знову
                   </button>
@@ -209,7 +209,7 @@ const EmailVerificationPage = () => {
 
             {/* Additional Info */}
             <div className="text-center max-w-[300px]">
-              <p className="text-[#8B7355] text-[10px] font-light leading-relaxed">
+              <p className="text-choco-light text-[10px] font-light leading-relaxed">
                 <strong>Не знайшли лист?</strong><br />
                 Перевірте папку &quot;Спам&quot; або &quot;Небажана пошта&quot;.
               </p>
@@ -218,7 +218,7 @@ const EmailVerificationPage = () => {
             {/* Back Link */}
             <button
               onClick={() => navigate('/signup')}
-              className="mt-6 text-[#8B7355] text-[12px] font-light underline hover:text-[#8B7355]/80 transition-colors"
+              className="mt-6 text-choco-light text-[12px] font-light underline hover:text-choco-light/80 transition-colors"
             >
               Повернутися до реєстрації
             </button>

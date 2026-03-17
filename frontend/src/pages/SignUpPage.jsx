@@ -121,17 +121,17 @@ const SignUpPage = () => {
           background-color: #F5EEE0 !important;
         }
       `}</style>
-      <div className="min-h-[calc(100vh-87px)] flex items-center justify-center p-0 sm:p-4 bg-[#F5EEE0]">
-        <div className="bg-[#F5EEE0] w-full sm:w-[840px] h-screen sm:h-[550px] sm:rounded-[16px] shadow-none sm:shadow-[0_8px_30px_rgb(0,0,0,0.06)] flex overflow-hidden relative">
+      <div className="min-h-[calc(100vh-87px)] flex items-center justify-center p-0 sm:p-4 bg-creamy">
+        <div className="bg-creamy w-full sm:w-[840px] h-screen sm:h-[550px] sm:rounded-[16px] shadow-none sm:shadow-[0_8px_30px_rgb(0,0,0,0.06)] flex overflow-hidden relative">
           {/* Left Panel - Image - Hidden on mobile */}
           <div className="hidden md:block w-[60%] h-full relative">
             <img src="./sweet_61 1.png" alt="desert" className="w-full h-full object-fill" />
           </div>
 
           {/* Right Panel - Form */}
-          <div className="w-full md:w-[56%] h-full relative pt-12 sm:pt-10 px-6 sm:px-12 flex flex-col items-center bg-[#F5EEE0] overflow-y-auto">
+          <div className="w-full md:w-[56%] h-full relative pt-12 sm:pt-10 px-6 sm:px-12 flex flex-col items-center bg-creamy overflow-y-auto">
             {/* Title */}
-            <h1 className="text-[#8B7355] text-[18px] font-normal mb-8">Реєстрація</h1>
+            <h1 className="font-montserrat font-semibold text-figma-lg text-choco-light mb-8">Реєстрація</h1>
 
             {/* Register Form */}
             <form onSubmit={handleSubmit}>
@@ -144,10 +144,10 @@ const SignUpPage = () => {
                     type="text"
                     value={formData.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
-                    className="w-[315px] h-[54px] border border-[#8B7355] rounded-[6px] px-4 text-[12px] text-[#8B7355] focus:outline-none focus:border-[#8B7355] transition-colors bg-[#F5EEE0]"
+                    className="w-[315px] h-[54px] border border-choco-light rounded-[6px] px-4 text-[12px] text-choco-light focus:outline-none focus:border-choco-light transition-colors bg-creamy"
                   />
                   {!formData.name && (
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B7355]/60 pointer-events-none text-[12px] font-light">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-choco-light/60 pointer-events-none text-[12px] font-light">
                       Ім&apos;я
                       <span className="text-red-500 ml-0.5">*</span>
                     </div>
@@ -164,11 +164,11 @@ const SignUpPage = () => {
                       value={formData.email}
                       onChange={(e) => handleInputChange("email", e.target.value)}
                       onBlur={() => handleBlur("email")}
-                      className={`w-[315px] h-[54px] border rounded-[6px] px-4 text-[12px] text-[#8B7355] focus:outline-none transition-colors bg-[#F5EEE0] 
-                      ${errors.email ? "border-red-500 focus:border-red-500" : "border-[#8B7355] focus:border-[#8B7355]"}`}
+                      className={`w-[315px] h-[54px] border rounded-[6px] px-4 text-[12px] text-choco-light focus:outline-none transition-colors bg-creamy 
+                      ${errors.email ? "border-red-500 focus:border-red-500" : "border-choco-light focus:border-choco-light"}`}
                     />
                     {!formData.email && (
-                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B7355]/60 pointer-events-none text-[12px] font-light">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-choco-light/60 pointer-events-none text-[12px] font-light">
                         Електронна пошта
                         <span className="text-red-500 ml-0.5">*</span>
                       </div>
@@ -190,12 +190,12 @@ const SignUpPage = () => {
                       value={formData.password}
                       onChange={(e) => handleInputChange("password", e.target.value)}
                       onBlur={() => handleBlur("password")}
-                      className={`w-[315px] h-[54px] border rounded-[6px] px-4 pr-12 text-[12px] text-[#8B7355] focus:outline-none transition-colors bg-[#F5EEE0] ${
-                        errors.password ? "border-red-500 focus:border-red-500" : "border-[#8B7355] focus:border-[#8B7355]"
+                      className={`w-[315px] h-[54px] border rounded-[6px] px-4 pr-12 text-[12px] text-choco-light focus:outline-none transition-colors bg-creamy ${
+                        errors.password ? "border-red-500 focus:border-red-500" : "border-choco-light focus:border-choco-light"
                       }`}
                     />
                     {!formData.password && (
-                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B7355]/60 pointer-events-none text-[12px] font-light">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-choco-light/60 pointer-events-none text-[12px] font-light">
                         Придумайте пароль
                         <span className="text-red-500 ml-0.5">*</span>
                       </div>
@@ -203,7 +203,7 @@ const SignUpPage = () => {
                     <button
                       type="button"
                       onClick={togglePasswordVisibility}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8B7355]/70 hover:text-[#8B7355] transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-choco-light/70 hover:text-choco-light transition-colors"
                     >
                       {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
                     </button>
@@ -219,8 +219,8 @@ const SignUpPage = () => {
                   disabled={loading || !isSubmitEnabled}
                   className={`w-[315px] h-[62px] rounded-full font-light text-[18px] mt-2 transition-all duration-200 ${
                     isSubmitEnabled && !loading
-                      ? "bg-[#705A5A] hover:bg-[#705A5A]/90 text-[#F5EEE0] cursor-pointer"
-                      : "bg-[#705A5A]/50 text-[#F5EEE0]/70 cursor-not-allowed"
+                      ? "bg-choco-light hover:bg-choco-light/90 text-creamy cursor-pointer"
+                      : "bg-choco-light/50 text-creamy/70 cursor-not-allowed"
                   }`}
                 >
                   {loading ? "Реєстрація..." : "Продовжити"}
@@ -238,8 +238,8 @@ const SignUpPage = () => {
                       window.location.href = `${baseUrl}/api/auth/google`;
                     }}
                     disabled={loading}
-                    className={`w-[48px] h-[48px] rounded-full border border-[#8B7355] transition-all duration-200 flex items-center justify-center ${
-                      !loading ? "bg-[#F5EEE0] hover:bg-[#705A5A]/80 cursor-pointer hover:shadow-md" : "bg-[#705A5A]/50 cursor-not-allowed"
+                    className={`w-[48px] h-[48px] rounded-full border border-choco-light transition-all duration-200 flex items-center justify-center ${
+                      !loading ? "bg-creamy hover:bg-choco-light/80 cursor-pointer hover:shadow-md" : "bg-choco-light/50 cursor-not-allowed"
                     }`}
                   >
                     {/* Google Icon SVG */}
@@ -265,7 +265,7 @@ const SignUpPage = () => {
                 </div>
 
                 <p className="mt-3 text-center text-[14px] font-light">
-                  <Link to="/login" className="text-[#8B7355] underline hover:text-[#8B7355]/80 transition-colors">
+                  <Link to="/login" className="text-choco-light underline hover:text-choco-light/80 transition-colors">
                     Вже є акаунт?
                   </Link>
                 </p>

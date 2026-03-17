@@ -59,18 +59,18 @@ const ForgotPasswordPage = () => {
           background-color: #F5EEE0 !important;
         }
       `}</style>
-      <div className="min-h-[calc(100vh-87px)] flex items-center justify-center p-0 sm:p-4 bg-[#F5EEE0]">
-        <div className="bg-[#F5EEE0] w-full sm:w-[840px] h-screen sm:h-[550px] sm:rounded-[16px] shadow-none sm:shadow-[0_8px_30px_rgb(0,0,0,0.06)] flex overflow-hidden relative">
+      <div className="min-h-[calc(100vh-87px)] flex items-center justify-center p-0 sm:p-4 bg-creamy">
+        <div className="bg-creamy w-full sm:w-[840px] h-screen sm:h-[550px] sm:rounded-[16px] shadow-none sm:shadow-[0_8px_30px_rgb(0,0,0,0.06)] flex overflow-hidden relative">
           {/* Left Panel - Image - Hidden on mobile */}
           <div className="hidden md:block w-[60%] h-full relative">
             <img src="./sweet_61 1.png" alt="desert" className="w-full h-full object-fill" />
           </div>
 
           {/* Right Panel - Form */}
-          <div className="w-full md:w-[56%] h-full relative pt-12 sm:pt-10 px-6 sm:px-12 flex flex-col items-center bg-[#F5EEE0] overflow-y-auto">
+          <div className="w-full md:w-[56%] h-full relative pt-12 sm:pt-10 px-6 sm:px-12 flex flex-col items-center bg-creamy overflow-y-auto">
             {/* Title */}
-            <h1 className="text-[#8B7355] text-[18px] font-normal mb-4">Відновлення пароля</h1>
-            <p className="text-[#8B7355]/80 text-[12px] font-light text-center mb-8 w-[300px] leading-relaxed">
+            <h1 className="font-montserrat font-semibold text-figma-lg text-choco-light mb-4">Відновлення пароля</h1>
+            <p className="text-choco-light/80 text-[12px] font-light text-center mb-8 w-[300px] leading-relaxed">
               Введіть свою електронну пошту і ми відправимо код для відновлення пароля
             </p>
 
@@ -87,12 +87,12 @@ const ForgotPasswordPage = () => {
                       value={email}
                       onChange={(e) => handleInputChange("email", e.target.value)}
                       onBlur={() => handleBlur("email")}
-                      className={`w-[300px] h-[54px] border rounded-[6px] px-4 text-[12px] text-[#8B7355] focus:outline-none transition-colors bg-[#F5EEE0] ${
-                        errors.email ? "border-red-500 focus:border-red-500" : "border-[#8B7355] focus:border-[#8B7355]"
+                      className={`w-[300px] h-[54px] border rounded-[6px] px-4 text-[12px] text-choco-light focus:outline-none transition-colors bg-creamy ${
+                        errors.email ? "border-red-500 focus:border-red-500" : "border-choco-light focus:border-choco-light"
                       }`}
                     />
                     {!email && (
-                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8B7355]/60 pointer-events-none text-[12px] font-light">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-choco-light/60 pointer-events-none text-[12px] font-light">
                         Електронна пошта
                         <span className="text-red-500 ml-0.5">*</span>
                       </div>
@@ -109,8 +109,8 @@ const ForgotPasswordPage = () => {
                   disabled={loading || !isSubmitEnabled}
                   className={`w-[300px] h-[62px] rounded-full font-light text-[18px] mb-6 transition-all duration-200 ${
                     isSubmitEnabled && !loading
-                      ? "bg-[#705A5A] hover:bg-[#705A5A]/90 text-[#F5EEE0] cursor-pointer"
-                      : "bg-[#705A5A]/50 text-[#F5EEE0]/70 cursor-not-allowed"
+                      ? "bg-choco-light hover:bg-choco-light/90 text-creamy cursor-pointer"
+                      : "bg-choco-light/50 text-creamy/70 cursor-not-allowed"
                   }`}
                 >
                   {loading ? "Відправка..." : "Відправити код"}
@@ -118,7 +118,7 @@ const ForgotPasswordPage = () => {
 
                 {/* Back to Login Link */}
                 <div className="text-center">
-                  <Link to="/login" className="text-[#705A5A] text-[12px] font-light underline hover:text-[#705A5A]/80 transition-colors">
+                  <Link to="/login" className="text-choco-light text-[12px] font-light underline hover:text-choco-light/80 transition-colors">
                     Назад до входу
                   </Link>
                 </div>

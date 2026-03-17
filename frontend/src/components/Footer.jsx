@@ -11,8 +11,8 @@ const Footer = () => {
 
   return (
     <footer className="bg-choco-dark text-creamy font-montserrat w-full relative z-60">
-      {/* Desktop версия */}
-      <div className="hidden md:block">
+      {/* Desktop версия (1280px+) */}
+      <div className="hidden xl:block">
         {/* Основной контейнер Footer */}
         <div className="w-full max-w-[1440px] mx-auto px-[50px] py-8 pt-[60px] pb-[20px] min-h-[554px]">
           {/* Внутренний контейнер 1320px */}
@@ -150,13 +150,105 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Mobile версия - совершенно другая структура */}
-      <div className="md:hidden w-[375px] mx-auto px-[30px] pt-[170px] pb-[120px] flex flex-col items-center text-center h-[730px] bg-[#2B1A12]">
+      {/* Tablet версия (640px - 1280px) */}
+      <div className="hidden sm:block xl:hidden">
+        {/* Основной контейнер Footer для планшета */}
+        <div className="w-full max-w-[1440px] mx-auto px-[50px] py-8 pt-[60px] pb-[20px] min-h-[400px]">
+          {/* Внутренний контейнер */}
+          <div className="w-full max-w-[1320px] mx-auto flex flex-col gap-8">
+            {/* Секция с текстом и логотипом (логотип справа) */}
+            <div className="flex flex-row justify-between items-center gap-12">
+              <div className="flex-1">
+                <h2 className="font-bold text-[32px] leading-[48px] mb-4 text-dark-creamy">Залишайся на солодкій хвилі</h2>
+                <p className="text-base font-normal leading-relaxed text-white max-w-xl">
+                  Приєднуйся та першими дізнавайся про новинки, сезонні десерти та особливі пропозиції
+                </p>
+              </div>
+              <div className="flex-none">
+                <LogoFooterMobile idPrefix="tablet" className="w-[180px] h-24" />
+              </div>
+            </div>
+
+            {/* Разделитель */}
+            <div className="border-t border-creamy w-full"></div>
+
+            {/* Адаптивные колонки навигации */}
+            <div className="flex flex-row justify-between items-start mb-3 p-0 w-full">
+              <nav className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-[60px] w-full">
+                {/* Каталог */}
+                <div className="flex flex-col justify-center items-start p-0 gap-4">
+                  <h3 className="font-montserrat font-bold text-sm leading-[17px] text-creamy">Каталог</h3>
+                  <a href="#" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Торти</a>
+                  <a href="#" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Цукерки</a>
+                  <a href="#" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Тістечка</a>
+                  <a href="#" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Шоколад</a>
+                  <a href="#" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Подарункові набори</a>
+                </div>
+
+                {/* Про компанію */}
+                <div className="flex flex-col justify-center items-start p-0 gap-4">
+                  <h3 className="font-montserrat font-bold text-sm leading-[17px] text-creamy">Про компанію</h3>
+                  <a href="#" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Головна</a>
+                  <a href="#" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Історія бренду</a>
+                  <a href="#" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Наше виробництво</a>
+                  <a href="#" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Сертифікати</a>
+                </div>
+
+                {/* Допомога */}
+                <div className="flex flex-col justify-center items-start p-0 gap-4">
+                  <h3 className="font-montserrat font-bold text-sm leading-[17px] text-creamy">Допомога</h3>
+                  <a href="#" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Поширені запитання (FAQ)</a>
+                  <a href="#" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Доставка і оплата</a>
+                  <a href="#" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Контакти</a>
+                </div>
+
+                {/* Контакти і адреса */}
+                <div className="flex flex-col justify-center items-start p-0 gap-4">
+                  <h3 className="font-montserrat font-bold text-sm leading-[17px] text-creamy">Контакти і адреса</h3>
+                  <p className="font-montserrat font-normal text-sm leading-[17px] text-creamy">м. Київ, вул. Хрещатик 10А</p>
+                  <a href="mailto:forchetta@gmail.com" className="font-montserrat font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">forchetta@gmail.com</a>
+                  <a href="tel:+380999876240" className="font-montserrat font-light text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Tel: +38(099) 987 62 40</a>
+
+                  <div className="flex flex-row items-start p-0 gap-[15px] w-[105px] h-[25px]">
+                    <button aria-label="Instagram" className="hover:scale-110 transition-transform">
+                      <InstagramIcon width={25} height={25} />
+                    </button>
+                    <button aria-label="Telegram" className="hover:scale-110 transition-transform">
+                      <TelegramIcon width={25} height={25} />
+                    </button>
+                    <button aria-label="Facebook" className="hover:scale-110 transition-transform">
+                      <FacebookIcon width={25} height={25} />
+                    </button>
+                  </div>
+                </div>
+              </nav>
+            </div>
+
+            {/* Нижний разделитель */}
+            <div className="border-t border-creamy w-full"></div>
+
+            {/* Bottom Legal Bar */}
+            <div className="flex flex-col md:flex-row justify-between items-center text-xs">
+              <p className="text-creamy font-normal">© 2026 Forchetta. Усі права захищено.</p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <a href="#" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">Cookies</a>
+                <span className="text-creamy text-xs font-normal">|</span>
+                <a href="#" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">Договір оферти</a>
+                <span className="text-creamy text-xs font-normal">|</span>
+                <a href="#" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">Політика конфіденційності</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile версия (до 640px) */}
+      <div className="sm:hidden w-[375px] mx-auto px-[30px] pt-[170px] pb-[120px] flex flex-col items-center text-center h-[730px] bg-[#2B1A12]">
         {/* Основной контейнер с логотипом и контактами */}
         <div className="flex flex-col items-center gap-[100px] w-[315px]">
           {/* Логотип по центру */}
-          <div className="flex-none">
-            <LogoFooterMobile className="w-[180px] h-24" />
+          <div className="flex-none overflow-visible">
+            <LogoFooterMobile idPrefix="mobile" className="w-[180px] h-24" />
           </div>
 
           {/* Контактная секция */}
