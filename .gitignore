@@ -46,3 +46,6 @@ Thumbs.db
 
 # GitHub Copilot context (private development notes)
 .github/copilot-instructions.md
+
+# Data backup directory (contains exported data and scripts)
+backend/data-backup/

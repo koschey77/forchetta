@@ -4,9 +4,97 @@ import { useUserStore } from "../stores/useUserStore"
 import { Logo } from "./Logos/Logo.jsx"
 import { SearchIcon, ProfileIcon, HeartIcon, CartIcon, DotsIcon, HomeIcon, MenuIcon } from "./icons/index.jsx"
 
-const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick, onProfileClick, onFavoritesClick, onCartClick, onLogoClick, userAvatar, user, logout }) => {
-  const navItems = ["Новинки", "Набори", "Акції", "Журнал / Блог"]
+// Общие константы
+const NAV_ITEMS = ["Новинки", "Набори", "Акції", "Журнал / Блог"]
 
+// Переиспользуемые компоненты
+const UserAvatar = ({ userAvatar, onClick, className = "" }) => (
+  <button 
+    aria-label="Профиль" 
+    onClick={onClick} 
+    className={`rounded-full transition duration-300 ${
+      userAvatar 
+        ? 'p-0 hover:ring-2 hover:ring-choco-light/30' 
+        : 'p-1 hover:bg-dark-creamy/60'
+    } ${className}`}
+  >
+    {userAvatar ? (
+      <img 
+        src={userAvatar} 
+        alt="Аватар пользователя" 
+        className="w-[30px] h-[30px] rounded-full object-cover"
+      />
+    ) : (
+      <ProfileIcon className="shrink-0" />
+    )}
+  </button>
+)
+
+const ProfileHoverMenu = ({ user, logout }) => (
+  <div className="absolute top-[40px] right-0 w-[180px] bg-creamy shadow-lg rounded-lg py-2 
+                  opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                  transition-all duration-200 ease-in-out z-50
+                  hover:opacity-100 hover:visible">
+    {user ? (
+      <>
+        <div className="px-4 py-2 border-b border-choco-light/20">
+          <p className="text-choco-dark text-sm font-medium truncate">{user.name}</p>
+          <p className="text-choco-light text-xs truncate">{user.email}</p>
+        </div>
+        {user.role === 'admin' && (
+          <Link
+            to="/admin"
+            className="block px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
+          >
+            🛠️ Адмін панель
+          </Link>
+        )}
+        <button
+          onClick={logout}
+          className="w-full text-left px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
+        >
+          Вихід
+        </button>
+      </>
+    ) : (
+      <>
+        <Link
+          to="/signup"
+          className="block px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
+        >
+          Реєстрація
+        </Link>
+        <Link
+          to="/login"
+          className="block px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
+        >
+          Вхід
+        </Link>
+      </>
+    )}
+  </div>
+)
+
+const MenuDropdown = ({ isMenuOpen, breakpointClasses, containerClasses }) => (
+  <div className={`${breakpointClasses} fixed inset-x-0 top-[87px] z-40 overflow-hidden bg-creamy shadow-lg transition-all duration-300 ${isMenuOpen ? "max-h-[200px] border-t border-choco-light/20 py-4" : "max-h-0 py-0"}`}>
+    <div className={containerClasses}>
+      <nav aria-label="Меню навигации" className="flex flex-col gap-2 text-choco-light">
+        {NAV_ITEMS.map((item) => (
+          <button
+            key={item}
+            aria-label={item}
+            onClick={() => console.log(item)}
+            className="rounded-xl px-4 py-3 text-left font-normal text-[16px] leading-[20px] text-choco-light transition duration-300 hover:bg-dark-creamy/50 hover:text-choco-dark"
+          >
+            {item}
+          </button>
+        ))}
+      </nav>
+    </div>
+  </div>
+)
+
+const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick, onProfileClick, onFavoritesClick, onCartClick, onLogoClick, userAvatar, user, logout }) => {
   return (
     <>
       <header className="hidden xl:flex h-[87px] w-full items-center bg-creamy">
@@ -33,12 +121,12 @@ const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick
               <span className="font-normal">Каталог</span>
             </button>
 
-            {navItems.map((item) => (
+            {NAV_ITEMS.map((item) => (
               <button
                 key={item}
                 aria-label={item}
                 onClick={() => console.log(item)}
-                className="whitespace-nowrap text-[16px] leading-[20px] text-choco-light transition duration-300 hover:text-choco-dark hover:opacity-80"
+                className="whitespace-nowrap font-normal text-[16px] leading-[20px] text-choco-light transition duration-300 hover:text-choco-light-50"
               >
                 {item}
               </button>
@@ -46,63 +134,10 @@ const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick
           </nav>
 
           <div className="flex items-center gap-[30px] px-[8px] py-[5px]">
-            {/* Профиль - аватар или иконка с hover меню */}
+            {/* Профиль с hover меню */}
             <div className="group relative flex items-center">
-              <button 
-                aria-label="Профиль" 
-                onClick={onProfileClick} 
-                className={`rounded-full transition duration-300 ${
-                  userAvatar 
-                    ? 'p-0 hover:ring-2 hover:ring-choco-light/30' 
-                    : 'p-1 hover:bg-dark-creamy/60'
-                }`}
-              >
-                {userAvatar ? (
-                  <img 
-                    src={userAvatar} 
-                    alt="Аватар пользователя" 
-                    className="w-[30px] h-[30px] rounded-full object-cover"
-                  />
-                ) : (
-                  <ProfileIcon className="shrink-0" />
-                )}
-              </button>
-
-              {/* Desktop Profile Hover Menu */}
-              <div className="absolute top-[40px] right-0 w-[180px] bg-creamy shadow-lg rounded-lg py-2 
-                              opacity-0 invisible group-hover:opacity-100 group-hover:visible 
-                              transition-all duration-200 ease-in-out z-50
-                              hover:opacity-100 hover:visible">
-                {user ? (
-                  <>
-                    <div className="px-4 py-2 border-b border-choco-light/20">
-                      <p className="text-choco-dark text-sm font-medium truncate">{user.name}</p>
-                      <p className="text-choco-light text-xs truncate">{user.email}</p>
-                    </div>
-                    <button
-                      onClick={logout}
-                      className="w-full text-left px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
-                    >
-                      Вихід
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      to="/signup"
-                      className="block px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
-                    >
-                      Реєстрація
-                    </Link>
-                    <Link
-                      to="/login"
-                      className="block px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
-                    >
-                      Вхід
-                    </Link>
-                  </>
-                )}
-              </div>
+              <UserAvatar userAvatar={userAvatar} onClick={onProfileClick} />
+              <ProfileHoverMenu user={user} logout={logout} />
             </div>
             <button aria-label="Избранное" onClick={onFavoritesClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
               <HeartIcon className="shrink-0" />
@@ -121,25 +156,11 @@ const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick
         </div>
       </header>
 
-      {/* Desktop Menu Dropdown */}
-      <div
-        className={`hidden xl:block fixed inset-x-0 top-[87px] z-40 overflow-hidden bg-creamy shadow-lg transition-all duration-300 ${isMenuOpen ? "max-h-[200px] border-t border-choco-light/20 py-4" : "max-h-0 py-0"}`}
-      >
-        <div className="mx-auto w-full max-w-[1440px] px-[60px]">
-          <nav aria-label="Десктопное меню" className="flex flex-col gap-2 text-choco-light">
-            {["Новинки", "Набори", "Акції", "Журнал / Блог"].map((item) => (
-              <button
-                key={item}
-                aria-label={item}
-                onClick={() => console.log(item)}
-                className="rounded-xl px-4 py-3 text-left text-[16px] leading-[20px] transition duration-300 hover:bg-dark-creamy/50 hover:text-choco-dark"
-              >
-                {item}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
+      <MenuDropdown 
+        isMenuOpen={isMenuOpen}
+        breakpointClasses="hidden xl:block"
+        containerClasses="mx-auto w-full max-w-[1440px] px-[60px]"
+      />
     </>
   )
 }
@@ -177,63 +198,10 @@ const TabletHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
           </nav>
 
           <div className="flex items-center gap-[30px] px-[8px] py-[5px]">
-            {/* Профиль - аватар или иконка с hover меню */}
+            {/* Профиль с hover меню */}
             <div className="group relative flex items-center">
-              <button 
-                aria-label="Профиль" 
-                onClick={onProfileClick} 
-                className={`rounded-full transition duration-300 ${
-                  userAvatar 
-                    ? 'p-0 hover:ring-2 hover:ring-choco-light/30' 
-                    : 'p-1 hover:bg-dark-creamy/60'
-                }`}
-              >
-                {userAvatar ? (
-                  <img 
-                    src={userAvatar} 
-                    alt="Аватар пользователя" 
-                    className="w-[30px] h-[30px] rounded-full object-cover"
-                  />
-                ) : (
-                  <ProfileIcon className="shrink-0" />
-                )}
-              </button>
-
-              {/* Tablet Profile Hover Menu */}
-              <div className="absolute top-[40px] right-0 w-[180px] bg-creamy shadow-lg rounded-lg py-2 
-                              opacity-0 invisible group-hover:opacity-100 group-hover:visible 
-                              transition-all duration-200 ease-in-out z-50
-                              hover:opacity-100 hover:visible">
-                {user ? (
-                  <>
-                    <div className="px-4 py-2 border-b border-choco-light/20">
-                      <p className="text-choco-dark text-sm font-medium truncate">{user.name}</p>
-                      <p className="text-choco-light text-xs truncate">{user.email}</p>
-                    </div>
-                    <button
-                      onClick={logout}
-                      className="w-full text-left px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
-                    >
-                      Вихід
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      to="/signup"
-                      className="block px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
-                    >
-                      Реєстрація
-                    </Link>
-                    <Link
-                      to="/login"
-                      className="block px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
-                    >
-                      Вхід
-                    </Link>
-                  </>
-                )}
-              </div>
+              <UserAvatar userAvatar={userAvatar} onClick={onProfileClick} />
+              <ProfileHoverMenu user={user} logout={logout} />
             </div>
             <button aria-label="Избранное" onClick={onFavoritesClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
               <HeartIcon className="shrink-0" />
@@ -252,25 +220,11 @@ const TabletHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
         </div>
       </header>
 
-      {/* Tablet Menu Dropdown */}
-      <div
-        className={`hidden sm:block xl:hidden fixed inset-x-0 top-[87px] z-40 overflow-hidden bg-creamy shadow-lg transition-all duration-300 ${isMenuOpen ? "max-h-[200px] border-t border-choco-light/20 py-4" : "max-h-0 py-0"}`}
-      >
-        <div className="mx-auto w-full max-w-[1440px] px-[60px]">
-          <nav aria-label="Планшетное меню" className="flex flex-col gap-2 text-choco-light">
-            {["Новинки", "Набори", "Акції", "Журнал / Блог"].map((item) => (
-              <button
-                key={item}
-                aria-label={item}
-                onClick={() => console.log(item)}
-                className="rounded-xl px-4 py-3 text-left text-[16px] leading-[20px] transition duration-300 hover:bg-dark-creamy/50 hover:text-choco-dark"
-              >
-                {item}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
+      <MenuDropdown 
+        isMenuOpen={isMenuOpen}
+        breakpointClasses="hidden sm:block xl:hidden"
+        containerClasses="mx-auto w-full max-w-[1440px] px-[60px]"
+      />
     </>
   )
 }
@@ -297,26 +251,7 @@ const MobileHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
               <button aria-label="Открыть поиск" onClick={onSearchClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
                 <SearchIcon className="shrink-0" />
               </button>
-              {/* Профиль - аватар или иконка */}
-              <button 
-                aria-label="Профиль" 
-                onClick={onProfileClick} 
-                className={`rounded-full transition duration-300 ${
-                  userAvatar 
-                    ? 'p-0 hover:ring-2 hover:ring-choco-light/30' 
-                    : 'p-1 hover:bg-dark-creamy/60'
-                }`}
-              >
-                {userAvatar ? (
-                  <img 
-                    src={userAvatar} 
-                    alt="Аватар пользователя" 
-                    className="w-[30px] h-[30px] rounded-full object-cover"
-                  />
-                ) : (
-                  <ProfileIcon className="shrink-0" />
-                )}
-              </button>
+              <UserAvatar userAvatar={userAvatar} onClick={onProfileClick} />
             </div>
           </div>
         </div>
@@ -375,16 +310,17 @@ const MobileHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
           </div>
         </nav>
 
+        {/* Mobile Menu Dropdown */}
         <div
           className={`fixed inset-x-0 top-[100px] z-40 overflow-hidden bg-creamy px-4 transition-all duration-300 sm:hidden ${isMenuOpen ? "max-h-[260px] border-t border-choco-light/10 py-4" : "max-h-0 py-0"}`}
         >
           <nav aria-label="Мобильное меню" className="flex flex-col gap-3 text-choco-light">
-            {["Новинки", "Набори", "Акції", "Журнал / Блог"].map((item) => (
+            {NAV_ITEMS.map((item) => (
               <button
                 key={item}
                 aria-label={item}
                 onClick={() => console.log(item)}
-                className="rounded-xl px-3 py-2 text-left text-[16px] leading-[20px] transition duration-300 hover:bg-dark-creamy/70"
+                className="rounded-xl px-3 py-2 text-left font-normal text-[16px] leading-[20px] text-choco-light transition duration-300 hover:bg-dark-creamy/70"
               >
                 {item}
               </button>

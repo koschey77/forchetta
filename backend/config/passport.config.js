@@ -49,7 +49,12 @@ async (accessToken, refreshToken, profile, done) => {
     let user = await User.findOne({ googleId: profile.id });
     
     if (user) {
-      // ✅ Пользователь найден - возвращаем его
+      // ✅ Пользователь найден - обновляем аватар на случай изменения
+      if (!user.avatar || user.avatar !== profile.photos[0]?.value) {
+        user.avatar = profile.photos[0]?.value;
+        await user.save();
+        console.log('✅ Updated avatar for existing Google user:', user.email);
+      }
       console.log('✅ Existing Google user found:', user.email);
       return done(null, user);
     }
@@ -60,10 +65,14 @@ async (accessToken, refreshToken, profile, done) => {
     });
     
     if (existingEmailUser) {
-      // 🔗 Связываем существующий аккаунт с Google ID
+      // 🔗 Связываем существующий аккаунт с Google ID и обновляем аватар
       existingEmailUser.googleId = profile.id;
+      // Обновляем аватар от Google, если его нет или если это новая ссылка
+      if (!existingEmailUser.avatar || existingEmailUser.avatar !== profile.photos[0]?.value) {
+        existingEmailUser.avatar = profile.photos[0]?.value;
+      }
       await existingEmailUser.save();
-      console.log('🔗 Linked existing email account with Google:', existingEmailUser.email);
+      console.log('🔗 Linked existing email account with Google and updated avatar:', existingEmailUser.email);
       return done(null, existingEmailUser);
     }
     

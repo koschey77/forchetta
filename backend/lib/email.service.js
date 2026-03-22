@@ -9,6 +9,12 @@ const FROM_EMAIL = process.env.FROM_EMAIL || 'forchetta@romankos.com'
 // URL аватара отправителя  
 const SENDER_AVATAR = `${process.env.BASE_URL || 'https://forchetta.romankos.com'}/avatar.png`
 
+// URL логотипа для email (используем публично доступный URL)
+const LOGO_URL = `${process.env.BASE_URL || 'https://forchetta.romankos.com'}/forchetta-logo.png`
+
+// Отладочный вывод для проверки URL
+console.log('🖼️ LOGO_URL for emails:', LOGO_URL)
+
 // Функция генерации случайного 6-значного кода верификации
 export const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString()
@@ -36,7 +42,7 @@ export const sendVerificationEmail = async (email, verificationCode, name) => {
             
             <!-- Логотип -->
             <div style="text-align: center; margin-bottom: 35px;">
-              <img src="${process.env.BASE_URL || 'http://localhost:5173'}/forchetta-logo.png" alt="Forchetta" style="height: 120px;">
+              <img src="${LOGO_URL}" alt="Forchetta" style="height: 120px;">
             </div>
             
             <!-- Заголовок приветствия -->
@@ -118,6 +124,7 @@ export const sendVerificationEmail = async (email, verificationCode, name) => {
 export const sendWelcomeEmail = async (email, name) => {  
   try {
     console.log('📧 Отправка welcome email через Resend для:', email)
+    console.log('🖼️ Logo URL в welcome email:', LOGO_URL)
     
     // Отправляем через Resend API
     const result = await resend.emails.send({
@@ -136,7 +143,7 @@ export const sendWelcomeEmail = async (email, name) => {
               
               <!-- Логотип -->
               <div style="text-align: center; margin-bottom: 35px;">
-                <img src="${process.env.BASE_URL || "http://localhost:5173"}/forchetta-logo.png" alt="Forchetta" style="height: 120px;">
+                <img src="${LOGO_URL}" alt="Forchetta" style="height: 120px;">
               </div>
               
               <!-- Заголовок приветствия -->
@@ -233,7 +240,7 @@ export const sendPasswordResetEmail = async (email, resetCode, name) => {
             
             <!-- Логотип -->
             <div style="text-align: center; margin-bottom: 35px;">
-              <img src="${process.env.BASE_URL || 'http://localhost:5173'}/forchetta-logo.png" alt="Forchetta" style="height: 120px;">
+              <img src="${LOGO_URL}" alt="Forchetta" style="height: 120px;">
             </div>
             
             <!-- Заголовок -->

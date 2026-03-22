@@ -6,9 +6,11 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import passport from './config/passport.config.js'
-import { redis } from './lib/redis.js'
 
 import authRoutes from './routes/auth.route.js'
+import productRoutes from "./routes/product.route.js"
+import categoryRoutes from "./routes/category.route.js"
+
 import {connectDB} from './lib/db.js'
 
 const app = express()
@@ -44,6 +46,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use('/api/auth', authRoutes)
+app.use("/api/products", productRoutes)
+app.use("/api/categories", categoryRoutes)
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")))

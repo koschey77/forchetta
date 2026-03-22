@@ -1,6 +1,5 @@
 import {Route, Routes} from 'react-router-dom'
-import { useEffect } from "react"
-import { Navigate } from "react-router-dom"
+import { Navigate, useLocation } from "react-router-dom"
 import { useUserStore } from "./stores/useUserStore"
 import { Toaster } from "react-hot-toast"
 
@@ -12,6 +11,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import CartPage from './pages/CartPage'
 import ProfilePage from './pages/ProfilePage'
+import AdminPanel from './pages/AdminPanel'
 
 import LoadingSpinner from './components/LoadingSpinner'
 import Header from './components/Header'
@@ -19,23 +19,23 @@ import Footer from './components/Footer'
 
 
 function App() {
-  const { user, checkAuth, checkingAuth } = useUserStore()
-
-  useEffect(() => {
-    checkAuth()
-  }, [checkAuth])
+  const { user, checkingAuth } = useUserStore()
+  const location = useLocation()
+  const isAdminPage = location.pathname.startsWith('/admin')
 
   if (checkingAuth) return <LoadingSpinner />
   
   return (
     <div className="min-h-screen bg-orange-50 text-black flex flex-col">
-      {/* Fixed Header for all pages */}
-      <div className="fixed top-0 left-0 right-0 z-50">
-        <Header />
-      </div>
+      {/* Fixed Header for all pages except admin */}
+      {!isAdminPage && (
+        <div className="fixed top-0 left-0 right-0 z-50">
+          <Header />
+        </div>
+      )}
       
-      {/* Main content with top padding for header */}
-      <div className="flex-grow pt-[87px]">
+      {/* Main content with conditional padding */}
+      <div className={`flex-grow ${!isAdminPage ? 'pt-[87px]' : ''}`}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={!user ? <SignUpPage /> : <Navigate to="/" />} />
@@ -45,11 +45,12 @@ function App() {
           <Route path="/reset-password" element={!user ? <ResetPasswordPage /> : <Navigate to="/" />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/profile" element={user ? <ProfilePage /> : <Navigate to="/login" />} />
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </div>
       
-      {/* Footer */}
-      <Footer />
+      {/* Footer only for non-admin pages */}
+      {!isAdminPage && <Footer />}
       
       <Toaster />
     </div>

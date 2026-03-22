@@ -101,7 +101,7 @@ export const useUserStore = create((set, get) => ({
       set({ user: null })
     } catch (error) {
       toast.error(error.response?.data?.message || "Помилка при виході")
-
+      set({ user: null })
     }
   },
 
@@ -149,9 +149,6 @@ export const useUserStore = create((set, get) => ({
   },
 
   refreshToken: async () => {
-    // Prevent multiple simultaneous refresh attempts
-    if (get().checkingAuth) return
-
     set({ checkingAuth: true })
     try {
       const response = await axios.post("/auth/refresh-token")
@@ -171,6 +168,12 @@ axios.interceptors.response.use(
 	(response) => response,
 	async (error) => {
 		const originalRequest = error.config;
+		
+		// Не обрабатываем ошибки refresh-token запросов - они должны завершиться сами
+		if (originalRequest.url?.includes('/auth/refresh-token')) {
+			return Promise.reject(error);
+		}
+		
 		if (error.response?.status === 401 && !originalRequest._retry) {
 			originalRequest._retry = true;
 
@@ -196,3 +199,6 @@ axios.interceptors.response.use(
 		return Promise.reject(error);
 	}
 );
+
+// Автоматическая проверка аутентификации при инициализации приложения
+useUserStore.getState().checkAuth();
