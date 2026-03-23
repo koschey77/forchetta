@@ -8,7 +8,6 @@ const ProductList = ({ onEditProduct }) => {
     loading, 
     fetchAllProducts, 
     deleteProduct, 
-    toggleFeaturedProduct
   } = useProductStore()
   
   const { categories, fetchAllCategories } = useCategoryStore()
@@ -26,10 +25,6 @@ const ProductList = ({ onEditProduct }) => {
     if (window.confirm(`Ви впевнені, що хочете видалити "${productName}"?`)) {
       await deleteProduct(productId)
     }
-  }
-
-  const handleToggleFeatured = async (productId) => {
-    await toggleFeaturedProduct(productId)
   }
 
   const handleEdit = (productId) => {
@@ -302,11 +297,11 @@ const ProductList = ({ onEditProduct }) => {
                         <span className="text-xs text-gray-600">Ціна:</span>
                         <div className="flex items-center gap-1">
                           <span className="font-semibold text-sm text-gray-800">
-                            {formatPrice(product.price)}
+                            {formatPrice(product.discountPrice > 0 ? product.discountPrice : product.price)}
                           </span>
                           {product.discountPrice > 0 && (
                             <span className="text-xs text-gray-400 line-through">
-                              {formatPrice(product.discountPrice)}
+                              {formatPrice(product.price)}
                             </span>
                           )}
                         </div>

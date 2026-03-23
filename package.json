@@ -7,7 +7,10 @@
     "dev": "nodemon backend/server.js",
     "start": "node backend/server.js",
     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
-    "postbuild": "echo Build completed successfully"
+    "postbuild": "echo Build completed successfully",
+    "backup": "node backend/data-backup/export.js && echo '✅ Данные экспортированы!'",
+    "restore": "node backend/data-backup/seed.js",
+    "backup-clean": "rm -f backend/data-backup/*.json && echo '🧹 JSON файлы удалены'"
   },
   "keywords": [],
   "author": "",
