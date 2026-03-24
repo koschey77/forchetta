@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
-import { useUserStore } from "../stores/useUserStore"
-import { getPasswordError } from "../lib/validation"
-import { EyeIcon, EyeSlashIcon } from "../components/icons"
-import LoadingSpinner from "../components/LoadingSpinner"
+import { useUserStore } from "../../stores/useUserStore"
+import { getPasswordError } from "../../lib/validation"
+import { EyeIcon, EyeSlashIcon } from "../../components/icons"
+import LoadingSpinner from "../../components/LoadingSpinner"
 
 const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams()

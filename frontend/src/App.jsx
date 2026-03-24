@@ -4,14 +4,16 @@ import { useUserStore } from "./stores/useUserStore"
 import { Toaster } from "react-hot-toast"
 
 import HomePage from './pages/HomePage'
-import SignUpPage from './pages/SignUpPage'
-import LoginPage from './pages/LoginPage'
-import EmailVerificationPage from './pages/EmailVerificationPage'
-import ForgotPasswordPage from './pages/ForgotPasswordPage'
-import ResetPasswordPage from './pages/ResetPasswordPage'
 import CartPage from './pages/CartPage'
-import ProfilePage from './pages/ProfilePage'
 import AdminPanel from './pages/AdminPanel'
+import {
+  SignUpPage,
+  LoginPage,
+  EmailVerificationPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
+  ProfilePage
+} from './pages/auth'
 
 import LoadingSpinner from './components/LoadingSpinner'
 import Header from './components/Header'

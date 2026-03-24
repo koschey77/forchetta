@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
-import { useUserStore } from "../stores/useUserStore"
-import LoadingSpinner from "../components/LoadingSpinner"
+import { useUserStore } from "../../stores/useUserStore"
+import LoadingSpinner from "../../components/LoadingSpinner"
 
 const EmailVerificationPage = () => {
   const [searchParams] = useSearchParams()

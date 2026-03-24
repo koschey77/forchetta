@@ -13,9 +13,6 @@ export const getAllCategories = async (req, res) => {
 
 export const createCategory = async (req, res) => {
   try {
-    console.log('📂 Creating category...')
-    console.log('📋 Request body:', req.body)
-    
     const { name, description, image } = req.body
 
     // Проверка обязательных полей
@@ -29,15 +26,11 @@ export const createCategory = async (req, res) => {
       return res.status(400).json({ message: "Категорія з такою назвою вже існує" })
     }
 
-    console.log('🖼️ Image received:', image ? 'present' : 'missing')
-    
     // Обработка изображения
     let processedImage
     if (image) {
-      console.log('📸 Processing category image...')
       const uploadedImages = await uploadImages([image], "forchetta/categories")
       processedImage = uploadedImages[0]
-      console.log('✅ Category image processed:', processedImage ? 'success' : 'failed')
     }
 
     const category = await Category.create({ 

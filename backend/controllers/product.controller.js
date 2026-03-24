@@ -37,31 +37,17 @@ export const getFeaturedProducts = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
-    console.log('📦 Creating product...')
-    console.log('📋 Request body:', req.body)
-    
     const { name, summary, description, ingredients, contains, weight, price, discountPrice, 
             images, category, qty, shelfLife, storageConditions, isFeatured } = req.body
 
-    console.log('🖼️ Images received:', images?.length || 0)
-    if (images && images.length > 0) {
-      console.log('📸 First image preview:', images[0].substring(0, 50) + '...')
-      console.log('📸 Image type check:', typeof images[0])
-      console.log('📸 Is valid base64?', images[0].startsWith('data:image/'))
-    }
-
     // Проверяем существование категории
-    console.log('📂 Checking category:', category)
     const categoryExists = await Category.findById(category)
     if (!categoryExists) {
       return res.status(400).json({ message: "Категорію не знайдено" })
     }
-    console.log('✅ Category found:', categoryExists.name)
 
     // Обработка изображений через сервис
     const processedImages = await uploadImages(images, "forchetta/products")
-    
-    console.log('✅ Images processed:', processedImages.length)
 
     const product = await Product.create({ 
       name, summary, description, ingredients, contains: contains || {}, 
@@ -84,10 +70,6 @@ export const createProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   try {
-    console.log('🔄 Updating product...')
-    console.log('📋 Product ID:', req.params.id)
-    console.log('📋 Request body:', req.body)
-    
     const { id } = req.params
     const { name, summary, description, ingredients, contains, weight, price, discountPrice, 
             images, category, qty, shelfLife, storageConditions, isFeatured, existingImages } = req.body
@@ -100,12 +82,10 @@ export const updateProduct = async (req, res) => {
 
     // Проверяем категорию если она изменилась
     if (category && category !== existingProduct.category?.toString()) {
-      console.log('📂 Checking new category:', category)
       const categoryExists = await Category.findById(category)
       if (!categoryExists) {
         return res.status(400).json({ message: "Категорію не знайдено" })
       }
-      console.log('✅ New category found:', categoryExists.name)
     }
 
     // Определяем какие старые изображения нужно удалить
@@ -122,7 +102,6 @@ export const updateProduct = async (req, res) => {
 
     // Удаляем ненужные изображения из Cloudinary
     if (imagesToDelete.length > 0) {
-      console.log('🗑️ Deleting removed images from Cloudinary:', imagesToDelete.length)
       try {
         for (const publicId of imagesToDelete) {
           await deleteImage(publicId)
@@ -137,15 +116,11 @@ export const updateProduct = async (req, res) => {
     
     // Обрабатываем новые изображения если они есть
     if (images && images.length > 0) {
-      console.log('🖼️ New images received:', images.length)
-      
       // Загружаем новые изображения
       const newUploadedImages = await uploadImages(images, "forchetta/products")
-      console.log('✅ New images processed:', newUploadedImages.length)
       
       // ДОБАВЛЯЕМ новые изображения к существующим
       processedImages = [...processedImages, ...newUploadedImages]
-      console.log('📸 Total images after update:', processedImages.length)
     }
 
     // Обновляем продукт
@@ -163,7 +138,6 @@ export const updateProduct = async (req, res) => {
     await redis.del("featured_products")
     await redis.del("recommended_products")
 
-    console.log('✅ Product updated successfully')
     res.json(updatedProduct)
   } catch (error) {
     console.log("❌ Error in updateProduct controller:")

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
-import { useUserStore } from "../stores/useUserStore"
-import { getEmailError, getPasswordError, isFormValid } from "../lib/validation"
+import { useUserStore } from "../../stores/useUserStore"
+import { getEmailError, getPasswordError, isFormValid } from "../../lib/validation"
 import { toast } from "react-hot-toast"
 
-import { EyeIcon, EyeSlashIcon } from "../components/icons"
+import { EyeIcon, EyeSlashIcon } from "../../components/icons"
 
 const SignUpPage = () => {
   const navigate = useNavigate()

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { useUserStore } from "../stores/useUserStore";
-import { getEmailError } from "../lib/validation"
+import { useUserStore } from "../../stores/useUserStore";
+import { getEmailError } from "../../lib/validation"
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate()
