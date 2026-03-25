@@ -96,10 +96,32 @@ const mockProducts = [
 
 const CatalogPage = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
+
+  // Маппинг значений категорий на названия
+  const categoryLabels = {
+    "": "Всі категорії",
+    cakes: "Торти",
+    pastries: "Тістечка",
+    sweets: "Цукерки",
+    chocolate: "Шоколад",
+    bars: "Подарункові набори",
+  }
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+  };
 
   return (
     <div className="min-h-screen bg-creamy py-6">
       <div className="w-full">
+        {/* Название выбранной категории */}
+        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-[60px] mb-4">
+          <h2 className="text-center text-2xl font-montserrat font-semibold leading-[29px] text-choco-light">
+            {categoryLabels[selectedCategory] || 'Всі категорії'}
+          </h2>
+        </div>
+        
         <CatalogHeader 
           isFilterOpen={isFilterOpen} 
           setIsFilterOpen={setIsFilterOpen} 
@@ -108,7 +130,7 @@ const CatalogPage = () => {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-[60px] mt-6">
           {/* Desktop и Tablet версия - flex layout */}
           <div className="hidden sm:flex items-start gap-6">
-            {isFilterOpen && <Sidebar />}
+            {isFilterOpen && <Sidebar onCategoryChange={handleCategoryChange} />}
             
             <div className={`grid gap-x-6 gap-y-8 flex-grow transition-all duration-300 ease-in-out ${
               isFilterOpen 
@@ -121,11 +143,11 @@ const CatalogPage = () => {
             </div>
           </div>
 
-          {/* Mobile версия (<640px) - conditional rendering */}
+          {/* Mobile версия (<640px) */}
           <div className="sm:hidden">
             {isFilterOpen ? (
               /* Показываем только фильтры на всю ширину */
-              <Sidebar className="w-full" />
+              <Sidebar className="w-full" onCategoryChange={handleCategoryChange} />
             ) : (
               /* Показываем только товары */
               <div className="grid gap-x-4 gap-y-8 grid-cols-2">

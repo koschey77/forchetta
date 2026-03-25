@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { CatalogFilterIcon, CheckIcon } from '../icons';
 
 // Компонент чекбокса
 const Checkbox = ({ checked, onChange, children }) => (
@@ -24,11 +25,32 @@ const Checkbox = ({ checked, onChange, children }) => (
   </div>
 );
 
-const Sidebar = ({ className }) => {
+const Sidebar = ({ className, onCategoryChange }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [priceRange, setPriceRange] = useState([1, 2500]);
-  const [selectedWeight, setSelectedWeight] = useState('');
+  const [selectedWeights, setSelectedWeights] = useState([]);
+  const [isWeightOpen, setIsWeightOpen] = useState(false);
+
+  // Фиктивный массив категорий
+  const categories = [
+    { value: "", label: "Всі категорії" },
+    { value: "cakes", label: "Торти" },
+    { value: "pastries", label: "Тістечка" },
+    { value: "sweets", label: "Цукерки" },
+    { value: "chocolate", label: "Шоколад" },
+    { value: "bars", label: "Подарункові набори" },
+  ]
+
+  // Фиктивный массив весов для фильтрации
+  const weights = [
+    { value: "50-100", label: "50-100 г" },
+    { value: "100-200", label: "100-200 г" },
+    { value: "200-500", label: "200-500 г" },
+    { value: "500-1000", label: "500 г - 1 кг" },
+    { value: "1000+", label: "Більше 1 кг" },
+  ];
 
   const ingredients = [
     'З горіхами',
@@ -37,6 +59,22 @@ const Sidebar = ({ className }) => {
     'Без лактози',
     'Без глютену'
   ];
+
+  const handleCategoryChange = (categoryValue) => {
+    setSelectedCategory(categoryValue);
+    setIsCategoryOpen(false);
+    if (onCategoryChange) {
+      onCategoryChange(categoryValue);
+    }
+  };
+
+  const handleWeightChange = (weightValue) => {
+    setSelectedWeights(prev => 
+      prev.includes(weightValue)
+        ? prev.filter(item => item !== weightValue)
+        : [...prev, weightValue]
+    );
+  };
 
   const handleIngredientChange = (ingredient) => {
     setSelectedIngredients(prev => 
@@ -48,9 +86,14 @@ const Sidebar = ({ className }) => {
 
   const handleClearAll = () => {
     setSelectedCategory('');
+    setIsCategoryOpen(false);
     setSelectedIngredients([]);
     setPriceRange([1, 2500]);
-    setSelectedWeight('');
+    setSelectedWeights([]);
+    setIsWeightOpen(false);
+    if (onCategoryChange) {
+      onCategoryChange('');
+    }
   };
 
   const handleApplyFilters = () => {
@@ -59,15 +102,62 @@ const Sidebar = ({ className }) => {
       category: selectedCategory,
       ingredients: selectedIngredients,
       priceRange,
-      weight: selectedWeight
+      weights: selectedWeights
     });
   };
 
   return (
     <div className={`flex flex-col items-start gap-[40px] w-full sm:w-[300px] h-[691px] ${className || ''}`}>
       {/* Категорії */}
-      <div className="flex flex-row items-center px-[15px] py-[10px] gap-[10px] w-full h-[59px] bg-creamy border border-choco-light rounded-[10px]">
+      <div className="relative flex flex-col gap-[20px] w-full">
         <h3 className="text-figma-lg font-montserrat font-light text-choco-light">Категорії</h3>
+        
+        <div className="relative">
+          <button 
+            onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+            className="flex flex-row justify-between items-center px-[15px] py-[10px] gap-[10px] w-full h-[59px] bg-creamy border border-choco-light rounded-[10px] transition-all duration-200 hover:opacity-90"
+          >
+            <span className="text-figma-base font-montserrat font-light text-choco-light">
+              {categories.find(cat => cat.value === selectedCategory)?.label || 'Всі категорії'}
+            </span>
+            <CatalogFilterIcon width={20} height={20} strokeWidth={2} className="text-choco-light" />
+          </button>
+          
+          {/* Выпадающий список */}
+          {isCategoryOpen && (
+            <div className="absolute top-[59px] left-0 right-0 z-50 flex flex-col items-start pt-[6px] px-[10px] pb-[15px] gap-[10px] w-full min-h-[200px] bg-creamy border border-choco-light rounded-b-[10px] shadow-lg">
+              {categories.map((category) => {
+                const isSelected = selectedCategory === category.value;
+                return (
+                  <div
+                    key={category.value}
+                    onClick={() => handleCategoryChange(category.value)}
+                    className="flex flex-row justify-between items-center gap-[7px] w-full h-[26px] cursor-pointer"
+                  >
+                    {isSelected ? (
+                      <>
+                        <div className="flex items-center flex-1 h-[15px]">
+                          <span className="text-figma-xs font-montserrat font-light text-choco-light-50">
+                            {category.label}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-center w-[20px] h-[20px]">
+                          <CheckIcon width={20} height={20} strokeWidth={1.5} className="text-choco-light" />
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex items-center flex-1 h-[15px]">
+                        <span className="text-figma-xs font-montserrat font-light text-choco-dark">
+                          {category.label}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Склад */}
@@ -122,8 +212,52 @@ const Sidebar = ({ className }) => {
       </div>
 
       {/* Вага */}
-      <div className="flex flex-row items-center px-[15px] py-[10px] gap-[10px] w-full h-[59px] bg-creamy border border-choco-light rounded-[10px]">
+      <div className="relative flex flex-col gap-[20px] w-full">
         <h3 className="text-figma-lg font-montserrat font-light text-choco-light">Вага</h3>
+        
+        <div className="relative">
+          <button 
+            onClick={() => setIsWeightOpen(!isWeightOpen)}
+            className="flex flex-row justify-between items-center px-[15px] py-[10px] gap-[10px] w-full h-[59px] bg-creamy border border-choco-light rounded-[10px] transition-all duration-200 hover:opacity-90"
+          >
+            <span className="text-figma-base font-montserrat font-light text-choco-light">
+              {selectedWeights.length > 0 
+                ? `Вибрано: ${selectedWeights.length}` 
+                : 'Виберіть вагу'
+              }
+            </span>
+            <CatalogFilterIcon width={20} height={20} strokeWidth={2} className="text-choco-light" />
+          </button>
+          
+          {/* Выпадающий список */}
+          {isWeightOpen && (
+            <div className="absolute top-[59px] left-0 right-0 z-50 flex flex-col items-start pt-[6px] px-[10px] pb-[15px] gap-[10px] w-full min-h-[180px] bg-creamy border border-choco-light rounded-b-[10px] shadow-lg">
+              {weights.map((weight) => {
+                const isSelected = selectedWeights.includes(weight.value);
+                return (
+                  <div
+                    key={weight.value}
+                    onClick={() => handleWeightChange(weight.value)}
+                    className="flex flex-row justify-between items-center gap-[7px] w-full h-[26px] cursor-pointer"
+                  >
+                    <div className="flex items-center flex-1 h-[15px]">
+                      <span className={`text-figma-xs font-montserrat font-light ${
+                        isSelected ? 'text-choco-light-50' : 'text-choco-dark'
+                      }`}>
+                        {weight.label}
+                      </span>
+                    </div>
+                    {isSelected && (
+                      <div className="flex items-center justify-center w-[20px] h-[20px]">
+                        <CheckIcon width={20} height={20} strokeWidth={1.5} className="text-choco-light" />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Кнопки */}
