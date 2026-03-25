@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import * as Slider from '@radix-ui/react-slider';
 import { CatalogFilterIcon, CheckIcon } from '../icons';
+import useCategoryStore from '../../stores/useCategoryStore';
 
 // Компонент чекбокса
 const Checkbox = ({ checked, onChange, children }) => (
@@ -25,7 +27,8 @@ const Checkbox = ({ checked, onChange, children }) => (
   </div>
 );
 
-const Sidebar = ({ className, onCategoryChange }) => {
+const Sidebar = ({ className, onCategoryChange, onApplyFilters, products = [] }) => {
+  const { categories, loading, fetchAllCategories } = useCategoryStore();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
@@ -33,24 +36,39 @@ const Sidebar = ({ className, onCategoryChange }) => {
   const [selectedWeights, setSelectedWeights] = useState([]);
   const [isWeightOpen, setIsWeightOpen] = useState(false);
 
-  // Фиктивный массив категорий
-  const categories = [
-    { value: "", label: "Всі категорії" },
-    { value: "cakes", label: "Торти" },
-    { value: "pastries", label: "Тістечка" },
-    { value: "sweets", label: "Цукерки" },
-    { value: "chocolate", label: "Шоколад" },
-    { value: "bars", label: "Подарункові набори" },
-  ]
+  // Загружаем категории при монтировании компонента
+  useEffect(() => {
+    fetchAllCategories();
+  }, [fetchAllCategories]);
 
-  // Фиктивный массив весов для фильтрации
-  const weights = [
-    { value: "50-100", label: "50-100 г" },
-    { value: "100-200", label: "100-200 г" },
-    { value: "200-500", label: "200-500 г" },
-    { value: "500-1000", label: "500 г - 1 кг" },
-    { value: "1000+", label: "Більше 1 кг" },
+  // Преобразуем категории из backend формата в frontend формат
+  const categoryOptions = [
+    { value: '', label: 'Всі категорії' },
+    ...categories.map(category => ({
+      value: category._id,
+      label: category.name
+    }))
   ];
+
+  // Получаем уникальные значения веса из товаров
+  const getUniqueWeights = () => {
+    if (!products || products.length === 0) return [];
+    
+    const weights = products
+      .map(product => product.weight)
+      .filter(weight => weight != null)
+      .sort((a, b) => a - b); // сортируем по возрастанию
+    
+    // Удаляем дубликаты
+    const uniqueWeights = [...new Set(weights)];
+    
+    return uniqueWeights.map(weight => ({
+      value: weight.toString(),
+      label: weight >= 1000 ? `${weight / 1000} кг` : `${weight} г`
+    }));
+  };
+  
+  const weights = getUniqueWeights();
 
   const ingredients = [
     'З горіхами',
@@ -91,23 +109,41 @@ const Sidebar = ({ className, onCategoryChange }) => {
     setPriceRange([1, 2500]);
     setSelectedWeights([]);
     setIsWeightOpen(false);
+    
+    // Очищаем категорию через callback
     if (onCategoryChange) {
       onCategoryChange('');
+    }
+    
+    // Применяем пустые фильтры
+    if (onApplyFilters) {
+      onApplyFilters({
+        category: '',
+        ingredients: [],
+        priceRange: [1, 2500],
+        weights: []
+      });
     }
   };
 
   const handleApplyFilters = () => {
-    // TODO: Добавить логику применения фильтров
-    console.log('Применены фильтры:', {
+    const filters = {
       category: selectedCategory,
       ingredients: selectedIngredients,
       priceRange,
       weights: selectedWeights
-    });
+    };
+    
+    console.log('Применены фильтры:', filters);
+    
+    // Передаем фильтры в родительский компонент
+    if (onApplyFilters) {
+      onApplyFilters(filters);
+    }
   };
 
   return (
-    <div className={`flex flex-col items-start gap-[40px] w-full sm:w-[300px] h-[691px] ${className || ''}`}>
+    <div className={`flex flex-col items-start gap-[40px] w-full sm:w-[300px] h-[691px] relative z-10 ${className || ''}`}>
       {/* Категорії */}
       <div className="relative flex flex-col gap-[20px] w-full">
         <h3 className="text-figma-lg font-montserrat font-light text-choco-light">Категорії</h3>
@@ -118,7 +154,9 @@ const Sidebar = ({ className, onCategoryChange }) => {
             className="flex flex-row justify-between items-center px-[15px] py-[10px] gap-[10px] w-full h-[59px] bg-creamy border border-choco-light rounded-[10px] transition-all duration-200 hover:opacity-90"
           >
             <span className="text-figma-base font-montserrat font-light text-choco-light">
-              {categories.find(cat => cat.value === selectedCategory)?.label || 'Всі категорії'}
+              {loading ? 'Завантаження...' : 
+               (categoryOptions.find(cat => cat.value === selectedCategory)?.label || 'Всі категорії')
+              }
             </span>
             <CatalogFilterIcon width={20} height={20} strokeWidth={2} className="text-choco-light" />
           </button>
@@ -126,7 +164,7 @@ const Sidebar = ({ className, onCategoryChange }) => {
           {/* Выпадающий список */}
           {isCategoryOpen && (
             <div className="absolute top-[59px] left-0 right-0 z-50 flex flex-col items-start pt-[6px] px-[10px] pb-[15px] gap-[10px] w-full min-h-[200px] bg-creamy border border-choco-light rounded-b-[10px] shadow-lg">
-              {categories.map((category) => {
+              {categoryOptions.map((category) => {
                 const isSelected = selectedCategory === category.value;
                 return (
                   <div
@@ -174,39 +212,80 @@ const Sidebar = ({ className, onCategoryChange }) => {
       </div>
 
       {/* Ціна */}
-      <div className="flex flex-col justify-center items-start px-[15px] py-[15px] gap-[20px] w-full h-[140px] border border-choco-light rounded-[5px]">
+      <div className="flex flex-col justify-center items-start px-[15px] py-[15px] gap-[20px] w-full min-h-[140px] border border-choco-light rounded-[5px]">
         <h3 className="text-figma-lg font-montserrat font-light text-choco-light w-[83px] h-[22px]">Ціна, грн</h3>
 
         <div className="flex flex-col items-start gap-[20px] w-full">
-          {/* Поля ввода цены */}
           <div className="flex flex-row justify-between items-center gap-[18px] w-full h-[30px]">
-            <div className="flex flex-row justify-between items-center px-[12px] py-[17px] flex-1 h-[30px] border border-choco-light rounded-[5px]">
-              <span className="text-[10px] font-montserrat font-light text-choco-light w-[4px] h-[12px]">{priceRange[0]}</span>
+            <div className="flex flex-row justify-center items-center px-[8px] py-[4px] flex-1 h-[30px] border border-choco-light rounded-[5px] bg-creamy">
+              <input 
+                type="number" 
+                min="1" 
+                max="2500"
+                value={priceRange[0]} 
+                onChange={(e) => {
+                  const value = parseInt(e.target.value) || priceRange[0];
+                  setPriceRange([value, priceRange[1]]);
+                }}
+                onBlur={(e) => {
+                  const value = parseInt(e.target.value) || 1;
+                  const correctedValue = Math.min(Math.max(value, 1), priceRange[1] - 1);
+                  setPriceRange([correctedValue, priceRange[1]]);
+                }}
+                className="w-full text-[10px] font-montserrat font-light text-choco-light bg-transparent outline-none text-center"
+                placeholder="От"
+              />
             </div>
-            <div className="flex flex-row justify-between items-center px-[12px] py-[17px] flex-1 h-[30px] border border-choco-light rounded-[5px]">
-              <span className="text-[10px] font-montserrat font-light text-choco-light w-[25px] h-[12px]">{priceRange[1]}</span>
+            <div className="flex flex-row justify-center items-center px-[8px] py-[4px] flex-1 h-[30px] border border-choco-light rounded-[5px] bg-creamy">
+              <input 
+                type="number" 
+                min="1" 
+                max="2500"
+                value={priceRange[1]} 
+                onChange={(e) => {
+                  const value = parseInt(e.target.value) || priceRange[1];
+                  setPriceRange([priceRange[0], value]);
+                }}
+                onBlur={(e) => {
+                  const value = parseInt(e.target.value) || 2500;
+                  const correctedValue = Math.max(priceRange[0] + 1, Math.min(value, 2500));
+                  setPriceRange([priceRange[0], correctedValue]);
+                }}
+                className="w-full text-[10px] font-montserrat font-light text-choco-light bg-transparent outline-none text-center"
+                placeholder="До"
+              />
             </div>
           </div>
 
-          {/* Слайдер */}
-          <div className="relative w-full h-[18px]">
-            {/* Основная полоса */}
-            <div className="absolute w-full h-[11px] top-[4px] bg-dark-creamy rounded-[5px]"></div>
+          {/* Radix UI Slider */}
+          <div className="w-full px-1">
+            <Slider.Root
+              className="relative flex items-center select-none touch-none w-full h-5"
+              value={priceRange}
+              min={1}
+              max={2500}
+              step={1}
+              minStepsBetweenThumbs={1}
+              onValueChange={(value) => setPriceRange(value)}
+            >
+              {/* Полоска (трек) */}
+              <Slider.Track className="bg-dark-creamy relative grow rounded-full h-[2px]">
+                {/* Активная часть между ползунками */}
+                <Slider.Range className="absolute bg-choco-light rounded-full h-full" />
+              </Slider.Track>
 
-            {/* Активная часть */}
-            <div
-              className="absolute h-[11px] top-[4px] bg-choco-light rounded-[5px]"
-              style={{
-                left: `${(priceRange[0] / 2500) * 270}px`,
-                width: `48px`,
-              }}
-            ></div>
-
-            {/* Левый ползунок */}
-            <div className="absolute w-[17px] h-[18px] left-0 bg-choco-light rounded-full cursor-pointer"></div>
-
-            {/* Правый ползунок */}
-            <div className="absolute w-[17px] h-[18px] bg-choco-light rounded-full cursor-pointer" style={{ left: "214px" }}></div>
+              {/* Левый ползунок */}
+              <Slider.Thumb 
+                className="block w-5 h-5 bg-creamy border-2 border-choco-light shadow-sm rounded-full hover:bg-white focus:outline-none focus:ring-2 focus:ring-choco-light/30 transition-colors cursor-pointer" 
+                aria-label="Минимальная цена"
+              />
+              
+              {/* Правый ползунок */}
+              <Slider.Thumb 
+                className="block w-5 h-5 bg-creamy border-2 border-choco-light shadow-sm rounded-full hover:bg-white focus:outline-none focus:ring-2 focus:ring-choco-light/30 transition-colors cursor-pointer" 
+                aria-label="Максимальная цена"
+              />
+            </Slider.Root>
           </div>
         </div>
       </div>
@@ -222,7 +301,10 @@ const Sidebar = ({ className, onCategoryChange }) => {
           >
             <span className="text-figma-base font-montserrat font-light text-choco-light">
               {selectedWeights.length > 0 
-                ? `Вибрано: ${selectedWeights.length}` 
+                ? `Вибрано: ${selectedWeights.map(w => {
+                    const weight = parseInt(w);
+                    return weight >= 1000 ? `${weight / 1000}кг` : `${weight}г`;
+                  }).join(', ')}` 
                 : 'Виберіть вагу'
               }
             </span>
@@ -266,7 +348,7 @@ const Sidebar = ({ className, onCategoryChange }) => {
           onClick={handleClearAll}
           className="flex flex-row justify-center items-center px-[30px] py-[10px] gap-[6px] flex-1 h-[41px] bg-creamy border border-choco-light rounded-[22.5px] text-figma-xs font-montserrat font-light text-choco-light hover:opacity-80 transition-opacity whitespace-nowrap"
         >
-          Очистити все
+          Скинути фільтр
         </button>
         <button
           onClick={handleApplyFilters}
