@@ -24,7 +24,7 @@ const Checkbox = ({ checked, onChange, children }) => (
   </div>
 );
 
-const Sidebar = () => {
+const Sidebar = ({ className }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [priceRange, setPriceRange] = useState([1, 2500]);
@@ -64,17 +64,17 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex flex-col items-start gap-[40px] w-[300px] h-[691px]">
+    <div className={`flex flex-col items-start gap-[40px] w-full sm:w-[300px] h-[691px] ${className || ''}`}>
       {/* Категорії */}
-      <div className="flex flex-row items-center px-[15px] py-[10px] gap-[10px] w-[300px] h-[59px] bg-creamy border border-choco-light rounded-[10px]">
+      <div className="flex flex-row items-center px-[15px] py-[10px] gap-[10px] w-full h-[59px] bg-creamy border border-choco-light rounded-[10px]">
         <h3 className="text-figma-lg font-montserrat font-light text-choco-light">Категорії</h3>
       </div>
 
       {/* Склад */}
-      <div className="flex flex-col items-start gap-[20px] w-[300px]">
+      <div className="flex flex-col items-start gap-[20px] w-full">
         <h3 className="text-figma-lg font-montserrat font-light text-choco-light">Склад</h3>
 
-        <div className="flex flex-col items-start gap-[15px] w-[300px]">
+        <div className="flex flex-col items-start gap-[15px] w-full">
           {ingredients.map((ingredient) => (
             <Checkbox key={ingredient} checked={selectedIngredients.includes(ingredient)} onChange={() => handleIngredientChange(ingredient)}>
               {ingredient}
@@ -84,24 +84,24 @@ const Sidebar = () => {
       </div>
 
       {/* Ціна */}
-      <div className="flex flex-col justify-center items-start px-[15px] py-[15px] gap-[20px] w-[300px] h-[140px] border border-choco-light rounded-[5px]">
+      <div className="flex flex-col justify-center items-start px-[15px] py-[15px] gap-[20px] w-full h-[140px] border border-choco-light rounded-[5px]">
         <h3 className="text-figma-lg font-montserrat font-light text-choco-light w-[83px] h-[22px]">Ціна, грн</h3>
 
-        <div className="flex flex-col items-start gap-[20px] w-[270px]">
+        <div className="flex flex-col items-start gap-[20px] w-full">
           {/* Поля ввода цены */}
-          <div className="flex flex-row justify-between items-center gap-[18px] w-[270px] h-[30px]">
-            <div className="flex flex-row justify-between items-center px-[12px] py-[17px] w-[128px] h-[30px] border border-choco-light rounded-[5px]">
+          <div className="flex flex-row justify-between items-center gap-[18px] w-full h-[30px]">
+            <div className="flex flex-row justify-between items-center px-[12px] py-[17px] flex-1 h-[30px] border border-choco-light rounded-[5px]">
               <span className="text-[10px] font-montserrat font-light text-choco-light w-[4px] h-[12px]">{priceRange[0]}</span>
             </div>
-            <div className="flex flex-row justify-between items-center px-[12px] py-[17px] w-[128px] h-[30px] border border-choco-light rounded-[5px]">
+            <div className="flex flex-row justify-between items-center px-[12px] py-[17px] flex-1 h-[30px] border border-choco-light rounded-[5px]">
               <span className="text-[10px] font-montserrat font-light text-choco-light w-[25px] h-[12px]">{priceRange[1]}</span>
             </div>
           </div>
 
           {/* Слайдер */}
-          <div className="relative w-[270px] h-[18px]">
+          <div className="relative w-full h-[18px]">
             {/* Основная полоса */}
-            <div className="absolute w-[270px] h-[11px] top-[4px] bg-dark-creamy rounded-[5px]"></div>
+            <div className="absolute w-full h-[11px] top-[4px] bg-dark-creamy rounded-[5px]"></div>
 
             {/* Активная часть */}
             <div
@@ -122,21 +122,21 @@ const Sidebar = () => {
       </div>
 
       {/* Вага */}
-      <div className="flex flex-row items-center px-[15px] py-[10px] gap-[10px] w-[300px] h-[59px] bg-creamy border border-choco-light rounded-[10px]">
+      <div className="flex flex-row items-center px-[15px] py-[10px] gap-[10px] w-full h-[59px] bg-creamy border border-choco-light rounded-[10px]">
         <h3 className="text-figma-lg font-montserrat font-light text-choco-light">Вага</h3>
       </div>
 
       {/* Кнопки */}
-      <div className="flex flex-row items-center gap-[19px] w-[300px] h-[41px]">
+      <div className="flex flex-row items-center gap-[19px] w-full h-[41px]">
         <button
           onClick={handleClearAll}
-          className="flex flex-row justify-center items-center px-[30px] py-[10px] gap-[6px] w-[142px] h-[41px] bg-creamy border border-choco-light rounded-[22.5px] text-figma-xs font-montserrat font-light text-choco-light hover:opacity-80 transition-opacity whitespace-nowrap"
+          className="flex flex-row justify-center items-center px-[30px] py-[10px] gap-[6px] flex-1 h-[41px] bg-creamy border border-choco-light rounded-[22.5px] text-figma-xs font-montserrat font-light text-choco-light hover:opacity-80 transition-opacity whitespace-nowrap"
         >
           Очистити все
         </button>
         <button
           onClick={handleApplyFilters}
-          className="flex flex-row justify-center items-center px-[30px] py-[10px] gap-[6px] w-[140px] h-[41px] bg-choco-light rounded-[22.5px] text-figma-xs font-montserrat font-light text-creamy hover:opacity-90 transition-opacity"
+          className="flex flex-row justify-center items-center px-[30px] py-[10px] gap-[6px] flex-1 h-[41px] bg-choco-light rounded-[22.5px] text-figma-xs font-montserrat font-light text-creamy hover:opacity-90 transition-opacity"
         >
           Пошук
         </button>

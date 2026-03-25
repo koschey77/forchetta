@@ -15,18 +15,18 @@ const CatalogHeader = ({ isFilterOpen, setIsFilterOpen }) => {
   ];
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto pl-[60px] pr-[60px]">
-      <div className="flex flex-row justify-between items-center h-[35px] gap-[145px]">
+    <div className="w-full max-w-[1440px] mx-auto px-4 sm:pl-[60px] sm:pr-[60px]">
+      <div className="flex flex-row justify-between items-center h-[35px] gap-2 sm:gap-[145px]">
         {/* Кнопка фільтрів */}
-        <div className="flex flex-row items-center gap-[10px] w-[156px] h-[35px]">
+        <div className="flex flex-row items-center gap-[10px] flex-1 sm:w-[156px] sm:flex-initial h-[35px]">
           <button 
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="box-border flex flex-row justify-between items-center px-[10px] py-[5px] gap-[19px] w-[156px] h-[35px] bg-choco-light border border-choco-light rounded-[5px] transition-all duration-200 hover:opacity-90"
+            className="box-border flex flex-row justify-between items-center px-[10px] py-[5px] gap-[19px] w-full sm:w-[156px] h-[35px] bg-choco-light border border-choco-light rounded-[5px] transition-all duration-200 hover:opacity-90"
           >
             {/* Контейнер для иконки и текста */}
-            <div className="flex flex-row items-center gap-[5px] w-[87px] h-[24px] text-creamy">
+            <div className="flex flex-row items-center gap-[5px] flex-1 sm:w-[87px] sm:flex-initial h-[24px] text-creamy">
               <CatalogFilterIcon width={24} height={24} strokeWidth={2} />
-              <span className="text-figma-base font-light text-center text-creamy w-[58px] h-[17px]">
+              <span className="text-figma-base font-light text-center text-creamy flex-1 sm:w-[58px] sm:flex-initial h-[17px]">
                 Фільтри
               </span>
             </div>
@@ -41,20 +41,20 @@ const CatalogHeader = ({ isFilterOpen, setIsFilterOpen }) => {
         </div>
 
         {/* Кнопка сортування */}
-        <div className="relative flex flex-row items-center gap-[10px] w-[150px] h-[35px]">
+        <div className="relative flex flex-row items-center gap-[10px] flex-1 sm:w-[150px] sm:flex-initial h-[35px]">
           <button 
             onClick={() => setIsSortOpen(!isSortOpen)}
-            className="box-border flex flex-row items-center px-[10px] py-[5px] gap-[5px] w-[150px] h-[35px] bg-creamy border border-choco-light rounded-[5px] transition-all duration-200 hover:opacity-90 text-choco-light"
+            className="box-border flex flex-row items-center px-[10px] py-[5px] gap-[5px] w-full sm:w-[150px] h-[35px] bg-creamy border border-choco-light rounded-[5px] transition-all duration-200 hover:opacity-90 text-choco-light"
           >
             <CatalogFilterIcon width={24} height={24} strokeWidth={2} />
-            <span className="text-figma-base font-montserrat font-light text-center text-choco-light w-[86px] h-[17px]">
+            <span className="text-figma-base font-montserrat font-light text-center text-choco-light flex-1 sm:w-[86px] sm:flex-initial h-[17px]">
               Сортування
             </span>
           </button>
           
           {/* Выпадающий список */}
           {isSortOpen && (
-            <div className="absolute top-[35px] left-0 z-50 flex flex-col items-start pt-[6px] px-[10px] pb-[15px] gap-[10px] w-[156px] min-h-[200px] bg-creamy rounded-b-[10px] shadow-lg">
+            <div className="absolute top-[35px] left-0 right-0 sm:right-auto z-50 flex flex-col items-start pt-[6px] px-[10px] pb-[15px] gap-[10px] w-full sm:w-[156px] min-h-[200px] bg-creamy rounded-b-[10px] shadow-lg">
               {sortOptions.map((option, index) => {
                 const isSelected = sortOption === option.value;
                 return (
@@ -64,11 +64,11 @@ const CatalogHeader = ({ isFilterOpen, setIsFilterOpen }) => {
                       setSortOption(option.value);
                       setIsSortOpen(false);
                     }}
-                    className="flex flex-row justify-between items-center gap-[7px] w-[136px] h-[26px] cursor-pointer"
+                    className="flex flex-row justify-between items-center gap-[7px] w-full sm:w-[136px] h-[26px] cursor-pointer"
                   >
                     {isSelected ? (
                       <>
-                        <div className="flex items-center w-[105px] h-[15px]">
+                        <div className="flex items-center flex-1 sm:w-[105px] sm:flex-initial h-[15px]">
                           <span className="text-figma-xs font-montserrat font-light text-choco-light-50">
                             {option.label}
                           </span>
@@ -78,7 +78,7 @@ const CatalogHeader = ({ isFilterOpen, setIsFilterOpen }) => {
                         </div>
                       </>
                     ) : (
-                      <div className="flex items-center w-[136px] h-[15px]">
+                      <div className="flex items-center flex-1 sm:w-[136px] sm:flex-initial h-[15px]">
                         <span className="text-figma-xs font-montserrat font-light text-choco-dark">
                           {option.label}
                         </span>

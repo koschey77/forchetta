@@ -68,8 +68,55 @@ export default {
       // Готовые градиенты из Figma
       backgroundImage: {
         'main-gradient': 'linear-gradient(180deg, #F5F7F8 0%, #F5EEE0 100%)',
+      },
+      // Специальные утилиты для product bадges из Figma
+      spacing: {
+        'badge-px': '10px',  // padding для всех бейджей
+      },
+      borderRadius: {
+        'badge': '13.5px',   // radius для всех бейджей
       }
     },
   },
-  plugins: [],
+  plugins: [
+    // Кастомные компоненты для бейджей
+    function({ addComponents }) {
+      addComponents({
+        '.badge-base': {
+          'display': 'flex',
+          'flex-direction': 'row',
+          'justify-content': 'center',
+          'align-items': 'center', 
+          'padding': '10px',
+          'height': '30px',
+          'border-radius': '13.5px',
+          'font-family': 'Montserrat, sans-serif',
+          'font-style': 'normal',
+          'font-weight': '500',
+          'font-size': '12px',
+          'line-height': '15px',
+          'text-align': 'center',
+          'position': 'absolute',
+          'top': '16px',
+          'left': '16px'
+        },
+        '.badge-dark': {
+          'width': '90px',
+          'background': '#2B1A12',
+          'border': '1px solid #705A5A',
+          'color': '#F5EEE0'
+        },
+        '.badge-light': {
+          'width': '100px', 
+          'background': '#E3D6BF',
+          'color': '#2B1A12'
+        },
+        '.badge-red': {
+          'width': '60px',
+          'background': '#893E3E', 
+          'color': '#F5EEE0'
+        }
+      })
+    }
+  ],
 }

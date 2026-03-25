@@ -105,8 +105,9 @@ const CatalogPage = () => {
           setIsFilterOpen={setIsFilterOpen} 
         />
         
-        <div className="max-w-[1440px] mx-auto px-[60px] mt-6">
-          <div className="flex items-start gap-6">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-[60px] mt-6">
+          {/* Desktop и Tablet версия - flex layout */}
+          <div className="hidden sm:flex items-start gap-6">
             {isFilterOpen && <Sidebar />}
             
             <div className={`grid gap-x-6 gap-y-8 flex-grow transition-all duration-300 ease-in-out ${
@@ -118,6 +119,21 @@ const CatalogPage = () => {
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
+          </div>
+
+          {/* Mobile версия (<640px) - conditional rendering */}
+          <div className="sm:hidden">
+            {isFilterOpen ? (
+              /* Показываем только фильтры на всю ширину */
+              <Sidebar className="w-full" />
+            ) : (
+              /* Показываем только товары */
+              <div className="grid gap-x-4 gap-y-8 grid-cols-2">
+                {mockProducts.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

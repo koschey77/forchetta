@@ -5,9 +5,9 @@ const ProductCard = ({ product }) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
   const tagStyles = {
-    'dark': 'bg-button-secondary text-creamy',
-    'light': 'bg-button-primary text-choco-dark',
-    'red': 'bg-button-accent text-creamy',
+    'dark': 'absolute top-4 left-4 w-[90px] h-[30px] bg-choco-dark border border-choco-light text-creamy flex items-center justify-center rounded-[13.5px] font-montserrat font-medium text-[12px] leading-[15px]',
+    'light': 'absolute top-4 left-4 w-[100px] h-[30px] bg-dark-creamy text-choco-dark flex items-center justify-center rounded-[13.5px] font-montserrat font-medium text-[12px] leading-[15px]',
+    'red': 'absolute top-4 left-4 w-[60px] h-[30px] bg-wine-red text-creamy flex items-center justify-center rounded-[13.5px] font-montserrat font-medium text-[12px] leading-[15px]',
   };
 
   const handleAddToCart = () => {
@@ -29,7 +29,7 @@ const ProductCard = ({ product }) => {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
         />
         {product.tag && (
-          <div className={`absolute top-4 left-4 px-3.5 py-1.5 text-[11px] uppercase tracking-wide font-medium rounded-full ${tagStyles[product.tag.type]}`}>
+          <div className={tagStyles[product.tag.type]}>
             {product.tag.text}
           </div>
         )}
