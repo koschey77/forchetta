@@ -8,7 +8,7 @@ import { SearchIcon, ProfileIcon, HeartIcon, CartIcon, DotsIcon, HomeIcon, MenuI
 const NAV_ITEMS = ["Новинки", "Набори", "Акції", "Журнал / Блог"]
 
 // Переиспользуемые компоненты
-const UserAvatar = ({ userAvatar, onClick, className = "" }) => (
+const UserAvatar = ({ userAvatar, onClick, className = "", strokeWidth = 3 }) => (
   <button 
     aria-label="Профиль" 
     onClick={onClick} 
@@ -25,7 +25,7 @@ const UserAvatar = ({ userAvatar, onClick, className = "" }) => (
         className="w-[30px] h-[30px] rounded-full object-cover"
       />
     ) : (
-      <ProfileIcon className="shrink-0" />
+      <ProfileIcon className="shrink-0 text-choco-light" strokeWidth={strokeWidth} />
     )}
   </button>
 )
@@ -136,7 +136,7 @@ const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick
           <div className="flex items-center gap-[30px] px-[8px] py-[5px]">
             {/* Профиль с hover меню */}
             <div className="group relative flex items-center">
-              <UserAvatar userAvatar={userAvatar} onClick={onProfileClick} />
+              <UserAvatar userAvatar={userAvatar} onClick={onProfileClick} strokeWidth={2} />
               <ProfileHoverMenu user={user} logout={logout} />
             </div>
             <button aria-label="Избранное" onClick={onFavoritesClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
@@ -192,7 +192,7 @@ const TabletHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
           <div className="flex items-center gap-[30px] px-[8px] py-[5px]">
             {/* Профиль с hover меню */}
             <div className="group relative flex items-center">
-              <UserAvatar userAvatar={userAvatar} onClick={onProfileClick} />
+              <UserAvatar userAvatar={userAvatar} onClick={onProfileClick} strokeWidth={2} />
               <ProfileHoverMenu user={user} logout={logout} />
             </div>
             <button aria-label="Избранное" onClick={onFavoritesClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">

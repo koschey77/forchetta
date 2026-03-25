@@ -143,7 +143,7 @@ export const MenuIcon = ({ className = "w-[37px] h-[30px]" }) => (
   </svg>
 )
 
-export const ProfileIcon = ({ className = "w-[30px] h-[30px]" }) => (
+export const ProfileIcon = ({ className = "w-[30px] h-[30px]", strokeWidth = 3 }) => (
   <svg
     width="30"
     height="30"
@@ -154,8 +154,8 @@ export const ProfileIcon = ({ className = "w-[30px] h-[30px]" }) => (
   >
     <path
       d="M15 12.5C15.5745 12.5 16.1434 12.3868 16.6742 12.167C17.205 11.9471 17.6873 11.6248 18.0936 11.2186C18.4998 10.8123 18.8221 10.33 19.042 9.79924C19.2618 9.26844 19.375 8.69953 19.375 8.125C19.375 7.55047 19.2618 6.98156 19.042 6.45076C18.8221 5.91996 18.4998 5.43766 18.0936 5.03141C17.6873 4.62515 17.205 4.30289 16.6742 4.08303C16.1434 3.86316 15.5745 3.75 15 3.75C13.8397 3.75 12.7269 4.21094 11.9064 5.03141C11.0859 5.85188 10.625 6.96468 10.625 8.125C10.625 9.28532 11.0859 10.3981 11.9064 11.2186C12.7269 12.0391 13.8397 12.5 15 12.5ZM3.75 25.5V26.25H26.25V25.5C26.25 22.7 26.25 21.3 25.705 20.23C25.2256 19.2892 24.4608 18.5244 23.52 18.045C22.45 17.5 21.05 17.5 18.25 17.5H11.75C8.95 17.5 7.55 17.5 6.48 18.045C5.53923 18.5244 4.77436 19.2892 4.295 20.23C3.75 21.3 3.75 22.7 3.75 25.5Z"
-      stroke="#705A5A"
-      strokeWidth={3}
+      stroke="currentColor"
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -324,5 +324,30 @@ export const CartSolidIcon = ({
         <rect width="36" height="36" fill="white" />
       </clipPath>
     </defs>
+  </svg>
+)
+
+// Иконка сердца (заполненная версия)
+export const HeartSolidIcon = ({ 
+  width = 25, 
+  height = 25, 
+  className = "" 
+}) => (
+  <svg 
+    width={width} 
+    height={height} 
+    viewBox="0 0 25 25" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path 
+      d="M7.8125 4.16667C4.64843 4.16667 2.08333 6.73177 2.08333 9.89583C2.08333 15.625 8.85416 20.8333 12.5 22.0448C16.1458 20.8333 22.9167 15.625 22.9167 9.89583C22.9167 6.73177 20.3516 4.16667 17.1875 4.16667C15.25 4.16667 13.5365 5.12864 12.5 6.60104C11.9716 5.84864 11.2698 5.23459 10.4538 4.81085C9.6379 4.3871 8.7319 4.16615 7.8125 4.16667Z" 
+      fill="currentColor" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
   </svg>
 )

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CartSolidIcon, HeartIcon } from '../icons';
+import { HeartSolidIcon, HeartIcon, CartSolidIcon } from '../icons';
 
 const ProductCard = ({ product }) => {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="flex flex-col group cursor-pointer h-full pb-6 bg-creamy overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+    <div className="flex flex-col group cursor-pointer h-full pb-6 bg-creamy overflow-hidden transition-shadow duration-300">
       <div className="relative w-full h-[185px] mb-4 overflow-hidden">
         <img 
           src={product.image} 
@@ -40,10 +40,18 @@ const ProductCard = ({ product }) => {
             handleToggleFavorite();
           }}
         >
-          <HeartIcon 
-            className={`w-[30px] h-[30px] transition-all ${isFavorite ? 'text-creamy' : 'text-creamy hover:text-creamy/70'}`}
-            strokeWidth={isFavorite ? 3 : 1}
-          />
+          {isFavorite ? (
+            <HeartSolidIcon 
+              width={30} 
+              height={30}
+              className="text-creamy transition-all"
+            />
+          ) : (
+            <HeartIcon 
+              className="w-[30px] h-[30px] transition-all text-creamy hover:text-creamy/70"
+              strokeWidth={1}
+            />
+          )}
         </button>
       </div>
       
@@ -73,8 +81,8 @@ const ProductCard = ({ product }) => {
             }}
           >
             <CartSolidIcon 
-              width={36} 
-              height={36}
+              width={30} 
+              height={30}
               className="text-choco-light hover:text-choco-dark transition-colors cursor-pointer"
             />
           </button>
