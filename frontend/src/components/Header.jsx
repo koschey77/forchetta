@@ -140,10 +140,10 @@ const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick
               <ProfileHoverMenu user={user} logout={logout} />
             </div>
             <button aria-label="Избранное" onClick={onFavoritesClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
-              <HeartIcon className="shrink-0" />
+              <HeartIcon className="shrink-0 text-choco-light" strokeWidth={2} />
             </button>
             <button aria-label="Корзина" onClick={onCartClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
-              <CartIcon className="shrink-0" />
+              <CartIcon className="shrink-0 text-choco-light" strokeWidth={2} />
             </button>
             <button
               aria-label={isMenuOpen ? "Закрыть меню" : "Открыть меню"}
@@ -156,11 +156,7 @@ const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick
         </div>
       </header>
 
-      <MenuDropdown 
-        isMenuOpen={isMenuOpen}
-        breakpointClasses="hidden xl:block"
-        containerClasses="mx-auto w-full max-w-[1440px] px-[60px]"
-      />
+      <MenuDropdown isMenuOpen={isMenuOpen} breakpointClasses="hidden xl:block" containerClasses="mx-auto w-full max-w-[1440px] px-[60px]" />
     </>
   )
 }
@@ -175,11 +171,7 @@ const TabletHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
             onClick={onLogoClick}
             className="h-[67px] w-[125px] shrink-0 transition-transform duration-300 hover:scale-[1.02]"
           >
-            <img 
-              src="/forchetta-logo.png" 
-              alt="Forchetta Logo" 
-              className="w-full h-full object-contain"
-            />
+            <img src="/forchetta-logo.png" alt="Forchetta Logo" className="w-full h-full object-contain" />
           </button>
 
           <nav aria-label="Планшетная навигация" className="flex h-[43px] items-center gap-[30px]">
@@ -204,10 +196,10 @@ const TabletHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
               <ProfileHoverMenu user={user} logout={logout} />
             </div>
             <button aria-label="Избранное" onClick={onFavoritesClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
-              <HeartIcon className="shrink-0" />
+              <HeartIcon className="shrink-0 text-choco-light" strokeWidth={2} />
             </button>
             <button aria-label="Корзина" onClick={onCartClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
-              <CartIcon className="shrink-0" />
+              <CartIcon className="shrink-0 text-choco-light" strokeWidth={2} />
             </button>
             <button
               aria-label={isMenuOpen ? "Закрыть меню" : "Открыть меню"}
@@ -220,7 +212,7 @@ const TabletHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
         </div>
       </header>
 
-      <MenuDropdown 
+      <MenuDropdown
         isMenuOpen={isMenuOpen}
         breakpointClasses="hidden sm:block xl:hidden"
         containerClasses="mx-auto w-full max-w-[1440px] px-[60px]"
@@ -275,7 +267,7 @@ const MobileHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
               onClick={onFavoritesClick}
               className="flex w-[41px] flex-col items-center gap-[1px] transition duration-300 hover:opacity-80"
             >
-              <HeartIcon className="shrink-0" />
+              <HeartIcon className="shrink-0 text-choco-light" />
               <span className="text-center text-[10px] font-light leading-[12px] text-choco-light">Обране</span>
             </button>
 
@@ -293,7 +285,7 @@ const MobileHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
               onClick={onCartClick}
               className="flex w-[36px] flex-col items-center gap-[3px] transition duration-300 hover:opacity-80"
             >
-              <CartIcon className="shrink-0" />
+              <CartIcon className="shrink-0 text-choco-light" strokeWidth={3} />
               <span className="text-center text-[10px] font-light leading-[12px] text-choco-light">Кошик</span>
             </button>
 
@@ -341,7 +333,7 @@ const Header = () => {
   const handleSearchClick = () => console.log("search")
   const handleFavoritesClick = () => console.log("favorites")
   const handleCartClick = () => navigate('/cart')
-  const handleCatalogClick = () => console.log("catalog")
+  const handleCatalogClick = () => navigate('/catalog')
   const handleLogoClick = () => navigate('/')
   
   // Логика для профиля: если есть пользователь - на профиль, иначе на логин
