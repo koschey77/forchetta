@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import * as Slider from '@radix-ui/react-slider';
-import { CatalogFilterIcon, CheckIcon } from '../icons';
+import { CatalogFilterIcon, CheckIcon, CheckboxIcon } from '../icons';
 import useCategoryStore from '../../stores/useCategoryStore';
 
 // Компонент чекбокса
@@ -10,15 +10,7 @@ const Checkbox = ({ checked, onChange, children }) => (
       checked ? 'bg-choco-light' : 'bg-transparent'
     }`}>
       {checked && (
-        <svg width="12" height="9" viewBox="0 0 12 9" fill="none" className="text-creamy">
-          <path 
-            d="M1 4.5L4 7.5L11 1" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          />
-        </svg>
+        <CheckboxIcon className="text-creamy" />
       )}
     </div>
     <span className="text-figma-md font-montserrat font-light text-choco-light whitespace-nowrap">
@@ -27,9 +19,9 @@ const Checkbox = ({ checked, onChange, children }) => (
   </div>
 );
 
-const Sidebar = ({ className, onCategoryChange, onApplyFilters, products = [] }) => {
+const Sidebar = ({ className, onApplyFilters, products = [] }) => {
   const { categories, loading, fetchAllCategories } = useCategoryStore();
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [priceRange, setPriceRange] = useState([1, 2500]);
@@ -41,14 +33,13 @@ const Sidebar = ({ className, onCategoryChange, onApplyFilters, products = [] })
     fetchAllCategories();
   }, [fetchAllCategories]);
 
-  // Преобразуем категории из backend формата в frontend формат
-  const categoryOptions = [
-    { value: '', label: 'Всі категорії' },
-    ...categories.map(category => ({
-      value: category._id,
-      label: category.name
-    }))
-  ];
+
+
+  // Преобразуем категории из backend формата в frontend формат без количества товаров
+  const categoryOptions = categories.map(category => ({
+    value: category._id,
+    label: category.name
+  }));
 
   // Получаем уникальные значения веса из товаров
   const getUniqueWeights = () => {
@@ -79,11 +70,11 @@ const Sidebar = ({ className, onCategoryChange, onApplyFilters, products = [] })
   ];
 
   const handleCategoryChange = (categoryValue) => {
-    setSelectedCategory(categoryValue);
-    setIsCategoryOpen(false);
-    if (onCategoryChange) {
-      onCategoryChange(categoryValue);
-    }
+    setSelectedCategories(prev => 
+      prev.includes(categoryValue)
+        ? prev.filter(item => item !== categoryValue)
+        : [...prev, categoryValue]
+    );
   };
 
   const handleWeightChange = (weightValue) => {
@@ -103,22 +94,17 @@ const Sidebar = ({ className, onCategoryChange, onApplyFilters, products = [] })
   };
 
   const handleClearAll = () => {
-    setSelectedCategory('');
+    setSelectedCategories([]);
     setIsCategoryOpen(false);
     setSelectedIngredients([]);
     setPriceRange([1, 2500]);
     setSelectedWeights([]);
     setIsWeightOpen(false);
     
-    // Очищаем категорию через callback
-    if (onCategoryChange) {
-      onCategoryChange('');
-    }
-    
     // Применяем пустые фильтры
     if (onApplyFilters) {
       onApplyFilters({
-        category: '',
+        categories: [],
         ingredients: [],
         priceRange: [1, 2500],
         weights: []
@@ -128,7 +114,7 @@ const Sidebar = ({ className, onCategoryChange, onApplyFilters, products = [] })
 
   const handleApplyFilters = () => {
     const filters = {
-      category: selectedCategory,
+      categories: selectedCategories,
       ingredients: selectedIngredients,
       priceRange,
       weights: selectedWeights
@@ -154,9 +140,7 @@ const Sidebar = ({ className, onCategoryChange, onApplyFilters, products = [] })
             className="flex flex-row justify-between items-center px-[15px] py-[10px] gap-[10px] w-full h-[59px] bg-creamy border border-choco-light rounded-[10px] transition-all duration-200 hover:opacity-90"
           >
             <span className="text-figma-base font-montserrat font-light text-choco-light">
-              {loading ? 'Завантаження...' : 
-               (categoryOptions.find(cat => cat.value === selectedCategory)?.label || 'Всі категорії')
-              }
+              {loading ? 'Завантаження...' : 'Виберіть категорію'}
             </span>
             <CatalogFilterIcon width={20} height={20} strokeWidth={2} className="text-choco-light" />
           </button>
@@ -165,29 +149,23 @@ const Sidebar = ({ className, onCategoryChange, onApplyFilters, products = [] })
           {isCategoryOpen && (
             <div className="absolute top-[59px] left-0 right-0 z-50 flex flex-col items-start pt-[6px] px-[10px] pb-[15px] gap-[10px] w-full min-h-[200px] bg-creamy border border-choco-light rounded-b-[10px] shadow-lg">
               {categoryOptions.map((category) => {
-                const isSelected = selectedCategory === category.value;
+                const isSelected = selectedCategories.includes(category.value);
                 return (
                   <div
                     key={category.value}
                     onClick={() => handleCategoryChange(category.value)}
                     className="flex flex-row justify-between items-center gap-[7px] w-full h-[26px] cursor-pointer"
                   >
-                    {isSelected ? (
-                      <>
-                        <div className="flex items-center flex-1 h-[15px]">
-                          <span className="text-figma-xs font-montserrat font-light text-choco-light-50">
-                            {category.label}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-center w-[20px] h-[20px]">
-                          <CheckIcon width={20} height={20} strokeWidth={1.5} className="text-choco-light" />
-                        </div>
-                      </>
-                    ) : (
-                      <div className="flex items-center flex-1 h-[15px]">
-                        <span className="text-figma-xs font-montserrat font-light text-choco-dark">
-                          {category.label}
-                        </span>
+                    <div className="flex items-center flex-1 h-[15px]">
+                      <span className={`text-figma-xs font-montserrat font-light ${
+                        isSelected ? 'text-choco-light-50' : 'text-choco-dark'
+                      }`}>
+                        {category.label}
+                      </span>
+                    </div>
+                    {isSelected && (
+                      <div className="flex items-center justify-center w-[20px] h-[20px]">
+                        <CheckIcon width={20} height={20} strokeWidth={1.5} className="text-choco-light" />
                       </div>
                     )}
                   </div>
@@ -212,7 +190,7 @@ const Sidebar = ({ className, onCategoryChange, onApplyFilters, products = [] })
       </div>
 
       {/* Ціна */}
-      <div className="flex flex-col justify-center items-start px-[15px] py-[15px] gap-[20px] w-full min-h-[140px] border border-choco-light rounded-[5px]">
+      <div className="flex flex-col justify-center items-start px-[15px] py-[15px] gap-[20px] w-full min-h-[140px] border border-choco-light rounded-[10px]">
         <h3 className="text-figma-lg font-montserrat font-light text-choco-light w-[83px] h-[22px]">Ціна, грн</h3>
 
         <div className="flex flex-col items-start gap-[20px] w-full">

@@ -60,6 +60,7 @@ export default {
       },
       // Font weights специально для Figma дизайна
       fontWeight: {
+        'figma-light': '300',     // Montserrat легкий (для мобильных цен)
         'figma-regular': '400',   // Montserrat обычный
         'figma-medium': '500',    // Montserrat средний
         'figma-semibold': '600',  // Montserrat полужирный

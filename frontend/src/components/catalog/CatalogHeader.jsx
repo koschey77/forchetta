@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { CatalogFilterIcon, CrossIcon, CheckIcon } from '../icons';
 
-const CatalogHeader = ({ isFilterOpen, setIsFilterOpen }) => {
-  const [sortOption, setSortOption] = useState('popular');
+const CatalogHeader = ({ isFilterOpen, setIsFilterOpen, onSortChange }) => {
+  const [sortOption, setSortOption] = useState('');
   const [isSortOpen, setIsSortOpen] = useState(false);
 
   const sortOptions = [
@@ -11,7 +11,7 @@ const CatalogHeader = ({ isFilterOpen, setIsFilterOpen }) => {
     { value: 'price-desc', label: 'Від дорогих' },
     { value: 'new', label: 'Новинки' },
     { value: 'sales', label: 'Акції' },
-    { value: 'bestsellers', label: 'Топ продажів' },
+    // { value: 'bestsellers', label: 'Топ продажів' }, // Пока нет статистики продаж
   ];
 
   return (
@@ -47,8 +47,8 @@ const CatalogHeader = ({ isFilterOpen, setIsFilterOpen }) => {
             className="box-border flex flex-row items-center px-[10px] py-[5px] gap-[5px] w-full sm:w-[150px] h-[35px] bg-creamy border border-choco-light rounded-[5px] transition-all duration-200 hover:opacity-90 text-choco-light"
           >
             <CatalogFilterIcon width={24} height={24} strokeWidth={2} />
-            <span className="text-figma-base font-montserrat font-light text-center text-choco-light flex-1 sm:w-[86px] sm:flex-initial h-[17px]">
-              Сортування
+            <span className="text-figma-base font-montserrat font-light text-center text-choco-light flex-1 sm:w-[86px] sm:flex-initial h-[17px] whitespace-nowrap">
+              {sortOptions.find(option => option.value === sortOption)?.label || 'Сортування'}
             </span>
           </button>
           
@@ -56,13 +56,16 @@ const CatalogHeader = ({ isFilterOpen, setIsFilterOpen }) => {
           {isSortOpen && (
             <div className="absolute top-[35px] left-0 right-0 sm:right-auto z-50 flex flex-col items-start pt-[6px] px-[10px] pb-[15px] gap-[10px] w-full sm:w-[156px] min-h-[200px] bg-creamy rounded-b-[10px] shadow-lg">
               {sortOptions.map((option, index) => {
-                const isSelected = sortOption === option.value;
+                const isSelected = sortOption === option.value && sortOption !== '';
                 return (
                   <div
                     key={option.value}
                     onClick={() => {
                       setSortOption(option.value);
                       setIsSortOpen(false);
+                      if (onSortChange) {
+                        onSortChange(option.value);
+                      }
                     }}
                     className="flex flex-row justify-between items-center gap-[7px] w-full sm:w-[136px] h-[26px] cursor-pointer"
                   >

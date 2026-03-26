@@ -182,6 +182,24 @@ export const DotsIcon = ({ className = "w-6 h-6 text-[#705A5A]" }) => (
   </svg>
 )
 
+export const CheckboxIcon = ({ className = "text-creamy" }) => (
+  <svg 
+    width="12" 
+    height="9" 
+    viewBox="0 0 12 9" 
+    fill="none" 
+    className={className}
+  >
+    <path 
+      d="M1 4.5L4 7.5L11 1" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+)
+
 export const FacebookIcon = ({ width = 30, height = 30, className = "" }) => (
   <svg 
     width={width} 

@@ -5,7 +5,7 @@ import { Logo } from "./Logos/Logo.jsx"
 import { SearchIcon, ProfileIcon, HeartIcon, CartIcon, DotsIcon, HomeIcon, MenuIcon } from "./icons/index.jsx"
 
 // Общие константы
-const NAV_ITEMS = ["Новинки", "Набори", "Акції", "Журнал / Блог"]
+const NAV_ITEMS = ["Новинки", "Набори", "Акції", "Журнал"]
 
 // Переиспользуемые компоненты
 const UserAvatar = ({ userAvatar, onClick, className = "", strokeWidth = 3 }) => (
