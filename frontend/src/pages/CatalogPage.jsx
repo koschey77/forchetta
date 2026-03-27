@@ -9,7 +9,7 @@ const CatalogPage = () => {
   const { categories, fetchAllCategories } = useCategoryStore();
   const { products, allProducts, loading: productsLoading, fetchAllProducts } = useProductStore();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [sortOption, setSortOption] = useState('popular');
+  const [sortOption, setSortOption] = useState('');
   const [appliedFilters, setAppliedFilters] = useState({
     categories: [],
     ingredients: [],
@@ -39,6 +39,8 @@ const CatalogPage = () => {
       oldPrice: backendProduct.discountPrice ? `${backendProduct.price} грн` : null,
       image: backendProduct.images[0].url,
       tag,
+      // Статистика лайков
+      likesCount: backendProduct.likesCount || 0,
       // Добавляем оригинальные данные для фильтрации
       originalProduct: backendProduct
     };
@@ -140,10 +142,8 @@ const CatalogPage = () => {
           return 0;
         });
       
-      case 'popular':
       default:
-        // По умолчанию или по популярности - оставляем исходный порядок
-        // В будущем можно добавить поле popularity в модель товара
+        // Без сортировки - возвращаем товары в исходном порядке
         return sortedProducts;
     }
   };
@@ -182,22 +182,9 @@ const CatalogPage = () => {
     </div>
   );
 
-  // Получаем название выбранных категорий
-  const getCategoriesName = (categoryIds) => {
-    if (!categoryIds || categoryIds.length === 0) return 'Всі категорії';
-    if (categoryIds.length === 1) {
-      const category = categories.find(cat => cat._id === categoryIds[0]);
-      return category ? category.name : 'Всі категорії';
-    }
-    const categoryNames = categoryIds.map(categoryId => {
-      const category = categories.find(cat => cat._id === categoryId);
-      return category ? category.name : '';
-    }).filter(name => name);
-    return categoryNames.length > 0 ? categoryNames.join(', ') : 'Всі категорії';
-  };
+
 
   const handleApplyFilters = (filters) => {
-    console.log('🔎 Применяем фильтры:', filters);
     setAppliedFilters(filters);
     
     // Закрываем сайдбар только на мобильной версии (< 640px) после применения фильтров
@@ -221,7 +208,10 @@ const CatalogPage = () => {
         <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-[60px] mb-4">
           <div className="text-center">
             <h2 className="text-2xl font-montserrat font-semibold leading-[29px] text-choco-light">
-              {getCategoriesName(appliedFilters.categories)}
+              {hasAppliedFilters 
+                ? <>Знайдено товарів: <span className="font-cormorant oldstyle">{displayProducts.length}</span></>
+                : 'Всі категорії'
+              }
             </h2>
           </div>
         </div>
@@ -236,7 +226,11 @@ const CatalogPage = () => {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-[60px] mt-6 pb-16 min-h-[600px]">
           {/* Desktop и Tablet версия - flex layout */}
           <div className="hidden sm:flex items-start gap-6">
-            {isFilterOpen && <Sidebar onApplyFilters={handleApplyFilters} products={allProducts} />}
+            <Sidebar 
+              className={`${isFilterOpen ? '' : 'hidden'}`} 
+              onApplyFilters={handleApplyFilters} 
+              products={allProducts} 
+            />
             
             <div className={`grid gap-x-6 gap-y-8 flex-grow transition-all duration-300 ease-in-out ${
               isFilterOpen 
@@ -259,12 +253,15 @@ const CatalogPage = () => {
 
           {/* Mobile версия (<640px) */}
           <div className="sm:hidden relative z-10">
-            {isFilterOpen ? (
-              /* Показываем только фильтры на всю ширину */
-              <Sidebar className="w-full" onApplyFilters={handleApplyFilters} products={allProducts} />
-            ) : (
-              /* Показываем только товары */
-              <div className="grid gap-x-4 gap-y-8 grid-cols-2">
+            {/* Фильтры */}
+            <Sidebar 
+              className={`w-full ${isFilterOpen ? 'block' : 'hidden'}`} 
+              onApplyFilters={handleApplyFilters} 
+              products={allProducts} 
+            />
+            
+            {/* Товары */}
+            <div className={`grid gap-x-4 gap-y-8 grid-cols-2 ${isFilterOpen ? 'hidden' : 'block'}`}>
                 {productsLoading ? (
                   <div className="col-span-2 flex justify-center items-center py-20">
                     <div className="text-choco-light text-lg">Завантаження...</div>
@@ -276,8 +273,7 @@ const CatalogPage = () => {
                 ) : (
                   <NoProductsMessage isMobile={true} />
                 )}
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </div>

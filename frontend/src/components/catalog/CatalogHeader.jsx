@@ -6,7 +6,6 @@ const CatalogHeader = ({ isFilterOpen, setIsFilterOpen, onSortChange }) => {
   const [isSortOpen, setIsSortOpen] = useState(false);
 
   const sortOptions = [
-    { value: 'popular', label: 'За популярністю' },
     { value: 'price-asc', label: 'Від дешевих' },
     { value: 'price-desc', label: 'Від дорогих' },
     { value: 'new', label: 'Новинки' },
@@ -55,7 +54,7 @@ const CatalogHeader = ({ isFilterOpen, setIsFilterOpen, onSortChange }) => {
           {/* Выпадающий список */}
           {isSortOpen && (
             <div className="absolute top-[35px] left-0 right-0 sm:right-auto z-50 flex flex-col items-start pt-[6px] px-[10px] pb-[15px] gap-[10px] w-full sm:w-[156px] min-h-[200px] bg-creamy rounded-b-[10px] shadow-lg">
-              {sortOptions.map((option, index) => {
+              {sortOptions.map((option) => {
                 const isSelected = sortOption === option.value && sortOption !== '';
                 return (
                   <div
