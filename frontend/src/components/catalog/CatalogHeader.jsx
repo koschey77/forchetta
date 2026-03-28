@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { CatalogFilterIcon, CrossIcon, CheckIcon } from '../icons';
+import useFilterStore from '../../stores/useFilterStore';
 
-const CatalogHeader = ({ isFilterOpen, setIsFilterOpen, onSortChange }) => {
-  const [sortOption, setSortOption] = useState('');
+const CatalogHeader = () => {
+  // Получаем состояние сортировки из централизованного стора
+  const { sortOption, setSortOption, isFilterOpen, setIsFilterOpen } = useFilterStore();
+  
+  // Локальное состояние для UI выпадающего списка
   const [isSortOpen, setIsSortOpen] = useState(false);
 
   const sortOptions = [
@@ -62,9 +66,7 @@ const CatalogHeader = ({ isFilterOpen, setIsFilterOpen, onSortChange }) => {
                     onClick={() => {
                       setSortOption(option.value);
                       setIsSortOpen(false);
-                      if (onSortChange) {
-                        onSortChange(option.value);
-                      }
+                      // onSortChange больше не нужен - изменения автоматически синхронизируются через стор
                     }}
                     className="flex flex-row justify-between items-center gap-[7px] w-full sm:w-[136px] h-[26px] cursor-pointer"
                   >

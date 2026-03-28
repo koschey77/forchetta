@@ -93,6 +93,15 @@ const ProfilePage = () => {
               На головну
             </button>
             
+            {user.role === 'admin' && (
+              <button
+                onClick={() => navigate('/admin')}
+                className="px-6 py-3 bg-button-primary text-choco-dark rounded-xl font-montserrat font-medium hover:bg-choco-light hover:text-creamy transition duration-300 flex items-center justify-center gap-2"
+              >
+                🛠️ До Адмін панелі
+              </button>
+            )}
+            
             <button
               onClick={handleLogout}
               className="px-6 py-3 bg-wine-red text-white rounded-xl font-montserrat font-medium hover:opacity-90 transition duration-300"

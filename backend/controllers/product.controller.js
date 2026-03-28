@@ -5,11 +5,148 @@ import { redis } from "../lib/redis.js"
 
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find({}).populate('category', 'name image')
-    res.json({ products })
+    const { 
+      categories, 
+      ingredients, 
+      priceMin, 
+      priceMax, 
+      weights, 
+      sortBy, 
+      sortOrder = 'asc',
+      page = 1, 
+      limit = 12 
+    } = req.query;
+
+    // Строим объект фильтрации
+    let filter = {};
+
+    // Фильтр по категориям
+    if (categories) {
+      const categoryIds = categories.split(',');
+      filter.category = { $in: categoryIds };
+    }
+
+    // Фильтр по ингредиентам 
+    if (ingredients) {
+      const ingredientList = ingredients.split(',');
+      const ingredientFilters = [];
+
+      ingredientList.forEach(ingredient => {
+        switch (ingredient) {
+          case 'З горіхами':
+            ingredientFilters.push({ 'contains.nuts': true });
+            break;
+          case 'Без горіхів':
+            ingredientFilters.push({ 'contains.nuts': false });
+            break;
+          case 'Без пальмової олії':
+            ingredientFilters.push({ 'contains.palmOil': false });
+            break;
+          case 'Без лактози':
+            ingredientFilters.push({ 'contains.lactose': false });
+            break;
+          case 'Без глютену':
+            ingredientFilters.push({ 'contains.gluten': false });
+            break;
+        }
+      });
+
+      if (ingredientFilters.length > 0) {
+        filter.$and = ingredientFilters;
+      }
+    }
+
+    // Фильтр по диапазону цен
+    if (priceMin || priceMax) {
+      filter.$expr = {};
+      const priceField = {
+        $cond: {
+          if: { $gt: ["$discountPrice", 0] },
+          then: "$discountPrice",
+          else: "$price"
+        }
+      };
+
+      if (priceMin && priceMax) {
+        filter.$expr.$and = [
+          { $gte: [priceField, parseInt(priceMin)] },
+          { $lte: [priceField, parseInt(priceMax)] }
+        ];
+      } else if (priceMin) {
+        filter.$expr.$gte = [priceField, parseInt(priceMin)];
+      } else if (priceMax) {
+        filter.$expr.$lte = [priceField, parseInt(priceMax)];
+      }
+    }
+
+    // Фильтр по весу
+    if (weights) {
+      const weightList = weights.split(',').map(w => parseInt(w));
+      filter.weight = { $in: weightList };
+    }
+
+    // Настройка сортировки
+    let sort = {};
+    if (sortBy) {
+      switch (sortBy) {
+        case 'price':
+          // Сортировка по цене (с учетом скидочной цены)
+          sort = sortOrder === 'desc' ? { price: -1 } : { price: 1 };
+          break;
+        case 'new':
+          sort = { createdAt: -1 };
+          break;
+        case 'sales':
+          // Сортировка по акциям: сначала товары со скидкой, потом остальные
+          sort = { 
+            discountPrice: -1, // Товары со скидкой (discountPrice > 0) в начале
+            price: 1           // Внутри каждой группы сортируем по цене
+          };
+          break;
+        case 'name':
+          sort = { name: sortOrder === 'desc' ? -1 : 1 };
+          break;
+        default:
+          sort = { createdAt: -1 };
+      }
+    } else {
+      sort = { createdAt: -1 }; // По умолчанию сортируем по дате создания
+    }
+
+    // Пагинация
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Выполняем запрос с фильтрами, сортировкой и пагинацией
+    const [products, totalCount] = await Promise.all([
+      Product.find(filter)
+        .populate('category', 'name image')
+        .sort(sort)
+        .skip(skip)
+        .limit(limitNum)
+        .lean(),
+      Product.countDocuments(filter)
+    ]);
+
+    // Метаданные для пагинации
+    const totalPages = Math.ceil(totalCount / limitNum);
+    const hasMore = pageNum < totalPages;
+
+    res.json({ 
+      products,
+      pagination: {
+        currentPage: pageNum,
+        limit: limitNum,
+        total: totalCount,
+        totalPages,
+        hasMore
+      }
+    });
+
   } catch (error) {
-    console.log("Error in getAllProducts controller", error.message)
-    res.status(500).json({ message: "Server error", error: error.message })
+    console.log("Error in getAllProducts controller", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 }
 

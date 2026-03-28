@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as Slider from '@radix-ui/react-slider';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import { CatalogFilterIcon, CheckIcon, CheckboxIcon } from '../icons';
 import useCategoryStore from '../../stores/useCategoryStore';
+import useFilterStore from '../../stores/useFilterStore';
 
 // Компонент чекбокса
 const Checkbox = ({ checked, onChange, children }) => (
@@ -23,10 +24,21 @@ const Checkbox = ({ checked, onChange, children }) => (
 
 const Sidebar = ({ className, onApplyFilters, products = [] }) => {
   const { categories, loading, fetchAllCategories } = useCategoryStore();
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedIngredients, setSelectedIngredients] = useState([]);
-  const [priceRange, setPriceRange] = useState([1, 2500]);
-  const [selectedWeights, setSelectedWeights] = useState([]);
+  
+  // Получаем фильтры из централизованного стора
+  const { 
+    appliedFilters,
+    updateFilter,
+    applyFilters,
+    resetAll
+  } = useFilterStore();
+  
+  // Локальные ссылки для удобства
+  const selectedCategories = appliedFilters.categories;
+  const selectedIngredients = appliedFilters.ingredients;
+  const priceRange = appliedFilters.priceRange;
+  const selectedWeights = appliedFilters.weights;
+  
   const isSliderChange = useRef(false);
 
   // Загружаем категории при монтировании компонента
@@ -34,34 +46,33 @@ const Sidebar = ({ className, onApplyFilters, products = [] }) => {
     fetchAllCategories();
   }, [fetchAllCategories]);
 
-  // Функция применения фильтров
-  const applyFilters = () => {
-    const filters = {
-      categories: selectedCategories,
-      ingredients: selectedIngredients,
-      priceRange,
-      weights: selectedWeights
-    };
+  // Функция применения фильтров через стор
+  const handleApplyFilters = () => {
+    // Вызываем метод стора, который автоматически закроет на мобильных
+    applyFilters(appliedFilters);
     
+    // Также передаем родительскому компоненту для совместимости
     if (onApplyFilters) {
-      onApplyFilters(filters);
+      onApplyFilters(appliedFilters);
     }
   };
 
   // Real-time применение фильтров для кнопок и чекбоксов (мгновенно)
   useEffect(() => {
-    applyFilters();
+    handleApplyFilters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategories, selectedIngredients, selectedWeights]);
 
-  // Debounced применение для полей ввода цены (у1 секунда)
-  useEffect(() => {    // Пропускаем debounce для слайдера
+  // Debounced применение для полей ввода цены (1 секунда)
+  useEffect(() => {
+    // Пропускаем debounce для слайдера
     if (isSliderChange.current) {
       isSliderChange.current = false;
       return;
     }
-        const timeoutId = setTimeout(() => {
-      applyFilters();
+    
+    const timeoutId = setTimeout(() => {
+      handleApplyFilters();
     }, 1000);
 
     return () => clearTimeout(timeoutId);
@@ -103,44 +114,33 @@ const Sidebar = ({ className, onApplyFilters, products = [] }) => {
   ];
 
   const handleCategoryChange = (categoryValue) => {
-    setSelectedCategories(prev => 
-      prev.includes(categoryValue)
-        ? prev.filter(item => item !== categoryValue)
-        : [...prev, categoryValue]
-    );
+    const newCategories = selectedCategories.includes(categoryValue)
+      ? selectedCategories.filter(item => item !== categoryValue)
+      : [...selectedCategories, categoryValue];
+    updateFilter('categories', newCategories);
   };
 
   const handleWeightChange = (weightValue) => {
-    setSelectedWeights(prev => 
-      prev.includes(weightValue)
-        ? prev.filter(item => item !== weightValue)
-        : [...prev, weightValue]
-    );
+    const newWeights = selectedWeights.includes(weightValue)
+      ? selectedWeights.filter(item => item !== weightValue)
+      : [...selectedWeights, weightValue];
+    updateFilter('weights', newWeights);
   };
 
   const handleIngredientChange = (ingredient) => {
-    setSelectedIngredients(prev => 
-      prev.includes(ingredient)
-        ? prev.filter(item => item !== ingredient)
-        : [...prev, ingredient]
-    );
+    const newIngredients = selectedIngredients.includes(ingredient)
+      ? selectedIngredients.filter(item => item !== ingredient)
+      : [...selectedIngredients, ingredient];
+    updateFilter('ingredients', newIngredients);
+  };
+
+  const handlePriceChange = (newPriceRange) => {
+    updateFilter('priceRange', newPriceRange);
   };
 
   const handleClearAll = () => {
-    setSelectedCategories([]);
-    setSelectedIngredients([]);
-    setPriceRange([1, 2500]);
-    setSelectedWeights([]);
-    
-    // Применяем пустые фильтры
-    if (onApplyFilters) {
-      onApplyFilters({
-        categories: [],
-        ingredients: [],
-        priceRange: [1, 2500],
-        weights: []
-      });
-    }
+    // Используем метод resetAll из стора
+    resetAll();
   };
 
   return (
@@ -247,13 +247,13 @@ const Sidebar = ({ className, onApplyFilters, products = [] }) => {
                 max="2500"
                 value={priceRange[0]}
                 onChange={(e) => {
-                  const value = parseInt(e.target.value) || priceRange[0]
-                  setPriceRange([value, priceRange[1]])
+                  const value = parseInt(e.target.value) || priceRange[0];
+                  handlePriceChange([value, priceRange[1]]);
                 }}
                 onBlur={(e) => {
-                  const value = parseInt(e.target.value) || 1
-                  const correctedValue = Math.min(Math.max(value, 1), priceRange[1] - 1)
-                  setPriceRange([correctedValue, priceRange[1]])
+                  const value = parseInt(e.target.value) || 1;
+                  const correctedValue = Math.min(Math.max(value, 1), priceRange[1] - 1);
+                  handlePriceChange([correctedValue, priceRange[1]]);
                 }}
                 className="w-full text-[10px] font-montserrat font-light text-choco-light bg-transparent outline-none text-center"
                 placeholder="От"
@@ -266,13 +266,13 @@ const Sidebar = ({ className, onApplyFilters, products = [] }) => {
                 max="2500"
                 value={priceRange[1]}
                 onChange={(e) => {
-                  const value = parseInt(e.target.value) || priceRange[1]
-                  setPriceRange([priceRange[0], value])
+                  const value = parseInt(e.target.value) || priceRange[1];
+                  handlePriceChange([priceRange[0], value]);
                 }}
                 onBlur={(e) => {
-                  const value = parseInt(e.target.value) || 2500
-                  const correctedValue = Math.max(priceRange[0] + 1, Math.min(value, 2500))
-                  setPriceRange([priceRange[0], correctedValue])
+                  const value = parseInt(e.target.value) || 2500;
+                  const correctedValue = Math.max(priceRange[0] + 1, Math.min(value, 2500));
+                  handlePriceChange([priceRange[0], correctedValue]);
                 }}
                 className="w-full text-[10px] font-montserrat font-light text-choco-light bg-transparent outline-none text-center"
                 placeholder="До"
@@ -291,11 +291,11 @@ const Sidebar = ({ className, onApplyFilters, products = [] }) => {
               minStepsBetweenThumbs={1}
               onValueChange={(value) => {
                 isSliderChange.current = true; // Помечаем что изменение от слайдера
-                setPriceRange(value);
+                handlePriceChange(value);
               }}
               onValueCommit={(value) => {
-                setPriceRange(value);
-                applyFilters(); // Мгновенное применение при "потере фокуса" слайдера
+                handlePriceChange(value);
+                handleApplyFilters(); // Мгновенное применение при "потере фокуса" слайдера
               }}
             >
               {/* Полоска (трек) */}

@@ -1,27 +1,52 @@
-import { useState, useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import CatalogHeader from '../components/catalog/CatalogHeader';
 import Sidebar from '../components/catalog/Sidebar';
 import ProductCard from '../components/catalog/ProductCard';
-import useCategoryStore from '../stores/useCategoryStore';
-import { useProductStore } from '../stores/useProductStore';
+import Pagination from '../components/catalog/Pagination';
+import { productsAPI } from '../services/api';
+import useFilterStore from '../stores/useFilterStore';
 
 const CatalogPage = () => {
-  const { categories, fetchAllCategories } = useCategoryStore();
-  const { products, allProducts, loading: productsLoading, fetchAllProducts } = useProductStore();
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [sortOption, setSortOption] = useState('');
-  const [appliedFilters, setAppliedFilters] = useState({
-    categories: [],
-    ingredients: [],
-    priceRange: [1, 2500],
-    weights: []
+  // Получаем состояние фильтров из централизованного стора
+  const { 
+    appliedFilters, 
+    sortOption, 
+    isFilterOpen, 
+    hasAppliedFilters,
+    applyFilters,
+    currentPage,
+    itemsPerPage,
+    totalPages,
+    totalItems,
+    setPaginationData,
+    setCurrentPage
+  } = useFilterStore();
+
+  // TanStack Query для загрузки товаров
+  const { 
+    data: apiResponse, 
+    isLoading: productsLoading, 
+    error 
+  } = useQuery({
+    queryKey: ['products', appliedFilters, sortOption, currentPage, itemsPerPage],
+    queryFn: () => productsAPI.getAllWithFilters(
+      appliedFilters, 
+      { page: currentPage, limit: itemsPerPage }, 
+      sortOption
+    ),
+    staleTime: 2 * 60 * 1000, // 2 минуты свежие данные для каталога
   });
 
-  // Загружаем категории и все товары при монтировании
+  // Извлекаем товары из ответа API с мемоизацией для стабильности ссылок
+  const products = useMemo(() => apiResponse?.products || [], [apiResponse?.products]);
+
+  // Обновляем данные пагинации при получении нового ответа  
   useEffect(() => {
-    fetchAllCategories();
-    fetchAllProducts();
-  }, [fetchAllCategories, fetchAllProducts]);
+    if (apiResponse?.pagination) {
+      setPaginationData(apiResponse.pagination);
+    }
+  }, [apiResponse, setPaginationData]);
 
   // Функция адаптации backend данных в frontend формат
   const adaptProductData = (backendProduct) => {
@@ -41,132 +66,25 @@ const CatalogPage = () => {
       tag,
       // Статистика лайков
       likesCount: backendProduct.likesCount || 0,
-      // Добавляем оригинальные данные для фильтрации
+      // Добавляем оригинальные данные для совместимости
       originalProduct: backendProduct
     };
   };
 
-  // Логика фильтрации товаров
-  const filterProducts = (adaptedProducts, filters) => {
-    return adaptedProducts.filter(product => {
-      const originalProduct = product.originalProduct;
-      
-      // Фильтр по категориям
-      if (filters.categories && filters.categories.length > 0) {
-        const hasMatchingCategory = filters.categories.some(categoryId => 
-          originalProduct.category && originalProduct.category._id === categoryId
-        );
-        if (!hasMatchingCategory) return false;
-      }
-      // Фильтр по ингредиентам состава
-      if (filters.ingredients && filters.ingredients.length > 0) {
-        const hasMatchingIngredient = filters.ingredients.some(ingredient => {
-          switch (ingredient) {
-            case 'З горіхами':
-              return originalProduct.contains?.nuts === true;
-            case 'Без горіхів':
-              return originalProduct.contains?.nuts === false;
-            case 'Без пальмової олії':
-              return originalProduct.contains?.palmOil === false;
-            case 'Без лактози':
-              return originalProduct.contains?.lactose === false;
-            case 'Без глютену':
-              return originalProduct.contains?.gluten === false;
-            default:
-              return false;
-          }
-        });
-        if (!hasMatchingIngredient) return false;
-      }
-      
-      // Фильтр по цене
-      if (filters.priceRange) {
-        const productPrice = originalProduct.discountPrice || originalProduct.price;
-        if (productPrice < filters.priceRange[0] || productPrice > filters.priceRange[1]) {
-          return false;
-        }
-      }
-      
-      // Фильтр по весу
-      if (filters.weights && filters.weights.length > 0) {
-        const productWeight = originalProduct.weight;
-        const hasMatchingWeight = filters.weights.some(weightValue => {
-          return productWeight === parseInt(weightValue);
-        });
-        if (!hasMatchingWeight) return false;
-      }
-      
-      return true;
-    });
-  };
+  // Обрабатываем только адаптацию данных - фильтрация и сортировка на backend
+  const displayProducts = useMemo(() => {
+    if (!products || products.length === 0) return [];
+    return products.map(adaptProductData);
+  }, [products]);
 
-  // Функция сортировки товаров
-  const sortProducts = (products, sortType) => {
-    const sortedProducts = [...products];
-    
-    switch (sortType) {
-      case 'price-asc':
-        return sortedProducts.sort((a, b) => {
-          const priceA = a.originalProduct.discountPrice || a.originalProduct.price;
-          const priceB = b.originalProduct.discountPrice || b.originalProduct.price;
-          return priceA - priceB;
-        });
-      
-      case 'price-desc':
-        return sortedProducts.sort((a, b) => {
-          const priceA = a.originalProduct.discountPrice || a.originalProduct.price;
-          const priceB = b.originalProduct.discountPrice || b.originalProduct.price;
-          return priceB - priceA;
-        });
-      
-      case 'new':
-        return sortedProducts.sort((a, b) => {
-          const dateA = new Date(a.originalProduct.createdAt || 0);
-          const dateB = new Date(b.originalProduct.createdAt || 0);
-          return dateB - dateA;
-        });
-      
-      case 'sales':
-        return sortedProducts.sort((a, b) => {
-          const hasDiscountA = a.originalProduct.discountPrice ? 1 : 0;
-          const hasDiscountB = b.originalProduct.discountPrice ? 1 : 0;
-          if (hasDiscountA !== hasDiscountB) {
-            return hasDiscountB - hasDiscountA;
-          }
-          // Если у обоих есть скидки, сортируем по размеру скидки
-          if (hasDiscountA && hasDiscountB) {
-            const discountA = (1 - a.originalProduct.discountPrice / a.originalProduct.price) * 100;
-            const discountB = (1 - b.originalProduct.discountPrice / b.originalProduct.price) * 100;
-            return discountB - discountA;
-          }
-          return 0;
-        });
-      
-      default:
-        // Без сортировки - возвращаем товары в исходном порядке
-        return sortedProducts;
-    }
-  };
-
-  // Адаптированные товары с применением фильтров и сортировки
-  const displayProducts = (() => {
-    const adaptedProducts = products.map(adaptProductData);
-    const filteredProducts = filterProducts(adaptedProducts, appliedFilters);
-    return sortProducts(filteredProducts, sortOption);
-  })();
-
-  // Проверяем применены ли фильтры
-  const hasAppliedFilters = appliedFilters.categories.length > 0 ||
-    appliedFilters.ingredients.length > 0 || 
-    appliedFilters.weights.length > 0 || 
-    appliedFilters.priceRange[0] > 1 || 
-    appliedFilters.priceRange[1] < 2500;
+  // Получаем информацию о примененных фильтрах из стора
+  const hasFiltersApplied = hasAppliedFilters();
 
   // Компонент "товары не найдены"
   const NoProductsMessage = ({ isMobile = false }) => (
     <div className={`${isMobile ? 'col-span-2' : 'col-span-full'} flex flex-col justify-center items-center py-20`}>
       <div className={`text-choco-light ${isMobile ? 'text-lg' : 'text-xl'} mb-2`}>
-        {hasAppliedFilters
+        {hasFiltersApplied
           ? 'Товари за заданими фільтрами не знайдені'
           : appliedFilters.categories.length > 0 
             ? 'Товари в цих категоріях не знайдені' 
@@ -174,7 +92,7 @@ const CatalogPage = () => {
         }
       </div>
       <div className={`text-choco-light text-sm ${isMobile ? 'text-center' : ''}`}>
-        {hasAppliedFilters
+        {hasFiltersApplied
           ? 'Спробуйте скинути фільтри або вибрати інші параметри'
           : 'Спробуйте вибрати іншу категорію'
         }
@@ -185,20 +103,8 @@ const CatalogPage = () => {
 
 
   const handleApplyFilters = (filters) => {
-    setAppliedFilters(filters);
-    
-    // Закрываем сайдбар только на мобильной версии (< 640px) после применения фильтров
-    if (window.innerWidth < 640) {
-      setIsFilterOpen(false);
-    }
-    
-    // Загружаем все товары для фильтрации
-    fetchAllProducts();
-  };
-
-  const handleSortChange = (newSortOption) => {
-    console.log('🔄 Изменяем сортировку на:', newSortOption);
-    setSortOption(newSortOption);
+    // Используем метод из стора который автоматически закрывает на мобильных
+    applyFilters(filters);
   };
 
   return (
@@ -208,19 +114,15 @@ const CatalogPage = () => {
         <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-[60px] mb-4">
           <div className="text-center">
             <h2 className="text-2xl font-montserrat font-semibold leading-[29px] text-choco-light">
-              {hasAppliedFilters 
-                ? <>Знайдено товарів: <span className="font-cormorant oldstyle">{displayProducts.length}</span></>
+              {hasFiltersApplied 
+                ? <>Знайдено товарів: <span className="font-cormorant oldstyle">{totalItems}</span></>
                 : 'Всі категорії'
               }
             </h2>
           </div>
         </div>
         
-        <CatalogHeader 
-          isFilterOpen={isFilterOpen} 
-          setIsFilterOpen={setIsFilterOpen}
-          onSortChange={handleSortChange}
-        />
+        <CatalogHeader />
         
         {/* Основной контент с минимальной высотой для предотвращения перекрытия Footer */}
         <div className="max-w-[1440px] mx-auto px-4 sm:px-[60px] mt-6 pb-16 min-h-[600px]">
@@ -229,7 +131,7 @@ const CatalogPage = () => {
             <Sidebar 
               className={`${isFilterOpen ? '' : 'hidden'}`} 
               onApplyFilters={handleApplyFilters} 
-              products={allProducts} 
+              products={products} 
             />
             
             <div className={`grid gap-x-6 gap-y-8 flex-grow transition-all duration-300 ease-in-out ${
@@ -240,6 +142,10 @@ const CatalogPage = () => {
               {productsLoading ? (
                 <div className="col-span-full flex justify-center items-center py-20">
                   <div className="text-choco-light text-xl">Завантаження товарів...</div>
+                </div>
+              ) : error ? (
+                <div className="col-span-full flex justify-center items-center py-20">
+                  <div className="text-choco-light text-xl">Помилка завантаження товарів</div>
                 </div>
               ) : displayProducts.length > 0 ? (
                 displayProducts.map(product => (
@@ -257,7 +163,7 @@ const CatalogPage = () => {
             <Sidebar 
               className={`w-full ${isFilterOpen ? 'block' : 'hidden'}`} 
               onApplyFilters={handleApplyFilters} 
-              products={allProducts} 
+              products={products} 
             />
             
             {/* Товары */}
@@ -265,6 +171,10 @@ const CatalogPage = () => {
                 {productsLoading ? (
                   <div className="col-span-2 flex justify-center items-center py-20">
                     <div className="text-choco-light text-lg">Завантаження...</div>
+                  </div>
+                ) : error ? (
+                  <div className="col-span-2 flex justify-center items-center py-20">
+                    <div className="text-choco-light text-lg">Помилка завантаження</div>
                   </div>
                 ) : displayProducts.length > 0 ? (
                   displayProducts.map(product => (
@@ -275,6 +185,11 @@ const CatalogPage = () => {
                 )}
             </div>
           </div>
+
+          {/* Пагинация - показывается для всех размеров экранов */}
+          {!productsLoading && !error && (
+            <Pagination />
+          )}
         </div>
       </div>
     </div>

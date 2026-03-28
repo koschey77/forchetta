@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useUserStore } from "../stores/useUserStore"
 import { Logo } from "./Logos/Logo.jsx"
 import { SearchIcon, ProfileIcon, HeartIcon, CartIcon, DotsIcon, HomeIcon, MenuIcon } from "./icons/index.jsx"
@@ -28,51 +28,6 @@ const UserAvatar = ({ userAvatar, onClick, className = "", strokeWidth = 3 }) =>
       <ProfileIcon className="shrink-0 text-choco-light" strokeWidth={strokeWidth} />
     )}
   </button>
-)
-
-const ProfileHoverMenu = ({ user, logout }) => (
-  <div className="absolute top-[40px] right-0 w-[180px] bg-creamy shadow-lg rounded-lg py-2 
-                  opacity-0 invisible group-hover:opacity-100 group-hover:visible 
-                  transition-all duration-200 ease-in-out z-50
-                  hover:opacity-100 hover:visible">
-    {user ? (
-      <>
-        <div className="px-4 py-2 border-b border-choco-light/20">
-          <p className="text-choco-dark text-sm font-medium truncate">{user.name}</p>
-          <p className="text-choco-light text-xs truncate">{user.email}</p>
-        </div>
-        {user.role === 'admin' && (
-          <Link
-            to="/admin"
-            className="block px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
-          >
-            🛠️ Адмін панель
-          </Link>
-        )}
-        <button
-          onClick={logout}
-          className="w-full text-left px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
-        >
-          Вихід
-        </button>
-      </>
-    ) : (
-      <>
-        <Link
-          to="/signup"
-          className="block px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
-        >
-          Реєстрація
-        </Link>
-        <Link
-          to="/login"
-          className="block px-4 py-2 text-choco-dark text-sm hover:bg-dark-creamy/50 transition-colors"
-        >
-          Вхід
-        </Link>
-      </>
-    )}
-  </div>
 )
 
 const MenuDropdown = ({ isMenuOpen, breakpointClasses, containerClasses }) => (
@@ -134,12 +89,9 @@ const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick
           </nav>
 
           <div className="flex items-center gap-[30px] px-[8px] py-[5px]">
-            {/* Профиль с hover меню */}
-            <div className="group relative flex items-center">
-              <UserAvatar userAvatar={userAvatar} onClick={onProfileClick} strokeWidth={2} />
-              <ProfileHoverMenu user={user} logout={logout} />
-            </div>
-            <button aria-label="Избранное" onClick={onFavoritesClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
+            {/* Профиль */}
+            <div className="relative flex items-center">
+              <UserAvatar userAvatar={userAvatar} onClick={onProfileClick} strokeWidth={2} />            </div>            <button aria-label="Избранное" onClick={onFavoritesClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
               <HeartIcon className="shrink-0 text-choco-light" strokeWidth={2} />
             </button>
             <button aria-label="Корзина" onClick={onCartClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
@@ -190,10 +142,9 @@ const TabletHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
           </nav>
 
           <div className="flex items-center gap-[30px] px-[8px] py-[5px]">
-            {/* Профиль с hover меню */}
-            <div className="group relative flex items-center">
+            {/* Профиль */}
+            <div className="relative flex items-center">
               <UserAvatar userAvatar={userAvatar} onClick={onProfileClick} strokeWidth={2} />
-              <ProfileHoverMenu user={user} logout={logout} />
             </div>
             <button aria-label="Избранное" onClick={onFavoritesClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
               <HeartIcon className="shrink-0 text-choco-light" strokeWidth={2} />
