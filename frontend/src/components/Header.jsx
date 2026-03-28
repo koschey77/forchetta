@@ -49,7 +49,9 @@ const MenuDropdown = ({ isMenuOpen, breakpointClasses, containerClasses }) => (
   </div>
 )
 
-const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick, onProfileClick, onFavoritesClick, onCartClick, onLogoClick, userAvatar, user, logout }) => {
+
+
+const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onProfileClick, onFavoritesClick, onCartClick, onLogoClick, userAvatar }) => {
   return (
     <>
       <header className="hidden xl:flex h-[87px] w-full items-center bg-creamy">
@@ -63,7 +65,7 @@ const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick
           </button>
 
           <nav aria-label="Основная навигация" className="flex h-[43px] items-center gap-[30px]">
-            <button aria-label="Открыть поиск" onClick={onSearchClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
+            <button aria-label="Открыть поиск" className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
               <SearchIcon className="shrink-0" />
             </button>
 
@@ -113,7 +115,7 @@ const DesktopHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick
   )
 }
 
-const TabletHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick, onProfileClick, onFavoritesClick, onCartClick, onLogoClick, userAvatar, user, logout }) => {
+const TabletHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onProfileClick, onFavoritesClick, onCartClick, onLogoClick, userAvatar }) => {
   return (
     <>
       <header className="hidden sm:flex xl:hidden h-[87px] w-full items-center bg-creamy">
@@ -127,7 +129,7 @@ const TabletHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
           </button>
 
           <nav aria-label="Планшетная навигация" className="flex h-[43px] items-center gap-[30px]">
-            <button aria-label="Открыть поиск" onClick={onSearchClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
+            <button aria-label="Открыть поиск" className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
               <SearchIcon className="shrink-0" />
             </button>
 
@@ -172,7 +174,7 @@ const TabletHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
   )
 }
 
-const MobileHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick, onProfileClick, onFavoritesClick, onCartClick, onLogoClick, userAvatar }) => {
+const MobileHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onProfileClick, onFavoritesClick, onCartClick, onLogoClick, userAvatar }) => {
   return (
     <>
       <header className="bg-creamy sm:hidden">
@@ -191,7 +193,7 @@ const MobileHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
             </button>
 
             <div className="flex items-center gap-[20px]">
-              <button aria-label="Открыть поиск" onClick={onSearchClick} className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
+              <button aria-label="Открыть поиск" className="rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60">
                 <SearchIcon className="shrink-0" />
               </button>
               <UserAvatar userAvatar={userAvatar} onClick={onProfileClick} />
@@ -270,6 +272,7 @@ const MobileHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
             ))}
           </nav>
         </div>
+
       </header>
     </>
   )
@@ -278,10 +281,12 @@ const MobileHeader = ({ isMenuOpen, onMenuToggle, onCatalogClick, onSearchClick,
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const navigate = useNavigate()
-  const { user, logout } = useUserStore()
+  const { user } = useUserStore()
 
-  const handleMenuToggle = () => setIsMenuOpen((prev) => !prev)
-  const handleSearchClick = () => console.log("search")
+  const handleMenuToggle = () => {
+    setIsMenuOpen((prev) => !prev)
+  }
+
   const handleFavoritesClick = () => console.log("favorites")
   const handleCartClick = () => navigate('/cart')
   const handleCatalogClick = () => navigate('/catalog')
@@ -302,33 +307,26 @@ const Header = () => {
         isMenuOpen={isMenuOpen}
         onMenuToggle={handleMenuToggle}
         onCatalogClick={handleCatalogClick}
-        onSearchClick={handleSearchClick}
         onProfileClick={handleProfileClick}
         onFavoritesClick={handleFavoritesClick}
         onCartClick={handleCartClick}
         onLogoClick={handleLogoClick}
         userAvatar={user?.avatar}
-        user={user}
-        logout={logout}
       />
       <TabletHeader
         isMenuOpen={isMenuOpen}
         onMenuToggle={handleMenuToggle}
         onCatalogClick={handleCatalogClick}
-        onSearchClick={handleSearchClick}
         onProfileClick={handleProfileClick}
         onFavoritesClick={handleFavoritesClick}
         onCartClick={handleCartClick}
         onLogoClick={handleLogoClick}
         userAvatar={user?.avatar}
-        user={user}
-        logout={logout}
       />
       <MobileHeader
         isMenuOpen={isMenuOpen}
         onMenuToggle={handleMenuToggle}
         onCatalogClick={handleCatalogClick}
-        onSearchClick={handleSearchClick}
         onProfileClick={handleProfileClick}
         onFavoritesClick={handleFavoritesClick}
         onCartClick={handleCartClick}

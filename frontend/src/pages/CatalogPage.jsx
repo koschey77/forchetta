@@ -17,10 +17,8 @@ const CatalogPage = () => {
     applyFilters,
     currentPage,
     itemsPerPage,
-    totalPages,
     totalItems,
-    setPaginationData,
-    setCurrentPage
+    setPaginationData
   } = useFilterStore();
 
   // TanStack Query для загрузки товаров
@@ -30,11 +28,13 @@ const CatalogPage = () => {
     error 
   } = useQuery({
     queryKey: ['products', appliedFilters, sortOption, currentPage, itemsPerPage],
-    queryFn: () => productsAPI.getAllWithFilters(
-      appliedFilters, 
-      { page: currentPage, limit: itemsPerPage }, 
-      sortOption
-    ),
+    queryFn: () => {
+      return productsAPI.getAllWithFilters(
+        appliedFilters, 
+        { page: currentPage, limit: itemsPerPage }, 
+        sortOption
+      );
+    },
     staleTime: 2 * 60 * 1000, // 2 минуты свежие данные для каталога
   });
 

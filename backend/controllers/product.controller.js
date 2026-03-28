@@ -14,7 +14,8 @@ export const getAllProducts = async (req, res) => {
       sortBy, 
       sortOrder = 'asc',
       page = 1, 
-      limit = 12 
+      limit = 12,
+      search  // Новый параметр поиска
     } = req.query;
 
     // Строим объект фильтрации
@@ -52,7 +53,12 @@ export const getAllProducts = async (req, res) => {
       });
 
       if (ingredientFilters.length > 0) {
-        filter.$and = ingredientFilters;
+        // Добавляем ингредиенты в существующий $and или создаем новый
+        if (filter.$and) {
+          filter.$and = [...filter.$and, ...ingredientFilters];
+        } else {
+          filter.$and = ingredientFilters;
+        }
       }
     }
 
@@ -83,6 +89,27 @@ export const getAllProducts = async (req, res) => {
     if (weights) {
       const weightList = weights.split(',').map(w => parseInt(w));
       filter.weight = { $in: weightList };
+    }
+
+    // Поиск по названию, описанию и ингредиентам
+    if (search && search.trim()) {
+      const searchTerm = search.trim();
+      const searchRegex = new RegExp(searchTerm, 'i'); // case-insensitive поиск
+      
+      const searchConditions = {
+        $or: [
+          { name: { $regex: searchRegex } },
+          { description: { $regex: searchRegex } },
+          { 'ingredients.name': { $regex: searchRegex } } // поиск в массиве ингредиентов
+        ]
+      };
+
+      // Добавляем поисковые условия в $and
+      if (filter.$and) {
+        filter.$and.push(searchConditions);
+      } else {
+        filter.$and = [searchConditions];
+      }
     }
 
     // Настройка сортировки

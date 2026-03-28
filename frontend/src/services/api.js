@@ -28,6 +28,10 @@ export const productsAPI = {
       params.append('ingredients', filters.ingredients.join(','));
     }
 
+    if (filters.search && filters.search.trim()) {
+      params.append('search', filters.search.trim());
+    }
+
     if (filters.priceRange && filters.priceRange.length === 2) {
       params.append('priceMin', filters.priceRange[0].toString());
       params.append('priceMax', filters.priceRange[1].toString());
@@ -112,6 +116,29 @@ export const productsAPI = {
   toggleFeatured: async (productId) => {
     const response = await axiosInstance.patch(`/products/${productId}`)
     return response.data
+  },
+
+  // Поиск товаров (переиспользуемый для каталога и админки)
+  search: async (searchQuery, options = {}) => {
+    const {
+      page = 1,
+      limit = 12,
+      category = ''
+    } = options;
+
+    const params = new URLSearchParams();
+    params.append('search', searchQuery);
+    params.append('page', page.toString());
+    params.append('limit', limit.toString());
+    
+    // Опциональная фильтрация по категории (для админки)
+    if (category) {
+      params.append('category', category);
+    }
+
+    const queryString = params.toString();
+    const response = await axiosInstance.get(`/products/search?${queryString}`);
+    return response.data; // Возвращает { products, pagination, searchTerm }
   },
 }
 

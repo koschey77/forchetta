@@ -10,7 +10,8 @@ const useFilterStore = create((set, get) => ({
     categories: [],
     ingredients: [],
     priceRange: [1, 2500],
-    weights: []
+    weights: [],
+    search: '' // Поисковый запрос как дополнительный фильтр
   },
   
   // Текущая сортировка
@@ -51,9 +52,21 @@ const useFilterStore = create((set, get) => ({
         categories: [],
         ingredients: [],
         priceRange: [1, 2500],
-        weights: []
+        weights: [],
+        search: ''
       }
     })
+  },
+  
+  // Обновление поискового запроса
+  setSearchFilter: (searchTerm) => {
+    set((state) => ({
+      appliedFilters: {
+        ...state.appliedFilters,
+        search: searchTerm
+      },
+      currentPage: 1 // Сбрасываем на первую страницу при поиске
+    }))
   },
   
   // =============================================
@@ -125,7 +138,8 @@ const useFilterStore = create((set, get) => ({
            appliedFilters.ingredients.length > 0 || 
            appliedFilters.weights.length > 0 || 
            appliedFilters.priceRange[0] > 1 || 
-           appliedFilters.priceRange[1] < 2500
+           appliedFilters.priceRange[1] < 2500 ||
+           (appliedFilters.search && appliedFilters.search.trim().length > 0)
   },
   
   // Получение количества активных фильтров
@@ -137,6 +151,7 @@ const useFilterStore = create((set, get) => ({
     if (appliedFilters.ingredients.length > 0) count++
     if (appliedFilters.weights.length > 0) count++
     if (appliedFilters.priceRange[0] > 1 || appliedFilters.priceRange[1] < 2500) count++
+    if (appliedFilters.search && appliedFilters.search.trim().length > 0) count++
     
     return count
   },
@@ -152,7 +167,8 @@ const useFilterStore = create((set, get) => ({
         categories: [],
         ingredients: [],
         priceRange: [1, 2500],
-        weights: []
+        weights: [],
+        search: ''
       },
       sortOption: '',
       currentPage: 1,

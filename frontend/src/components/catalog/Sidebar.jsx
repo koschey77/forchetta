@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import * as Slider from '@radix-ui/react-slider';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
-import { CatalogFilterIcon, CheckIcon, CheckboxIcon } from '../icons';
-import useCategoryStore from '../../stores/useCategoryStore';
+import { CatalogFilterIcon, CheckIcon, CheckboxIcon, SearchIcon } from '../icons';
+import { categoriesAPI } from '../../services/api';
 import useFilterStore from '../../stores/useFilterStore';
 
 // Компонент чекбокса
@@ -23,28 +24,69 @@ const Checkbox = ({ checked, onChange, children }) => (
 );
 
 const Sidebar = ({ className, onApplyFilters, products = [] }) => {
-  const { categories, loading, fetchAllCategories } = useCategoryStore();
+  // Загружаем категории через TanStack Query
+  const { data: categories = [], isLoading } = useQuery({
+    queryKey: ['categories'],
+    queryFn: categoriesAPI.getAll,
+    staleTime: 10 * 60 * 1000, // 10 минут кэш категорий
+  });
   
   // Получаем фильтры из централизованного стора
   const { 
     appliedFilters,
     updateFilter,
     applyFilters,
-    resetAll
+    resetAll,
+    setSearchFilter
   } = useFilterStore();
+  
+  // Локальное состояние для поискового поля с debouncing
+  const [searchQuery, setSearchQuery] = useState(appliedFilters.search || '');
+  // Локальное состояние для слайдера цены (чтобы избежать API запросов при движении)
+  const [localPriceRange, setLocalPriceRange] = useState(appliedFilters.priceRange);
+  const searchTimeoutRef = useRef(null);
   
   // Локальные ссылки для удобства
   const selectedCategories = appliedFilters.categories;
   const selectedIngredients = appliedFilters.ingredients;
-  const priceRange = appliedFilters.priceRange;
+  const priceRange = appliedFilters.priceRange; // глобальное состояние
   const selectedWeights = appliedFilters.weights;
   
   const isSliderChange = useRef(false);
 
-  // Загружаем категории при монтировании компонента
+  // Синхронизируем локальные состояния с глобальными
   useEffect(() => {
-    fetchAllCategories();
-  }, [fetchAllCategories]);
+    setSearchQuery(appliedFilters.search || '');
+    setLocalPriceRange(appliedFilters.priceRange);
+  }, [appliedFilters.search, appliedFilters.priceRange]);
+
+  // Обработчик изменения поискового запроса с debouncing
+  const handleSearchChange = (value) => {
+    setSearchQuery(value);
+    
+    // Очищаем предыдущий таймер
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    // Устанавливаем новый таймер для задержки
+    searchTimeoutRef.current = setTimeout(() => {
+      const trimmedValue = value.trim();
+      // Отправляем запрос только если 4+ символов или пустая строка (для сброса)
+      if (trimmedValue.length >= 4 || trimmedValue.length === 0) {
+        setSearchFilter(trimmedValue);
+      }
+    }, 500); // 500мс задержка для плавного поиска
+  };
+
+  // Очистка таймера при размонтировании
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Функция применения фильтров через стор
   const handleApplyFilters = () => {
@@ -138,19 +180,32 @@ const Sidebar = ({ className, onApplyFilters, products = [] }) => {
     updateFilter('priceRange', newPriceRange);
   };
 
+  // Обработчик для слайдера - только локальное обновление
+  const handleSliderChange = (newPriceRange) => {
+    setLocalPriceRange(newPriceRange); // Обновляем только локально
+  };
+
+  // Обработчик для завершения работы со слайдером
+  const handleSliderCommit = (newPriceRange) => {
+    updateFilter('priceRange', newPriceRange); // Теперь обновляем глобальное состояние
+  };
+
   const handleClearAll = () => {
     // Используем метод resetAll из стора
     resetAll();
+    // Очищаем и локальные состояния
+    setSearchQuery('');
+    setLocalPriceRange([1, 2500]);
   };
 
   return (
-    <div className={`flex flex-col items-start gap-[40px] w-full sm:w-[300px] h-[691px] relative z-10 ${className || ""}`}>
+    <div className={`flex flex-col items-start gap-[20px] w-full sm:w-[300px] h-[691px] relative z-10 ${className || ""}`}>
       {/* Кнопка очистки с подтверждением */}
       <div className="flex flex-row items-center justify-center w-full h-[41px]">
         <AlertDialog.Root>
           <AlertDialog.Trigger asChild>
             <button className="flex flex-row justify-center items-center px-[30px] py-[10px] gap-[6px] w-full h-[41px] bg-creamy border border-choco-light rounded-[22.5px] text-figma-xs font-montserrat font-light text-choco-light hover:opacity-80 transition-opacity whitespace-nowrap">
-              Очистити фільтри
+              Очистити все
             </button>
           </AlertDialog.Trigger>
 
@@ -183,12 +238,28 @@ const Sidebar = ({ className, onApplyFilters, products = [] }) => {
         </AlertDialog.Root>
       </div>
 
+      {/* Поиск товаров */}
+      <div className="flex flex-col gap-[10px] w-full">
+        <div className="relative w-full">
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <SearchIcon className="w-[20px] h-[20px] text-choco-light" />
+          </div>
+          <input
+            type="text"
+            placeholder="Пошук товарів..."
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="w-full h-[45px] pl-[45px] pr-[15px] py-[12px] bg-creamy border border-choco-light rounded-[10px] text-figma-md font-montserrat font-light text-choco-dark placeholder-choco-light/60 focus:outline-none focus:border-choco-dark focus:ring-1 focus:ring-choco-light/20 transition-colors"
+          />
+        </div>
+      </div>
+
       {/* Категорії */}
       <div className="flex flex-col gap-[20px] w-full">
         <DropdownMenu.Root modal={false}>
           <DropdownMenu.Trigger asChild>
             <button className="flex flex-row justify-between items-center px-[15px] py-[10px] gap-[10px] w-full h-[59px] bg-creamy border border-choco-light rounded-[10px] transition-all duration-200 hover:opacity-90">
-              <span className="text-figma-base font-montserrat font-light text-choco-light">{loading ? "Завантаження..." : "Категорії"}</span>
+              <span className="text-figma-base font-montserrat font-light text-choco-light">{isLoading ? "Завантаження..." : "Категорії"}</span>
               <CatalogFilterIcon width={20} height={20} strokeWidth={2} className="text-choco-light" />
             </button>
           </DropdownMenu.Trigger>
@@ -245,15 +316,18 @@ const Sidebar = ({ className, onApplyFilters, products = [] }) => {
                 type="number"
                 min="1"
                 max="2500"
-                value={priceRange[0]}
+                value={localPriceRange[0]}
                 onChange={(e) => {
-                  const value = parseInt(e.target.value) || priceRange[0];
-                  handlePriceChange([value, priceRange[1]]);
+                  const value = parseInt(e.target.value) || localPriceRange[0];
+                  const newRange = [value, localPriceRange[1]];
+                  setLocalPriceRange(newRange);
                 }}
                 onBlur={(e) => {
                   const value = parseInt(e.target.value) || 1;
-                  const correctedValue = Math.min(Math.max(value, 1), priceRange[1] - 1);
-                  handlePriceChange([correctedValue, priceRange[1]]);
+                  const correctedValue = Math.min(Math.max(value, 1), localPriceRange[1] - 1);
+                  const newRange = [correctedValue, localPriceRange[1]];
+                  setLocalPriceRange(newRange);
+                  handlePriceChange(newRange); // Обновляем глобальное состояние при потере фокуса
                 }}
                 className="w-full text-[10px] font-montserrat font-light text-choco-light bg-transparent outline-none text-center"
                 placeholder="От"
@@ -264,15 +338,18 @@ const Sidebar = ({ className, onApplyFilters, products = [] }) => {
                 type="number"
                 min="1"
                 max="2500"
-                value={priceRange[1]}
+                value={localPriceRange[1]}
                 onChange={(e) => {
-                  const value = parseInt(e.target.value) || priceRange[1];
-                  handlePriceChange([priceRange[0], value]);
+                  const value = parseInt(e.target.value) || localPriceRange[1];
+                  const newRange = [localPriceRange[0], value];
+                  setLocalPriceRange(newRange);
                 }}
                 onBlur={(e) => {
                   const value = parseInt(e.target.value) || 2500;
-                  const correctedValue = Math.max(priceRange[0] + 1, Math.min(value, 2500));
-                  handlePriceChange([priceRange[0], correctedValue]);
+                  const correctedValue = Math.max(localPriceRange[0] + 1, Math.min(value, 2500));
+                  const newRange = [localPriceRange[0], correctedValue];
+                  setLocalPriceRange(newRange);
+                  handlePriceChange(newRange); // Обновляем глобальное состояние при потере фокуса
                 }}
                 className="w-full text-[10px] font-montserrat font-light text-choco-light bg-transparent outline-none text-center"
                 placeholder="До"
@@ -284,19 +361,13 @@ const Sidebar = ({ className, onApplyFilters, products = [] }) => {
           <div className="w-full px-1">
             <Slider.Root
               className="relative flex items-center select-none touch-none w-full h-5"
-              value={priceRange}
+              value={localPriceRange}
               min={1}
               max={2500}
               step={1}
               minStepsBetweenThumbs={1}
-              onValueChange={(value) => {
-                isSliderChange.current = true; // Помечаем что изменение от слайдера
-                handlePriceChange(value);
-              }}
-              onValueCommit={(value) => {
-                handlePriceChange(value);
-                handleApplyFilters(); // Мгновенное применение при "потере фокуса" слайдера
-              }}
+              onValueChange={handleSliderChange} // Только локальное обновление
+              onValueCommit={handleSliderCommit} // Обновление глобального состояния при отпускании
             >
               {/* Полоска (трек) */}
               <Slider.Track className="bg-dark-creamy relative grow rounded-full h-[2px]">
@@ -306,13 +377,13 @@ const Sidebar = ({ className, onApplyFilters, products = [] }) => {
 
               {/* Левый ползунок */}
               <Slider.Thumb
-                className="block w-5 h-5 bg-creamy border-2 border-choco-light shadow-sm rounded-full hover:bg-white focus:outline-none focus:ring-2 focus:ring-choco-light/30 transition-colors cursor-pointer"
+                className="block w-5 h-5 bg-choco-light border-2 border-choco-light shadow-sm rounded-full hover:bg-choco-dark focus:outline-none focus:ring-2 focus:ring-choco-light/30 transition-colors cursor-pointer"
                 aria-label="Минимальная цена"
               />
 
               {/* Правый ползунок */}
               <Slider.Thumb
-                className="block w-5 h-5 bg-creamy border-2 border-choco-light shadow-sm rounded-full hover:bg-white focus:outline-none focus:ring-2 focus:ring-choco-light/30 transition-colors cursor-pointer"
+                className="block w-5 h-5 bg-choco-light border-2 border-choco-light shadow-sm rounded-full hover:bg-choco-dark focus:outline-none focus:ring-2 focus:ring-choco-light/30 transition-colors cursor-pointer"
                 aria-label="Максимальная цена"
               />
             </Slider.Root>
