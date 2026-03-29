@@ -1,9 +1,23 @@
 import { useState } from 'react'
-import useCategoryStore from '../../stores/useCategoryStore'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { categoriesAPI } from '../../services/api'
 import toast from 'react-hot-toast'
 
 const CategoryCreate = ({ onSuccess }) => {
-  const { createCategory, loading } = useCategoryStore()
+  const queryClient = useQueryClient()
+  
+  // Mutation для создания категории
+  const createCategoryMutation = useMutation({
+    mutationFn: categoriesAPI.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-categories'] })
+      toast.success('Категорію створено успішно!')
+      if (onSuccess) onSuccess()
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'Помилка створення категорії')
+    },
+  })
   
   const [formData, setFormData] = useState({
     name: '',
@@ -71,26 +85,24 @@ const CategoryCreate = ({ onSuccess }) => {
         image: base64Image
       }
 
-      await createCategory(categoryData)
-
-      // Очищаем форму после успешного создания
-      setFormData({
-        name: '',
-        description: '',
+      createCategoryMutation.mutate(categoryData, {
+        onSuccess: () => {
+          // Очищаем форму после успешного создания
+          setFormData({
+            name: '',
+            description: '',
+          })
+          setSelectedImage(null)
+          
+          // Очищаем input файла
+          const fileInput = document.querySelector('input[type="file"]')
+          if (fileInput) fileInput.value = ''
+        }
       })
-      setSelectedImage(null)
-      
-      // Очищаем input файла
-      const fileInput = document.querySelector('input[type="file"]')
-      if (fileInput) fileInput.value = ''
-      
-      // Переходим в список товаров
-      if (onSuccess) {
-        onSuccess()
-      }
 
     } catch (error) {
-      console.error('Error creating category:', error)
+      console.error('Error preparing category data:', error)
+      toast.error('Помилка підготовки даних')
     }
   }
 
@@ -221,16 +233,15 @@ const CategoryCreate = ({ onSuccess }) => {
                   if (fileInput) fileInput.value = ''
                 }}
                 className="px-6 py-2 border border-gray-300 text-choco-dark rounded-lg hover:bg-gray-50 transition-colors"
-                disabled={loading}
+                disabled={createCategoryMutation.isPending}
               >
                 Очистити
               </button>
               <button
                 type="submit"
-                disabled={loading}
-                className="px-6 py-2 bg-dark-creamy text-choco-dark rounded-lg hover:bg-choco-light hover:text-creamy transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Створення...' : 'Створити категорію'}
+                disabled={createCategoryMutation.isPending}
+                className="px-6 py-2 bg-dark-creamy text-choco-dark rounded-lg hover:bg-choco-light hover:text-creamy transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                {createCategoryMutation.isPending ? 'Створення...' : 'Створити категорію'}
               </button>
             </div>
           </form>

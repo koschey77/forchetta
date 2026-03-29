@@ -1,25 +1,37 @@
-import { useEffect } from 'react'
-import useCategoryStore from '../../stores/useCategoryStore'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
+import { categoriesAPI } from '../../services/api'
 
 const CategoryList = ({ onEditCategory }) => {
+  const queryClient = useQueryClient()
+  
+  // TanStack Query для загрузки категорий
   const { 
-    categories, 
-    loading, 
-    fetchAllCategories, 
-    deleteCategory 
-  } = useCategoryStore()
+    data: categories = [], 
+    isLoading, 
+    error 
+  } = useQuery({
+    queryKey: ['admin-categories'],
+    queryFn: categoriesAPI.getAll, // Используем getAll для категорий (нет пагинации в backend)
+    staleTime: 0, // Всегда актуальные данные в adminке
+    refetchOnWindowFocus: true, // Обновлять при фокусе окна
+  })
 
-  useEffect(() => {
-    fetchAllCategories()
-  }, [fetchAllCategories])
+  // Mutation для удаления категории
+  const deleteCategory = useMutation({
+    mutationFn: categoriesAPI.delete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-categories'] })
+      toast.success('Категорію видалено успішно!')
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'Помилка видалення категорії')
+    },
+  })
 
   const handleDelete = async (id, name) => {
     if (window.confirm(`Ви дійсно хочете видалити категорію "${name}"?`)) {
-      try {
-        await deleteCategory(id)
-      } catch (error) {
-        console.error('Error deleting category:', error)
-      }
+      deleteCategory.mutate(id)
     }
   }
 
@@ -29,13 +41,31 @@ const CategoryList = ({ onEditCategory }) => {
     }
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-creamy p-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-choco-dark mx-auto"></div>
             <p className="mt-4 text-choco-light">Завантаження категорій...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-creamy p-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center py-8">
+            <p className="text-red-600">Помилка завантаження категорій</p>
+            <button 
+              onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-categories'] })}
+              className="mt-4 px-4 py-2 bg-choco-dark text-creamy rounded-lg hover:opacity-90"
+            >
+              Оновити
+            </button>
           </div>
         </div>
       </div>

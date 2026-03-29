@@ -1,11 +1,50 @@
 import { useState, useEffect } from 'react'
-import { useProductStore } from '../../stores/useProductStore'
-import useCategoryStore from '../../stores/useCategoryStore'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { productsAPI, categoriesAPI } from '../../services/api'
+import { PRODUCT_ENUMS } from '../../constants/enums'
 import toast from 'react-hot-toast'
 
 const ProductEdit = ({ productId, onCancel, onSuccess }) => {
-  const { updateProduct, fetchProductById, loading, shelfLifeOptions, storageOptions } = useProductStore()
-  const { categories, fetchAllCategories, loading: categoriesLoading } = useCategoryStore()
+  const queryClient = useQueryClient()
+  
+  // Загрузка товара по ID
+  const { 
+    data: product, 
+    isLoading: productLoading, 
+    error: productError 
+  } = useQuery({
+    queryKey: ['product', productId],
+    queryFn: () => productsAPI.getById(productId),
+    enabled: !!productId,
+  })
+  
+  // Загрузка категорий
+  const { 
+    data: categories = [], 
+    isLoading: categoriesLoading 
+  } = useQuery({
+    queryKey: ['admin-categories'],
+    queryFn: categoriesAPI.getAll,
+    staleTime: 60 * 1000,
+  })
+  
+  // Mutation для обновления товара
+  const updateProductMutation = useMutation({
+    mutationFn: ({ id, data }) => productsAPI.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
+      queryClient.invalidateQueries({ queryKey: ['product', productId] })
+      toast.success('Товар оновлено успішно!')
+      if (onSuccess) onSuccess()
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'Помилка оновлення товару')
+    },
+  })
+  
+  // Используем константы из файла (БЕЗ ХАРДКОДА!)
+  const shelfLifeOptions = PRODUCT_ENUMS.shelfLife
+  const storageOptions = PRODUCT_ENUMS.storageConditions
   
   const [formData, setFormData] = useState({
     name: '',
@@ -30,55 +69,33 @@ const ProductEdit = ({ productId, onCancel, onSuccess }) => {
 
   const [selectedImages, setSelectedImages] = useState([])
   const [existingImages, setExistingImages] = useState([])
-  const [dataLoading, setDataLoading] = useState(true)
 
-  // Загружаем данные продукта и категории при монтировании
+  // Заполняем форму данными товара из TanStack Query
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        setDataLoading(true)
-        await fetchAllCategories()
-        
-        const product = await fetchProductById(productId)
-        
-        // Заполняем форму данными продукта
-        setFormData({
-          name: product.name || '',
-          summary: product.summary || '',
-          description: product.description || '',
-          ingredients: product.ingredients || '',
-          contains: {
-            lactose: product.contains?.lactose || false,
-            gluten: product.contains?.gluten || false,
-            nuts: product.contains?.nuts || false,
-            palmOil: product.contains?.palmOil || false,
-          },
-          weight: product.weight?.toString() || '',
-          price: product.price?.toString() || '',
-          discountPrice: product.discountPrice?.toString() || '',
-          category: product.category?._id || '',
-          qty: product.qty?.toString() || '',
-          shelfLife: product.shelfLife || '',
-          storageConditions: product.storageConditions || '',
-          isFeatured: product.isFeatured || false,
-        })
-
-        // Сохраняем существующие изображения
-        setExistingImages(product.images || [])
-        
-      } catch (error) {
-        console.error('Error loading product:', error)
-        toast.error('Помилка завантаження товару')
-        if (onCancel) onCancel()
-      } finally {
-        setDataLoading(false)
-      }
+    if (product) {
+      setFormData({
+        name: product.name || '',
+        summary: product.summary || '',
+        description: product.description || '',
+        ingredients: product.ingredients || '',
+        contains: {
+          lactose: product.contains?.lactose || false,
+          gluten: product.contains?.gluten || false,
+          nuts: product.contains?.nuts || false,
+          palmOil: product.contains?.palmOil || false,
+        },
+        weight: product.weight || '',
+        price: product.price || '',
+        discountPrice: product.discountPrice || '',
+        category: product.category?._id || '',
+        qty: product.qty || '',
+        shelfLife: product.shelfLife || '',
+        storageConditions: product.storageConditions || '',
+        isFeatured: product.isFeatured || false
+      })
+      setExistingImages(product.images || [])
     }
-
-    if (productId) {
-      loadData()
-    }
-  }, [productId, fetchAllCategories, fetchProductById, onCancel])
+  }, [product])
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -155,53 +172,80 @@ const ProductEdit = ({ productId, onCancel, onSuccess }) => {
       return
     }
 
-    try {
-      let imagesToSend = null
+    // Подготавливаем изображения для отправки
+    let imagesToSend = null
 
-      // Если есть новые изображения, конвертируем их в base64
-      if (selectedImages.length > 0) {
-        const imagePromises = selectedImages.map(file => {
-          return new Promise((resolve) => {
-            const reader = new FileReader()
-            reader.onload = () => resolve(reader.result)
-            reader.readAsDataURL(file)
-          })
+    // Если есть новые изображения, конвертируем их в base64
+    if (selectedImages.length > 0) {
+      const imagePromises = selectedImages.map(file => {
+        return new Promise((resolve) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(reader.result)
+          reader.readAsDataURL(file)
         })
-        
-        imagesToSend = await Promise.all(imagePromises)
-      }
+      })
       
-      // Подготавливаем данные для отправки
-      const productData = {
+      imagesToSend = await Promise.all(imagePromises)
+    }
+    
+    // Подготавливаем данные для отправки
+    const productData = {
         ...formData,
         price: Number(formData.price),
         discountPrice: formData.discountPrice ? Number(formData.discountPrice) : 0,
         weight: formData.weight ? Number(formData.weight) : 0,
         qty: Number(formData.qty),
-        // Передаем существующие изображения (после возможного удаления)
-        existingImages: existingImages,
-      }
-
-      // Добавляем новые изображения если есть
-      if (imagesToSend) {
-        productData.images = imagesToSend
-      }
-
-      await updateProduct(productId, productData)
-      
-      if (onSuccess) onSuccess()
-
-    } catch (error) {
-      console.error('Error updating product:', error)
+      // Передаем существующие изображения (после возможного удаления)
+      existingImages: existingImages,
     }
+
+    // Добавляем новые изображения если есть
+    if (imagesToSend) {
+      productData.images = imagesToSend
+    }
+
+    // Используем TanStack Query mutation
+    updateProductMutation.mutate(
+      { id: productId, data: productData },
+      {
+        onSuccess: () => {
+          if (onSuccess) onSuccess()
+        }
+      }
+    )
   }
 
-  if (dataLoading) {
+  if (productLoading || categoriesLoading) {
     return (
       <div className="min-h-screen bg-creamy flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-choco-dark mx-auto"></div>
           <p className="mt-4 text-choco-light">Завантаження товару...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Обработка ошибки загрузки товара
+  if (productError) {
+    return (
+      <div className="min-h-screen bg-creamy p-4">
+        <div className="max-w-3xl mx-auto">
+          <button
+            onClick={onCancel}
+            className="text-choco-light hover:text-choco-dark transition-colors mb-4"
+          >
+            ← Повернутися до списку
+          </button>
+          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+            <div className="text-red-500 mb-4">
+              <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-choco-dark mb-2">Помилка завантаження</h2>
+            <p className="text-choco-light">Не вдалося завантажити товар для редагування</p>
+          </div>
         </div>
       </div>
     )
@@ -541,16 +585,16 @@ const ProductEdit = ({ productId, onCancel, onSuccess }) => {
                 type="button"
                 onClick={onCancel}
                 className="px-6 py-2 border border-gray-300 text-choco-dark rounded-lg hover:bg-gray-50 transition-colors"
-                disabled={loading}
+                disabled={updateProductMutation.isPending}
               >
                 Скасувати
               </button>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={updateProductMutation.isPending}
                 className="px-6 py-2 bg-dark-creamy text-choco-dark rounded-lg hover:bg-choco-light hover:text-creamy transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Оновлення...' : 'Оновити товар'}
+                {updateProductMutation.isPending ? 'Оновлення...' : 'Оновити товар'}
               </button>
             </div>
           </form>

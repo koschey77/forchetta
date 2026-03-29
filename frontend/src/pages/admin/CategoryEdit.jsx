@@ -1,9 +1,35 @@
 import { useState, useEffect } from 'react'
-import useCategoryStore from '../../stores/useCategoryStore'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { categoriesAPI } from '../../services/api'
 import toast from 'react-hot-toast'
 
 const CategoryEdit = ({ categoryId, onCancel, onSuccess }) => {
-  const { updateCategory, getCategoryById, loading } = useCategoryStore()
+  const queryClient = useQueryClient()
+  
+  // Загрузка данных категории  
+  const { 
+    data: category, 
+    isLoading: categoryLoading, 
+    error: categoryError 
+  } = useQuery({
+    queryKey: ['category', categoryId],
+    queryFn: () => categoriesAPI.getById(categoryId),
+    enabled: !!categoryId,
+  })
+  
+  // Mutation для обновления категории
+  const updateCategoryMutation = useMutation({
+    mutationFn: ({ id, data }) => categoriesAPI.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-categories'] })
+      queryClient.invalidateQueries({ queryKey: ['category', categoryId] })
+      toast.success('Категорію оновлено успішно!')
+      if (onSuccess) onSuccess()
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'Помилка оновлення категорії')
+    },
+  })
   
   const [formData, setFormData] = useState({
     name: '',
@@ -12,38 +38,17 @@ const CategoryEdit = ({ categoryId, onCancel, onSuccess }) => {
 
   const [selectedImage, setSelectedImage] = useState(null)
   const [existingImage, setExistingImage] = useState(null)
-  const [dataLoaded, setDataLoaded] = useState(false)
 
-  // Загружаем данные категории при монтировании
+  // Заполняем форму данными категории
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        console.log('Loading category data for ID:', categoryId)
-        
-        const category = await getCategoryById(categoryId)
-        console.log('Category loaded:', category)
-        
-        // Заполняем форму данными категории
-        setFormData({
-          name: category.name || '',
-          description: category.description || '',
-        })
-
-        // Сохраняем существующее изображение
-        setExistingImage(category.image || null)
-        setDataLoaded(true)
-        
-      } catch (error) {
-        console.error('Error loading category:', error)
-        toast.error('Помилка завантаження категорії')
-        if (onCancel) onCancel()
-      }
+    if (category) {
+      setFormData({
+        name: category.name || '',
+        description: category.description || '',
+      })
+      setExistingImage(category.image || null)
     }
-
-    if (categoryId && !dataLoaded) {
-      loadData()
-    }
-  }, [categoryId, getCategoryById, onCancel, dataLoaded])
+  }, [category])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -107,12 +112,11 @@ const CategoryEdit = ({ categoryId, onCancel, onSuccess }) => {
         categoryData.image = imageToSend
       }
 
-      await updateCategory(categoryId, categoryData)
-      
-      if (onSuccess) onSuccess()
+      updateCategoryMutation.mutate({ id: categoryId, data: categoryData })
 
     } catch (error) {
-      console.error('Error updating category:', error)
+      console.error('Error preparing category data:', error)
+      toast.error('Помилка підготовки даних')
     }
   }
 
@@ -122,12 +126,28 @@ const CategoryEdit = ({ categoryId, onCancel, onSuccess }) => {
     if (fileInput) fileInput.value = ''
   }
 
-  if (loading || !dataLoaded) {
+  if (categoryLoading) {
     return (
       <div className="min-h-screen bg-creamy flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-choco-dark mx-auto"></div>
           <p className="mt-4 text-choco-light">Завантаження категорії...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (categoryError) {
+    return (
+      <div className="min-h-screen bg-creamy flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Помилка завантаження категорії</p>
+          <button 
+            onClick={onCancel}
+            className="px-4 py-2 bg-choco-dark text-creamy rounded-lg hover:opacity-90"
+          >
+            Повернутися
+          </button>
         </div>
       </div>
     )
@@ -257,16 +277,15 @@ const CategoryEdit = ({ categoryId, onCancel, onSuccess }) => {
                 type="button"
                 onClick={onCancel}
                 className="px-6 py-2 border border-gray-300 text-choco-dark rounded-lg hover:bg-gray-50 transition-colors"
-                disabled={loading}
+                disabled={updateCategoryMutation.isPending}
               >
                 Скасувати
               </button>
               <button
                 type="submit"
-                disabled={loading}
-                className="px-6 py-2 bg-dark-creamy text-choco-dark rounded-lg hover:bg-choco-light hover:text-creamy transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Оновлення...' : 'Оновити категорію'}
+                disabled={updateCategoryMutation.isPending}
+                className="px-6 py-2 bg-dark-creamy text-choco-dark rounded-lg hover:bg-choco-light hover:text-creamy transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                {updateCategoryMutation.isPending ? 'Оновлення...' : 'Оновити категорію'}
               </button>
             </div>
           </form>

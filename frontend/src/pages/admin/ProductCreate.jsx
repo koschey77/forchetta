@@ -1,11 +1,38 @@
-import { useState, useEffect } from 'react'
-import { useProductStore } from '../../stores/useProductStore'
-import useCategoryStore from '../../stores/useCategoryStore'
+import { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { productsAPI, categoriesAPI } from '../../services/api'
+import { PRODUCT_ENUMS } from '../../constants/enums'
 import toast from 'react-hot-toast'
 
 const ProductCreate = ({ onSuccess }) => {
-  const { createProduct, loading, shelfLifeOptions, storageOptions } = useProductStore()
-  const { categories, fetchAllCategories, loading: categoriesLoading } = useCategoryStore()
+  const queryClient = useQueryClient()
+  
+  // Загрузка категорий
+  const { 
+    data: categories = [], 
+    isLoading: categoriesLoading 
+  } = useQuery({
+    queryKey: ['admin-categories'],
+    queryFn: categoriesAPI.getAll,
+    staleTime: 60 * 1000,
+  })
+  
+  // Mutation для создания товара
+  const createProductMutation = useMutation({
+    mutationFn: productsAPI.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
+      toast.success('Товар створено успішно!')
+      if (onSuccess) onSuccess()
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'Помилка створення товару')
+    },
+  })
+  
+  // Используем константы из файла (БЕЗ ХАРДКОДА!)
+  const shelfLifeOptions = PRODUCT_ENUMS.shelfLife
+  const storageOptions = PRODUCT_ENUMS.storageConditions
   const [formData, setFormData] = useState({
     name: '',
     summary: '',
@@ -29,11 +56,6 @@ const ProductCreate = ({ onSuccess }) => {
   })
 
   const [selectedImages, setSelectedImages] = useState([])  // Состояние для выбранных файлов
-
-  // Загружаем категории при монтировании компонента
-  useEffect(() => {
-    fetchAllCategories()
-  }, [fetchAllCategories])
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -121,33 +143,32 @@ const ProductCreate = ({ onSuccess }) => {
         images: base64Images  // Отправляем base64 строки
       }
 
-      await createProduct(productData)
-
-      // Очищаем форму
-      setFormData({
-        name: '',
-        summary: '',
-        description: '',
-        ingredients: '',
-        contains: { lactose: false, gluten: false, nuts: false, palmOil: false },
-        weight: '',
-        price: '',
-        discountPrice: '',
-        category: '',
-        qty: '',
-        shelfLife: '',
-        storageConditions: '',
-        isFeatured: false,
-        images: []
+      createProductMutation.mutate(productData, {
+        onSuccess: () => {
+          // Очищаем форму
+          setFormData({
+            name: '',
+            summary: '',
+            description: '',
+            ingredients: '',
+            contains: { lactose: false, gluten: false, nuts: false, palmOil: false },
+            weight: '',
+            price: '',
+            discountPrice: '',
+            category: '',
+            qty: '',
+            shelfLife: '',
+            storageConditions: '',
+            isFeatured: false,
+            images: []
+          })
+          setSelectedImages([])  // Очищаем выбранные изображения
+        }
       })
-      setSelectedImages([])  // Очищаем выбранные изображения
-      
-      // Переходим в список товаров
-      if (onSuccess) {
-        onSuccess()
-      }
+
     } catch (error) {
-      console.error('Error creating product:', error)
+      console.error('Error preparing product data:', error)
+      toast.error('Помилка підготовки даних')
     }
   }
 
@@ -451,14 +472,14 @@ const ProductCreate = ({ onSuccess }) => {
         <div className="pt-4">
           <button
             type="submit"
-            disabled={loading}
+            disabled={createProductMutation.isPending}
             className={`w-full md:w-auto px-8 py-3 rounded-lg font-montserrat font-medium transition-colors ${
-              loading
+              createProductMutation.isPending
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-choco-dark text-creamy hover:bg-choco-light'
             }`}
           >
-            {loading ? 'Створення...' : 'Створити товар'}
+            {createProductMutation.isPending ? 'Створення...' : 'Створити товар'}
           </button>
         </div>
       </form>

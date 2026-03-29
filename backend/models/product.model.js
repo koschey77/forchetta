@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import { PRODUCT_ENUMS } from "../constants/enums.js"
 
 const productSchema = new mongoose.Schema(
   {
@@ -29,12 +30,12 @@ const productSchema = new mongoose.Schema(
     shelfLife: { 
       type: String,
       required: true,
-      enum: ['36 годин', '2 доби', '3 доби', '4 доби', '5 діб', '14 діб', '21 доба', '6 місяців']
+      enum: PRODUCT_ENUMS.shelfLife
     },
     storageConditions: {
       type: String,
       required: true,
-      enum: ['від +2°C до +6°C', 'до +20°C']
+      enum: PRODUCT_ENUMS.storageConditions
     },
     isFeatured: { type: Boolean, default: false },
   },

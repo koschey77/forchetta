@@ -1,29 +1,55 @@
-import { useEffect, useState } from 'react'
-import { useProductStore } from '../../stores/useProductStore'
-import useCategoryStore from '../../stores/useCategoryStore'
+import { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
+import { productsAPI, categoriesAPI } from '../../services/api'
 
 const ProductList = ({ onEditProduct }) => {
+  const queryClient = useQueryClient()
+  
+  // TanStack Query для загрузки товаров
   const { 
-    products, 
-    loading, 
-    fetchAllProducts, 
-    deleteProduct, 
-  } = useProductStore()
+    data: productsResponse, 
+    isLoading: productsLoading, 
+    error: productsError 
+  } = useQuery({
+    queryKey: ['admin-products'],
+    queryFn: () => productsAPI.getMany({ limit: 100 }), // Явно указываем лимит для админки
+    staleTime: 0, // Всегда актуальные данные в админке
+    refetchOnWindowFocus: true, // Обновлять при фокусе окна
+  })
   
-  const { categories, fetchAllCategories } = useCategoryStore()
+  // Извлекаем товары из ответа API
+  const products = productsResponse?.products || []
 
-  
+  // TanStack Query для загрузки категорий
+  const { 
+    data: categories = [], 
+    isLoading: categoriesLoading 
+  } = useQuery({
+    queryKey: ['admin-categories'],
+    queryFn: categoriesAPI.getAll,
+    staleTime: 0, // Всегда актуальные данные в админке
+    refetchOnWindowFocus: true, // Обновлять при фокусе окна
+  })
+
+  // Mutation для удаления товара
+  const deleteProduct = useMutation({
+    mutationFn: productsAPI.delete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
+      toast.success('Товар видалено успішно!')
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'Помилка видалення товару')
+    },
+  })
+
   const [filter, setFilter] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
 
-  useEffect(() => {
-    fetchAllProducts()
-    fetchAllCategories()
-  }, [fetchAllProducts, fetchAllCategories])
-
   const handleDelete = async (productId, productName) => {
     if (window.confirm(`Ви впевнені, що хочете видалити "${productName}"?`)) {
-      await deleteProduct(productId)
+      deleteProduct.mutate(productId)
     }
   }
 
@@ -46,10 +72,26 @@ const ProductList = ({ onEditProduct }) => {
     }).format(price)
   }
 
-  if (loading && products.length === 0) {
+  if ((productsLoading || categoriesLoading) && products.length === 0) {
     return (
       <div className="flex justify-center items-center py-12">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-choco-dark"></div>
+      </div>
+    )
+  }
+
+  if (productsError) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Помилка завантаження товарів</p>
+          <button 
+            onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-products'] })}
+            className="px-4 py-2 bg-choco-dark text-creamy rounded-lg hover:opacity-90"
+          >
+            Оновити
+          </button>
+        </div>
       </div>
     )
   }
@@ -61,10 +103,11 @@ const ProductList = ({ onEditProduct }) => {
           Список товарів ({products.length})
         </h2>
         <button
-          onClick={fetchAllProducts}
-          className="px-4 py-2 bg-dark-creamy text-choco-dark rounded-lg hover:bg-button-primary transition-colors"
+          onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-products'] })}
+          disabled={productsLoading}
+          className="px-4 py-2 bg-dark-creamy text-choco-dark rounded-lg hover:bg-button-primary transition-colors disabled:opacity-50"
         >
-          Оновити
+          {productsLoading ? 'Оновлення...' : 'Оновити'}
         </button>
       </div>
 

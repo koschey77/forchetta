@@ -26,10 +26,7 @@ export const productsAPI = {
     return response.data;
   },
 
-  // Метод для получения всех товаров 
-  getAll: async () => {
-    return await productsAPI.getMany();
-  },
+  // Убрали getAll() - используем универсальный getMany() с явными параметрами
 
   // Метод для совместимости с существующим кодом
   getAllWithFilters: async (filters = {}, pagination = { page: 1, limit: 12 }, sortOption = '') => {
@@ -72,6 +69,7 @@ export const productsAPI = {
 // =============================================
 
 export const categoriesAPI = {
+  // Backend для категорий не поддерживает пагинацию - возвращает все категории
   getAll: () => axiosInstance.get("/categories").then(res => res.data.categories),
   
   getById: (id) => axiosInstance.get(`/categories/${id}`).then(res => res.data),
