@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import CatalogHeader from '../components/catalog/CatalogHeader';
 import Sidebar from '../components/catalog/Sidebar';
@@ -9,17 +9,7 @@ import useFilterStore from '../stores/useFilterStore';
 
 const CatalogPage = () => {
   // Получаем состояние фильтров из централизованного стора
-  const { 
-    appliedFilters, 
-    sortOption, 
-    isFilterOpen, 
-    hasAppliedFilters,
-    applyFilters,
-    currentPage,
-    itemsPerPage,
-    totalItems,
-    setPaginationData
-  } = useFilterStore();
+  const { appliedFilters, sortOption, isFilterOpen, hasAppliedFilters, currentPage, itemsPerPage } = useFilterStore();
 
   // TanStack Query для загрузки товаров
   const { 
@@ -39,18 +29,13 @@ const CatalogPage = () => {
   });
 
   // Извлекаем товары из ответа API с мемоизацией для стабильности ссылок
+  // Извлекаем данные из TanStack Query response
   const products = useMemo(() => apiResponse?.products || [], [apiResponse?.products]);
-
-  // Обновляем данные пагинации при получении нового ответа  
-  useEffect(() => {
-    if (apiResponse?.pagination) {
-      setPaginationData(apiResponse.pagination);
-    }
-  }, [apiResponse, setPaginationData]);
+  const totalItems = apiResponse?.pagination?.total || 0;
+  const totalPages = apiResponse?.pagination?.totalPages || 0;
 
   // Функция адаптации backend данных в frontend формат
   const adaptProductData = (backendProduct) => {
-    // Определяем тег на основе скидости
     let tag = null;
     if (backendProduct.discountPrice && backendProduct.discountPrice > 0) {
       const discount = Math.round((1 - backendProduct.discountPrice / backendProduct.price) * 100);
@@ -64,8 +49,6 @@ const CatalogPage = () => {
       oldPrice: backendProduct.discountPrice ? `${backendProduct.price} грн` : null,
       image: backendProduct.images[0].url,
       tag,
-      // Статистика лайков
-      likesCount: backendProduct.likesCount || 0,
       // Добавляем оригинальные данные для совместимости
       originalProduct: backendProduct
     };
@@ -100,13 +83,6 @@ const CatalogPage = () => {
     </div>
   );
 
-
-
-  const handleApplyFilters = (filters) => {
-    // Используем метод из стора который автоматически закрывает на мобильных
-    applyFilters(filters);
-  };
-
   return (
     <div className="min-h-screen bg-creamy py-6">
       <div className="w-full">
@@ -130,7 +106,6 @@ const CatalogPage = () => {
           <div className="hidden sm:flex items-start gap-6">
             <Sidebar 
               className={`${isFilterOpen ? '' : 'hidden'}`} 
-              onApplyFilters={handleApplyFilters} 
               products={products} 
             />
             
@@ -162,7 +137,6 @@ const CatalogPage = () => {
             {/* Фильтры */}
             <Sidebar 
               className={`w-full ${isFilterOpen ? 'block' : 'hidden'}`} 
-              onApplyFilters={handleApplyFilters} 
               products={products} 
             />
             
@@ -188,7 +162,7 @@ const CatalogPage = () => {
 
           {/* Пагинация - показывается для всех размеров экранов */}
           {!productsLoading && !error && (
-            <Pagination />
+            <Pagination totalPages={totalPages} totalItems={totalItems} />
           )}
         </div>
       </div>

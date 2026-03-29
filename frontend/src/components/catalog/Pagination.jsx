@@ -1,10 +1,8 @@
 import useFilterStore from '../../stores/useFilterStore';
 
-const Pagination = () => {
+const Pagination = ({ totalPages = 0, totalItems = 0 }) => {
   const { 
     currentPage, 
-    totalPages, 
-    totalItems,
     itemsPerPage,
     setCurrentPage, 
     setItemsPerPage 

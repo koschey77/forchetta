@@ -21,7 +21,7 @@ const useFilterStore = create((set, get) => ({
   isFilterOpen: false,
 
   // =============================================
-  // СОСТОЯНИЕ ПАГИНАЦИИ
+  // СОСТОЯНИЕ ПАГИНАЦИИ (только client state)
   // =============================================
   
   // Текущая страница
@@ -29,12 +29,6 @@ const useFilterStore = create((set, get) => ({
   
   // Количество товаров на странице
   itemsPerPage: 12,
-  
-  // Общее количество страниц
-  totalPages: 0,
-  
-  // Общее количество товаров
-  totalItems: 0,
   
   // =============================================
   // ACTIONS ДЛЯ ФИЛЬТРОВ  
@@ -96,16 +90,7 @@ const useFilterStore = create((set, get) => ({
   setItemsPerPage: (itemsPerPage) => {
     set({ itemsPerPage, currentPage: 1 }) // Сбрасываем на первую страницу при изменении лимита
   },
-  
-  // Установка данных пагинации из API response
-  setPaginationData: (paginationData) => {
-    set({ 
-      currentPage: paginationData.currentPage || 1,
-      totalPages: paginationData.totalPages || 0,
-      totalItems: paginationData.total || 0
-    })
-  },
-  
+
   // =============================================
   // UI ACTIONS
   // =============================================
