@@ -19,11 +19,21 @@ const CatalogPage = () => {
   } = useQuery({
     queryKey: ['products', appliedFilters, sortOption, currentPage, itemsPerPage],
     queryFn: () => {
-      return productsAPI.getAllWithFilters(
-        appliedFilters, 
-        { page: currentPage, limit: itemsPerPage }, 
-        sortOption
-      );
+      // Конвертируем UI формат сортировки в backend API формат
+      let sortBy = '', sortOrder = '';
+      if (sortOption) {
+        const [field, order] = sortOption.includes('-') ? sortOption.split('-') : [sortOption, ''];
+        sortBy = field;
+        sortOrder = order;
+      }
+
+      return productsAPI.getMany({
+        ...appliedFilters,
+        page: currentPage,
+        limit: itemsPerPage,
+        sortBy,
+        sortOrder
+      });
     },
     staleTime: 2 * 60 * 1000, // 2 минуты свежие данные для каталога
   });
@@ -64,9 +74,9 @@ const CatalogPage = () => {
   const hasFiltersApplied = hasAppliedFilters();
 
   // Компонент "товары не найдены"
-  const NoProductsMessage = ({ isMobile = false }) => (
-    <div className={`${isMobile ? 'col-span-2' : 'col-span-full'} flex flex-col justify-center items-center py-20`}>
-      <div className={`text-choco-light ${isMobile ? 'text-lg' : 'text-xl'} mb-2`}>
+  const NoProductsMessage = () => (
+    <div className="col-span-2 sm:col-span-full flex flex-col justify-center items-center py-20">
+      <div className="text-choco-light text-lg sm:text-xl mb-2">
         {hasFiltersApplied
           ? 'Товари за заданими фільтрами не знайдені'
           : appliedFilters.categories.length > 0 
@@ -74,7 +84,7 @@ const CatalogPage = () => {
             : 'Товари не знайдені'
         }
       </div>
-      <div className={`text-choco-light text-sm ${isMobile ? 'text-center' : ''}`}>
+      <div className="text-choco-light text-sm text-center sm:text-left">
         {hasFiltersApplied
           ? 'Спробуйте скинути фільтри або вибрати інші параметри'
           : 'Спробуйте вибрати іншу категорію'
@@ -102,61 +112,34 @@ const CatalogPage = () => {
         
         {/* Основной контент с минимальной высотой для предотвращения перекрытия Footer */}
         <div className="max-w-[1440px] mx-auto px-4 sm:px-[60px] mt-6 pb-16 min-h-[600px]">
-          {/* Desktop и Tablet версия - flex layout */}
-          <div className="hidden sm:flex items-start gap-6">
+          {/* Единый блок для всех экранов */}
+          <div className="flex items-start gap-6">
             <Sidebar 
-              className={`${isFilterOpen ? '' : 'hidden'}`} 
+              className={`${isFilterOpen ? 'w-full sm:w-auto' : 'hidden'}`} 
               products={products} 
             />
             
-            <div className={`grid gap-x-6 gap-y-8 flex-grow transition-all duration-300 ease-in-out ${
+            {/* Товары - скрываются на мобильных когда открыты фильтры */}
+            <div className={`grid gap-x-4 gap-y-8 sm:gap-x-6 flex-grow transition-all duration-300 ease-in-out ${
               isFilterOpen 
-                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
-                : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+                ? 'hidden sm:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
+                : 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
             }`}>
               {productsLoading ? (
-                <div className="col-span-full flex justify-center items-center py-20">
-                  <div className="text-choco-light text-xl">Завантаження товарів...</div>
+                <div className="col-span-2 sm:col-span-full flex justify-center items-center py-20">
+                  <div className="text-choco-light text-lg sm:text-xl">Завантаження товарів...</div>
                 </div>
               ) : error ? (
-                <div className="col-span-full flex justify-center items-center py-20">
-                  <div className="text-choco-light text-xl">Помилка завантаження товарів</div>
+                <div className="col-span-2 sm:col-span-full flex justify-center items-center py-20">
+                  <div className="text-choco-light text-lg sm:text-xl">Помилка завантаження товарів</div>
                 </div>
               ) : displayProducts.length > 0 ? (
                 displayProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard key={product._id} product={product} />
                 ))
               ) : (
                 <NoProductsMessage />
               )}
-            </div>
-          </div>
-
-          {/* Mobile версия (<640px) */}
-          <div className="sm:hidden relative z-10">
-            {/* Фильтры */}
-            <Sidebar 
-              className={`w-full ${isFilterOpen ? 'block' : 'hidden'}`} 
-              products={products} 
-            />
-            
-            {/* Товары */}
-            <div className={`grid gap-x-4 gap-y-8 grid-cols-2 ${isFilterOpen ? 'hidden' : 'block'}`}>
-                {productsLoading ? (
-                  <div className="col-span-2 flex justify-center items-center py-20">
-                    <div className="text-choco-light text-lg">Завантаження...</div>
-                  </div>
-                ) : error ? (
-                  <div className="col-span-2 flex justify-center items-center py-20">
-                    <div className="text-choco-light text-lg">Помилка завантаження</div>
-                  </div>
-                ) : displayProducts.length > 0 ? (
-                  displayProducts.map(product => (
-                    <ProductCard key={product.id} product={product} />
-                  ))
-                ) : (
-                  <NoProductsMessage isMobile={true} />
-                )}
             </div>
           </div>
 

@@ -20,7 +20,6 @@ import LoadingSpinner from './components/LoadingSpinner'
 import Header from './components/Header'
 import Footer from './components/Footer'
 
-
 function App() {
   const { user, checkingAuth } = useUserStore()
   const location = useLocation()
@@ -30,15 +29,12 @@ function App() {
   
   return (
     <div className="min-h-screen bg-orange-50 text-black flex flex-col">
-      {/* Fixed Header for all pages except admin */}
       {!isAdminPage && (
-        <div className="fixed top-0 left-0 right-0 z-50">
+        <div className="relative z-50">
           <Header />
         </div>
       )}
-      
-      {/* Main content with conditional padding */}
-      <div className={`flex-grow ${!isAdminPage ? 'pt-[87px]' : ''}`}>
+      <div className="flex-grow">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={!user ? <SignUpPage /> : <Navigate to="/" />} />
@@ -52,10 +48,9 @@ function App() {
           <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </div>
-      
       {/* Footer only for non-admin pages */}
       {!isAdminPage && <Footer />}
-      
+
       <Toaster />
     </div>
   )

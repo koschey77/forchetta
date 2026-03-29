@@ -1,13 +1,10 @@
-import { useState } from 'react';
 import { CatalogFilterIcon, CrossIcon, CheckIcon } from '../icons';
 import useFilterStore from '../../stores/useFilterStore';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 const CatalogHeader = () => {
   // Получаем состояние сортировки из централизованного стора
   const { sortOption, setSortOption, isFilterOpen, setIsFilterOpen } = useFilterStore();
-  
-  // Локальное состояние для UI выпадающего списка
-  const [isSortOpen, setIsSortOpen] = useState(false);
 
   const sortOptions = [
     { value: 'price-asc', label: 'Від дешевих' },
@@ -43,56 +40,46 @@ const CatalogHeader = () => {
           </button>
         </div>
 
-        {/* Кнопка сортування */}
-        <div className="relative flex flex-row items-center gap-[10px] flex-1 sm:w-[150px] sm:flex-initial h-[35px]">
-          <button 
-            onClick={() => setIsSortOpen(!isSortOpen)}
-            className="box-border flex flex-row items-center px-[10px] py-[5px] gap-[5px] w-full sm:w-[150px] h-[35px] bg-creamy border border-choco-light rounded-[5px] transition-all duration-200 hover:opacity-90 text-choco-light"
-          >
-            <CatalogFilterIcon width={24} height={24} strokeWidth={2} />
-            <span className="text-figma-base font-montserrat font-light text-center text-choco-light flex-1 sm:w-[86px] sm:flex-initial h-[17px] whitespace-nowrap">
-              {sortOptions.find(option => option.value === sortOption)?.label || 'Сортування'}
-            </span>
-          </button>
-          
-          {/* Выпадающий список */}
-          {isSortOpen && (
-            <div className="absolute top-[35px] left-0 right-0 sm:right-auto z-50 flex flex-col items-start pt-[6px] px-[10px] pb-[15px] gap-[10px] w-full sm:w-[156px] min-h-[200px] bg-creamy rounded-b-[10px] shadow-lg">
-              {sortOptions.map((option) => {
-                const isSelected = sortOption === option.value && sortOption !== '';
-                return (
-                  <div
-                    key={option.value}
-                    onClick={() => {
-                      setSortOption(option.value);
-                      setIsSortOpen(false);
-                      // onSortChange больше не нужен - изменения автоматически синхронизируются через стор
-                    }}
-                    className="flex flex-row justify-between items-center gap-[7px] w-full sm:w-[136px] h-[26px] cursor-pointer"
-                  >
-                    {isSelected ? (
-                      <>
-                        <div className="flex items-center flex-1 sm:w-[105px] sm:flex-initial h-[15px]">
-                          <span className="text-figma-xs font-montserrat font-light text-choco-light-50">
-                            {option.label}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-center w-[24px] h-[24px]">
-                          <CheckIcon width={24} height={24} strokeWidth={1.5} className="text-choco-light" />
-                        </div>
-                      </>
-                    ) : (
-                      <div className="flex items-center flex-1 sm:w-[136px] sm:flex-initial h-[15px]">
-                        <span className="text-figma-xs font-montserrat font-light text-choco-dark">
-                          {option.label}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
+        {/* Dropdown сортування з Radix UI */}
+        <div className="flex flex-row items-center gap-[10px] flex-1 sm:w-[150px] sm:flex-initial h-[35px]">
+          <DropdownMenu.Root modal={false}>
+            <DropdownMenu.Trigger asChild>
+              <button className="box-border flex flex-row items-center px-[10px] py-[5px] gap-[5px] w-full sm:w-[150px] h-[35px] bg-creamy border border-choco-light rounded-[5px] transition-all duration-200 hover:opacity-90 text-choco-light">
+                <CatalogFilterIcon width={24} height={24} strokeWidth={2} />
+                <span className="text-figma-base font-montserrat font-light text-center text-choco-light flex-1 sm:w-[86px] sm:flex-initial h-[17px] whitespace-nowrap">
+                  {sortOptions.find(option => option.value === sortOption)?.label || 'Сортування'}
+                </span>
+              </button>
+            </DropdownMenu.Trigger>
+
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="flex flex-col items-start pt-[6px] px-[10px] pb-[15px] gap-[10px] w-[300px] sm:w-[156px] min-h-[200px] bg-creamy border border-choco-light rounded-[10px] shadow-lg z-50"
+                sideOffset={0}
+                align="start"
+              >
+                {sortOptions.map((option) => {
+                  const isSelected = sortOption === option.value && sortOption !== '';
+                  return (
+                    <DropdownMenu.Item
+                      key={option.value}
+                      className="flex flex-row justify-between items-center gap-[7px] w-full h-[26px] cursor-pointer hover:bg-dark-creamy outline-none rounded px-2"
+                      onSelect={() => setSortOption(option.value)}
+                    >
+                      <span className={`text-figma-xs font-montserrat font-light ${
+                        isSelected ? "text-choco-light-50" : "text-choco-dark"
+                      }`}>
+                        {option.label}
+                      </span>
+                      {isSelected && (
+                        <CheckIcon width={24} height={24} strokeWidth={1.5} className="text-choco-light" />
+                      )}
+                    </DropdownMenu.Item>
+                  );
+                })}
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
         </div>
       </div>
     </div>
