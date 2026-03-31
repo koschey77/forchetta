@@ -13,7 +13,7 @@ const CategoryList = ({ onEditCategory }) => {
   } = useQuery({
     queryKey: ['admin-categories'],
     queryFn: categoriesAPI.getAll, // Используем getAll для категорий (нет пагинации в backend)
-    staleTime: 0, // Всегда актуальные данные в adminке
+    staleTime: 0, // Всегда актуальные данные в админке
     refetchOnWindowFocus: true, // Обновлять при фокусе окна
   })
 

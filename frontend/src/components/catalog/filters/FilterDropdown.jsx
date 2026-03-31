@@ -30,7 +30,7 @@ const FilterDropdown = ({ title, options = [],  selected = [], onChange, isLoadi
 
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            className="flex flex-col items-start pt-[6px] px-[10px] pb-[15px] gap-[10px] w-[300px] min-h-[180px] bg-creamy border border-choco-light rounded-[10px] shadow-lg z-50"
+            className="flex flex-col items-start pt-[6px] px-[15px] pb-[15px] gap-[10px] w-[300px] min-h-[180px] bg-creamy border border-choco-light rounded-[10px] shadow-lg z-50"
             sideOffset={5}
           >
             {options.map((option) => {

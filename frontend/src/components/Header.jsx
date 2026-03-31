@@ -97,7 +97,7 @@ const Header = () => {
     <>
       {/* Единый адаптивный хедер */}
       <header className="h-[87px] sm:h-[87px] w-full bg-creamy font-[Montserrat]">
-        <div className="mx-auto flex h-full w-full max-w-[1440px] items-center justify-between px-[16px] sm:px-[60px]">
+        <div className="mx-auto flex h-full w-full max-w-[1440px] items-center justify-between px-[15px] sm:px-[30px] lg:px-[60px]">
           
           {/* Логотип - всегда показывается */}
           <button
@@ -163,7 +163,7 @@ const Header = () => {
           </nav>
 
           {/* Мобильная правая секция (<640px) - поиск + профиль */}
-          <div className="sm:hidden flex items-center gap-[20px] px-[8px] py-[5px]">
+          <div className="sm:hidden flex items-center gap-[20px] py-[5px]">
             <IconButton 
               icon={SearchIcon} 
               label="Открыть поиск" 
@@ -174,7 +174,7 @@ const Header = () => {
           </div>
 
           {/* Правая секция действий - показывается на sm+ */}
-          <div className="hidden sm:flex items-center gap-[30px] px-[8px] py-[5px]">
+          <div className="hidden sm:flex items-center gap-[30px] py-[5px]">
             
             {/* Профиль - показывается на sm+ */}
             <div className="relative flex items-center">

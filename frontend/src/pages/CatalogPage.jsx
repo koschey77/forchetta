@@ -97,7 +97,7 @@ const CatalogPage = () => {
     <div className="min-h-screen bg-creamy py-6">
       <div className="w-full">
         {/* Название выбранной категории */}
-        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-[60px] mb-4">
+        <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] mb-4">
           <div className="text-center">
             <h2 className="text-2xl font-montserrat font-semibold leading-[29px] text-choco-light">
               {hasFiltersApplied 
@@ -111,11 +111,11 @@ const CatalogPage = () => {
         <CatalogHeader />
         
         {/* Основной контент с минимальной высотой для предотвращения перекрытия Footer */}
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-[60px] mt-6 pb-16 min-h-[600px]">
+        <div className="max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] mt-6 pb-16 min-h-[600px]">
           {/* Единый блок для всех экранов */}
           <div className="flex items-start gap-6">
             <Sidebar 
-              className={`${isFilterOpen ? 'w-full sm:w-auto' : 'hidden'}`} 
+              className={`${isFilterOpen ? 'w-full min-w-[300px] sm:w-auto' : 'hidden'}`} 
               products={products} 
             />
             

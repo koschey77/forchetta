@@ -1,5 +1,5 @@
 import {Route, Routes} from 'react-router-dom'
-import { Navigate, useLocation } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 import { useUserStore } from "./stores/useUserStore"
 import { Toaster } from "react-hot-toast"
 
@@ -22,18 +22,15 @@ import Footer from './components/Footer'
 
 function App() {
   const { user, checkingAuth } = useUserStore()
-  const location = useLocation()
-  const isAdminPage = location.pathname.startsWith('/admin')
 
   if (checkingAuth) return <LoadingSpinner />
   
   return (
     <div className="min-h-screen bg-orange-50 text-black flex flex-col">
-      {!isAdminPage && (
-        <div className="relative z-50">
-          <Header />
-        </div>
-      )}
+      <div className="relative z-50">
+        <Header />
+      </div>
+      
       <div className="flex-grow">
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -48,8 +45,7 @@ function App() {
           <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </div>
-      {/* Footer only for non-admin pages */}
-      {!isAdminPage && <Footer />}
+      <Footer />
 
       <Toaster />
     </div>

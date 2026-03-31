@@ -40,7 +40,7 @@ const PriceInput = ({
   };
 
   return (
-    <div className="flex flex-row justify-center items-center px-[8px] py-[4px] flex-1 h-[30px] border border-choco-light rounded-[5px] bg-creamy">
+    <div className="flex flex-row justify-center items-center px-[15px] py-[4px] flex-1 h-[30px] border border-choco-light rounded-[5px] bg-creamy">
       <input
         type="number"
         min={min}

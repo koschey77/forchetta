@@ -31,7 +31,7 @@ const FilterControls = () => {
 
             <div className="flex justify-end gap-3">
               <AlertDialog.Cancel asChild>
-                <button className="px-4 py-2 bg-transparent border border-choco-light text-choco-light rounded-[10px] text-figma-sm font-montserrat font-light hover:bg-dark-creamy transition-colors">
+                <button className="px-[15px] sm:px-[30px] lg:px-[60px] py-2 bg-transparent border border-choco-light text-choco-light rounded-[10px] text-figma-sm font-montserrat font-light hover:bg-dark-creamy transition-colors">
                   Ні
                 </button>
               </AlertDialog.Cancel>
@@ -39,7 +39,7 @@ const FilterControls = () => {
               <AlertDialog.Action asChild>
                 <button
                   onClick={handleClearAll}
-                  className="px-4 py-2 bg-choco-light text-creamy rounded-[10px] text-figma-sm font-montserrat font-medium hover:bg-choco-dark transition-colors"
+                  className="px-[15px] sm:px-[30px] lg:px-[60px] py-2 bg-choco-light text-creamy rounded-[10px] text-figma-sm font-montserrat font-medium hover:bg-choco-dark transition-colors"
                 >
                   Так, очистити
                 </button>

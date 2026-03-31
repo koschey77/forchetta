@@ -15,13 +15,13 @@ const CatalogHeader = () => {
   ];
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto px-4 sm:pl-[60px] sm:pr-[60px]">
+    <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px]">
       <div className="flex flex-row justify-between items-center h-[35px] gap-2 sm:gap-[145px]">
         {/* Кнопка фільтрів */}
         <div className="flex flex-row items-center gap-[10px] flex-1 sm:w-[156px] sm:flex-initial h-[35px]">
           <button 
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="box-border flex flex-row justify-between items-center px-[10px] py-[5px] gap-[19px] w-full sm:w-[156px] h-[35px] bg-choco-light border border-choco-light rounded-[5px] transition-all duration-200 hover:opacity-90"
+            className="box-border flex flex-row justify-between items-center px-[15px] py-[5px] gap-[19px] w-full sm:w-[156px] h-[35px] bg-choco-light border border-choco-light rounded-[5px] transition-all duration-200 hover:opacity-90"
           >
             {/* Контейнер для иконки и текста */}
             <div className="flex flex-row items-center gap-[5px] flex-1 sm:w-[87px] sm:flex-initial h-[24px] text-creamy">
@@ -44,7 +44,7 @@ const CatalogHeader = () => {
         <div className="flex flex-row items-center gap-[10px] flex-1 sm:w-[150px] sm:flex-initial h-[35px]">
           <DropdownMenu.Root modal={false}>
             <DropdownMenu.Trigger asChild>
-              <button className="box-border flex flex-row items-center px-[10px] py-[5px] gap-[5px] w-full sm:w-[150px] h-[35px] bg-creamy border border-choco-light rounded-[5px] transition-all duration-200 hover:opacity-90 text-choco-light">
+              <button className="box-border flex flex-row items-center px-[15px] py-[5px] gap-[5px] w-full sm:w-[150px] h-[35px] bg-creamy border border-choco-light rounded-[5px] transition-all duration-200 hover:opacity-90 text-choco-light">
                 <CatalogFilterIcon width={24} height={24} strokeWidth={2} />
                 <span className="text-figma-base font-montserrat font-light text-center text-choco-light flex-1 sm:w-[86px] sm:flex-initial h-[17px] whitespace-nowrap">
                   {sortOptions.find(option => option.value === sortOption)?.label || 'Сортування'}
@@ -54,7 +54,7 @@ const CatalogHeader = () => {
 
             <DropdownMenu.Portal>
               <DropdownMenu.Content
-                className="flex flex-col items-start pt-[6px] px-[10px] pb-[15px] gap-[10px] w-[300px] sm:w-[156px] min-h-[200px] bg-creamy border border-choco-light rounded-[10px] shadow-lg z-50"
+                className="flex flex-col items-start pt-[6px] px-[15px] pb-[15px] gap-[10px] w-[300px] sm:w-[156px] min-h-[200px] bg-creamy border border-choco-light rounded-[10px] shadow-lg z-50"
                 sideOffset={0}
                 align="start"
               >

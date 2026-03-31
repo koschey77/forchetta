@@ -12,7 +12,7 @@ const Footer = () => {
   return (
     <footer className="bg-choco-dark text-creamy font-montserrat w-full relative z-60">
       {/* Единый адаптивный контейнер */}
-      <div className="w-full max-w-[1440px] mx-auto px-[30px] sm:px-[50px] py-8 sm:pt-[60px] sm:pb-[20px] pt-[170px] pb-[120px] 
+      <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] py-8 sm:pt-[60px] sm:pb-[20px] pt-[170px] pb-[120px] 
                       min-h-[730px] sm:min-h-[400px] xl:min-h-[554px]">
         
         <div className="w-full max-w-[1320px] mx-auto flex flex-col gap-8">
