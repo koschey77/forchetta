@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { categoriesAPI } from '../../services/api'
+import { EditIcon, BasketIcon } from '../../components/icons'
 
 const CategoryList = ({ onEditCategory }) => {
   const queryClient = useQueryClient()
@@ -73,117 +74,169 @@ const CategoryList = ({ onEditCategory }) => {
   }
 
   return (
-    <div className="min-h-screen bg-creamy p-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-2xl font-cormorant font-bold text-choco-dark">
-              Категорії ({categories.length})
-            </h2>
-          </div>
-
-          {categories.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">📂</div>
-              <h3 className="text-xl font-medium text-choco-dark mb-2">
-                Немає категорій
-              </h3>
-              <p className="text-choco-light">
-                Додайте першу категорію для відображення товарів
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Зображення
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Назва
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Опис
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Дата створення
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Дії
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {categories.map((category) => (
-                    <tr key={category._id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="h-20 w-20 rounded-lg overflow-hidden bg-gray-100">
-                          {category.image?.url ? (
-                            <img
-                              src={category.image.url}
-                              alt={category.name}
-                              className="h-full w-full object-cover"
-                              onError={(e) => {
-                                e.target.style.display = 'none'
-                                e.target.nextSibling.style.display = 'flex'
-                              }}
-                            />
-                          ) : null}
-                          <div 
-                            className="h-full w-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs text-center"
-                            style={category.image?.url ? {display: 'none'} : {}}
-                          >
-                            Без фото
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-choco-dark">
-                          {category.name}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-choco-light max-w-md" title={category.description}>
-                          {category.description && category.description.length > 100 
-                            ? category.description.substring(0, 100) + '...' 
-                            : category.description}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-choco-light">
-                          {new Date(category.createdAt).toLocaleDateString('uk-UA', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          })}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex gap-2 justify-end">
-                          <button
-                            onClick={() => handleEdit(category._id)}
-                            className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded hover:bg-blue-200 transition-colors"
-                            title="Редагувати категорію"
-                          >
-                            ✏️
-                          </button>
-                          <button
-                            onClick={() => handleDelete(category._id, category.name)}
-                            className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded hover:bg-red-200 transition-colors"
-                            title="Видалити категорію"
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+    <div className="w-full">
+      <div className="w-full max-w-[1440px] mx-auto py-[12px]">
+        
+        {/* Header Button */}
+        <div className="flex justify-start mb-[26px]">
+          <button 
+            onClick={() => onEditCategory && onEditCategory(null)} 
+            className="w-full sm:w-[226px] h-[40px] bg-wine-red rounded-[31px] flex items-center justify-center gap-[10px] sm:gap-[14px] hover:opacity-90 transition-opacity"
+          >
+            <span className="text-creamy text-[20px] sm:text-[15px] leading-none">+</span>
+            <span className="font-montserrat font-medium text-[14px] text-creamy whitespace-nowrap">
+              Додати категорію
+            </span>
+          </button>
         </div>
+
+        {categories.length === 0 ? (
+          <div className="text-center py-12 bg-[rgba(245,238,224,0.4)] rounded-[12px]">
+            <div className="text-6xl mb-4">📂</div>
+            <h3 className="text-[18px] font-montserrat font-semibold text-choco-light mb-2">
+              Немає категорій
+            </h3>
+            <p className="text-[14px] font-medium text-choco-light font-montserrat">
+              Додайте першу категорію для відображення
+            </p>
+          </div>
+        ) : (
+          <div className="w-full">
+            
+            {/* Desktop Version */}
+            <div className="hidden md:block">
+              <div className="bg-[rgba(245,238,224,0.4)] rounded-[12px] w-full" style={{minHeight: '620px'}}>
+                
+                {/* Table Headers */}
+                <div className="grid grid-cols-[200px_1fr_200px_120px] gap-4 mb-[25px]">
+                  <div className="font-montserrat font-semibold text-[18px] text-choco-light text-center">Фото</div>
+                  <div className="font-montserrat font-semibold text-[18px] text-choco-light text-center">Назва</div>
+                  <div className="font-montserrat font-semibold text-[18px] text-choco-light text-center">
+                    <div>Дата створення</div>
+                  </div>
+                  <div className="font-montserrat font-semibold text-[18px] text-choco-light text-center">Дії</div>
+                </div>
+                
+                {/* Header Line */}
+                <div className="w-full h-[1px] bg-choco-light opacity-60 mb-[25px]"></div>
+                
+                {/* Category Rows */}
+                <div className="space-y-[25px]">
+                  {categories.map((category, index) => (
+                    <div key={category._id} className="grid grid-cols-[200px_1fr_200px_120px] gap-4 items-center">
+                      {/* Photo */}
+                      <div className="flex justify-center">
+                        <div className="w-[152px] h-[72px] rounded-[30px] overflow-hidden bg-gray-100 flex items-center justify-center">
+                          <img src={category.image.url} alt={category.name} className="w-full h-full object-cover" />
+                        </div>
+                      </div>
+                      
+                      {/* Name */}
+                      <div className="flex justify-center items-center">
+                        <span className="font-montserrat font-medium text-[14px] text-choco-light text-center">
+                          {category.name}
+                        </span>
+                      </div>
+                      
+                      {/* Creation Date */}
+                      <div className="flex justify-center items-center">
+                        <span className="font-montserrat font-semibold text-[18px] text-choco-light">
+                          {new Date(category.createdAt).toLocaleDateString('uk-UA')}
+                        </span>
+                      </div>
+                      
+                      {/* Actions */}
+                      <div className="flex justify-center items-center">
+                        <div className="flex flex-col items-center gap-[3px]">
+                          <button 
+                            onClick={() => handleEdit(category._id)}
+                            className="w-[31px] h-[31px] bg-white rounded-full flex items-center justify-center transition-colors hover:opacity-80"
+                            title="Редагувати"
+                          >
+                            <EditIcon className="w-[14.74px] h-[14.57px]" fill="#893E3E" />
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(category._id, category.name)}
+                            className="w-[31px] h-[31px] bg-white rounded-full flex items-center justify-center transition-colors hover:opacity-80"
+                            title="Видалити"
+                          >
+                            <BasketIcon className="w-[14px] h-[15.77px]" fill="#893E3E" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Version */}
+            <div className="block md:hidden">
+              <div className="bg-[rgba(245,238,224,0.4)] rounded-[12px] w-full" style={{minHeight: '620px'}}>
+                
+                {/* Mobile Headers */}
+                <div className="grid grid-cols-[80px_1fr_80px_60px] gap-2 mb-[20px]">
+                  <div className="font-montserrat font-medium text-[14px] text-choco-light text-center">Фото</div>
+                  <div className="font-montserrat font-medium text-[14px] text-choco-light text-center">Назва</div>
+                  <div className="font-montserrat font-medium text-[14px] text-choco-light text-center">
+                    <div>Дата</div>
+                    <div>створення</div>
+                  </div>
+                  <div className="font-montserrat font-medium text-[14px] text-choco-light text-center">Дії</div>
+                </div>
+                
+                {/* Mobile Category Rows */}
+                <div className="space-y-[20px]">
+                  {categories.map((category, index) => (
+                    <div key={category._id} className="grid grid-cols-[80px_1fr_80px_60px] gap-2 items-center">
+                      {/* Photo */}
+                      <div className="flex justify-center">
+                        <div className="w-[60px] h-[60px] rounded-[50px] overflow-hidden bg-gray-100 flex items-center justify-center">
+                          <img src={category.image.url} alt={category.name} className="w-full h-full object-cover" />
+                        </div>
+                      </div>
+                      
+                      {/* Name */}
+                      <div className="flex justify-center items-center">
+                        <span className="font-montserrat font-medium text-[12px] text-choco-light text-center">
+                          {category.name}
+                        </span>
+                      </div>
+                      
+                      {/* Creation Date */}
+                      <div className="flex justify-center items-center">
+                        <span className="font-montserrat font-semibold text-[16px] text-choco-light">
+                          {new Date(category.createdAt).toLocaleDateString('uk-UA')}
+                        </span>
+                      </div>
+                      
+                      {/* Actions */}
+                      <div className="flex justify-center items-center">
+                        <div className="flex flex-col items-center gap-[3px]">
+                          <button 
+                            onClick={() => handleEdit(category._id)}
+                            className="w-[25px] h-[25px] bg-white rounded-full flex items-center justify-center transition-colors hover:opacity-80"
+                            title="Редагувати"
+                          >
+                            <EditIcon className="w-[12px] h-[12px]" fill="#893E3E" />
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(category._id, category.name)}
+                            className="w-[25px] h-[25px] bg-white rounded-full flex items-center justify-center transition-colors hover:opacity-80"
+                            title="Видалити"
+                          >
+                            <BasketIcon className="w-[12px] h-[12px]" fill="#893E3E" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        )}
       </div>
     </div>
   )

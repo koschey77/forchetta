@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useUserStore } from '../stores/useUserStore'
 import { Navigate } from 'react-router-dom'
-import { ExitIcon, DropdownArrowIcon, DashboardIcon, ReviewsIcon, OrdersIcon, CartIcon, DotsIcon, ProfileIcon } from '../components/icons'
+import { ExitIcon, DropdownArrowIcon, DashboardIcon, ReviewsIcon, OrdersIcon, CartIcon, DotsIcon, ProfileIcon, BookIcon } from '../components/icons'
 import { ProductCreate, ProductList, ProductEdit, CategoryList, CategoryCreate, CategoryEdit } from './admin'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
@@ -20,7 +20,8 @@ const AdminPanel = () => {
     products: { name: 'Товари', icon: CartIcon },
     orders: { name: 'Замовлення', icon: OrdersIcon },
     users: { name: 'Користувачи', icon: ProfileIcon },
-    reviews: { name: 'Відгуки', icon: ReviewsIcon }
+    reviews: { name: 'Відгуки', icon: ReviewsIcon },
+    journal: { name: 'Журнал', icon: BookIcon }
   }
 
   // Проверка прав админа
@@ -55,34 +56,26 @@ const AdminPanel = () => {
   const renderContent = () => {
     const { currentPage, editingId, mode } = adminState
     
-    switch (currentPage) {
-      case 'categories':
-        return mode === 'edit' && editingId ? (
-          <CategoryEdit 
-            categoryId={editingId} 
-            onCancel={handleCancelEdit}
-            onSuccess={handleCancelEdit}
-          />
-        ) : <CategoryList onEditCategory={(id) => handleEdit('categories', id)} />
-        
-      case 'products':
-        return mode === 'edit' && editingId ? (
-          <ProductEdit 
-            productId={editingId} 
-            onCancel={handleCancelEdit}
-            onSuccess={handleCancelEdit}
-          />
-        ) : <ProductList onEditProduct={(id) => handleEdit('products', id)} />
-        
-      case 'dashboard':
-      default:
-        return (
-          <div className="text-center py-12">
-            <h3 className="text-xl text-choco-dark mb-2">Dashboard</h3>
-            <p className="text-choco-light">Скоро тут буде статистика</p>
-          </div>
-        )
+    // Только для страниц с реальной функциональностью
+    if (currentPage === 'categories') {
+      return mode === 'edit' && editingId ? (
+        <CategoryEdit categoryId={editingId} onCancel={handleCancelEdit} onSuccess={handleCancelEdit} />
+      ) : <CategoryList onEditCategory={(id) => handleEdit('categories', id)} />
     }
+    
+    if (currentPage === 'products') {
+      return mode === 'edit' && editingId ? (
+        <ProductEdit productId={editingId} onCancel={handleCancelEdit} onSuccess={handleCancelEdit} />
+      ) : <ProductList onEditProduct={(id) => handleEdit('products', id)} />
+    }
+    
+    // Заглушка для остальных страниц
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-xl text-choco-dark mb-2">{pageMapping[currentPage]?.name || 'Dashboard'}</h3>
+        <p className="text-choco-light">Скоро тут буде контент</p>
+      </div>
+    )
   }
 
   return (
@@ -105,14 +98,12 @@ const AdminPanel = () => {
       <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] py-4">
         <DropdownMenu.Root modal={false}>
           <DropdownMenu.Trigger asChild>
-            <button className="flex flex-row justify-between items-center px-[15px] gap-[10px] w-[349px] h-[44px] bg-dark-creamy rounded-[30px] transition-colors hover:opacity-90">
-              <div className="flex flex-row items-center gap-[10px] w-[143px] h-[24px]">
+            <button className="flex flex-row justify-between items-center px-[15px] gap-[10px] w-full sm:w-[349px] h-[44px] bg-dark-creamy rounded-[30px] transition-colors hover:opacity-90">
+              <div className="flex flex-row items-center gap-[10px] min-w-[200px] h-[24px]">
                 {React.createElement(pageMapping[adminState.currentPage].icon, { 
-                  className: "w-[24px] h-[24px]", 
-                  fill: "#705A5A",
-                  ...(pageMapping[adminState.currentPage].icon === CartIcon || pageMapping[adminState.currentPage].icon === ProfileIcon ? { strokeWidth: 2 } : {})
+                  className: "w-[24px] h-[24px] flex-shrink-0 text-[#705A5A]"
                 })}
-                <span className="font-montserrat font-semibold text-[18px] leading-[22px] text-choco-light">{pageMapping[adminState.currentPage].name}</span>
+                <span className="font-montserrat font-semibold text-[18px] leading-[22px] text-choco-light whitespace-nowrap">{pageMapping[adminState.currentPage].name}</span>
               </div>
               <DropdownArrowIcon className="w-[19px] h-[16px]" stroke="#705A5A" strokeWidth={2} />
             </button>
@@ -120,7 +111,7 @@ const AdminPanel = () => {
 
           <DropdownMenu.Portal>
             <DropdownMenu.Content
-              className="bg-creamy rounded-md py-2 px-2 w-[349px] z-50"
+              className="bg-creamy rounded-md py-2 px-2 w-full sm:w-[349px] z-50"
               sideOffset={5}
               align="start"
             >
@@ -130,12 +121,12 @@ const AdminPanel = () => {
                 return (
                   <DropdownMenu.Item 
                     key={key}
-                    className={`flex flex-row items-center pl-[15px] gap-[10px] w-[223px] h-[35px] rounded-[31px] transition duration-300 cursor-pointer outline-none ${
+                    className={`flex flex-row items-center pl-[15px] gap-[10px] w-full sm:w-[223px] h-[35px] rounded-[31px] transition duration-300 cursor-pointer outline-none ${
                       isActive ? 'bg-dark-creamy' : 'hover:bg-dark-creamy/50'
                     }`}
                     onSelect={() => handlePageSelect(key)}
                   >
-                    <Icon className="w-[24px] h-[24px]" fill="#705A5A" {...(Icon === CartIcon || Icon === ProfileIcon ? { strokeWidth: 2 } : {})} />
+                    <Icon className="w-[24px] h-[24px] text-[#705A5A]" />
                     <span className="font-montserrat font-medium text-[14px] leading-[17px] text-choco-light">{page.name}</span>
                   </DropdownMenu.Item>
                 )
@@ -147,7 +138,7 @@ const AdminPanel = () => {
 
       {/* Main Content */}
       <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] pb-6">
-        <div className="bg-white rounded-lg shadow-lg p-6">{renderContent()}</div>
+        {renderContent()}
       </div>
     </div>
   )
