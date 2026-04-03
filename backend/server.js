@@ -3,6 +3,7 @@ dotenv.config()
 import path from "path"
 
 import express from 'express'
+import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import passport from './config/passport.config.js'
@@ -21,6 +22,14 @@ const __dirname = path.resolve()
 // Базовый middleware для парсинга JSON и куки 
 app.use(express.json({ limit: '10mb' }))
 app.use(cookieParser())
+
+// CORS настройки
+if (process.env.NODE_ENV === 'development') {
+  app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+  }))
+}
 
 // CORS настройки для продакшена
 if (process.env.NODE_ENV === 'production') {

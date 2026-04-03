@@ -36,7 +36,11 @@ export default {
           primary: '#E3D6BF',         // Основные кнопки (каталог)
           secondary: '#2B1A12',       // Темные кнопки (новинка)
           accent: '#893E3E',          // Акцентные кнопки (скидки)
-        }
+        },
+        
+        'error-red': '#F23030',     
+        'warning-yellow': '#D6AB00',
+        'correct-green': '#22AD5C', 
       },
       fontFamily: {
         // Шрифты из дизайн-системы Figma

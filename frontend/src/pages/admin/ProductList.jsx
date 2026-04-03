@@ -1,7 +1,7 @@
-import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
-import { productsAPI, categoriesAPI } from '../../services/api'
+import { productsAPI } from '../../services/api'
+import { EditIcon, BasketIcon } from '../../components/icons'
 
 const ProductList = ({ onEditProduct }) => {
   const queryClient = useQueryClient()
@@ -9,28 +9,17 @@ const ProductList = ({ onEditProduct }) => {
   // TanStack Query для загрузки товаров
   const { 
     data: productsResponse, 
-    isLoading: productsLoading, 
-    error: productsError 
+    isLoading, 
+    error 
   } = useQuery({
     queryKey: ['admin-products'],
-    queryFn: () => productsAPI.getMany({ limit: 100 }), // Явно указываем лимит для админки
+    queryFn: () => productsAPI.getMany({ limit: 100 }),
     staleTime: 0, // Всегда актуальные данные в админке
     refetchOnWindowFocus: true, // Обновлять при фокусе окна
   })
   
   // Извлекаем товары из ответа API
   const products = productsResponse?.products || []
-
-  // TanStack Query для загрузки категорий
-  const { 
-    data: categories = [], 
-    isLoading: categoriesLoading 
-  } = useQuery({
-    queryKey: ['admin-categories'],
-    queryFn: categoriesAPI.getAll,
-    staleTime: 0, // Всегда актуальные данные в админке
-    refetchOnWindowFocus: true, // Обновлять при фокусе окна
-  })
 
   // Mutation для удаления товара
   const deleteProduct = useMutation({
@@ -44,12 +33,9 @@ const ProductList = ({ onEditProduct }) => {
     },
   })
 
-  const [filter, setFilter] = useState('all')
-  const [searchTerm, setSearchTerm] = useState('')
-
-  const handleDelete = async (productId, productName) => {
-    if (window.confirm(`Ви впевнені, що хочете видалити "${productName}"?`)) {
-      deleteProduct.mutate(productId)
+  const handleDelete = async (id, name) => {
+    if (window.confirm(`Ви дійсно хочете видалити товар "${name}"?`)) {
+      deleteProduct.mutate(id)
     }
   }
 
@@ -59,12 +45,6 @@ const ProductList = ({ onEditProduct }) => {
     }
   }
 
-  const filteredProducts = products.filter(product => {
-    const matchesCategory = filter === 'all' || product.category?._id === filter
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    return matchesCategory && matchesSearch
-  })
-
   const formatPrice = (price) => {
     return new Intl.NumberFormat('uk-UA', {
       style: 'currency',
@@ -72,291 +52,159 @@ const ProductList = ({ onEditProduct }) => {
     }).format(price)
   }
 
-  if ((productsLoading || categoriesLoading) && products.length === 0) {
+  if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-choco-dark"></div>
+      <div className="min-h-screen bg-creamy p-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-choco-dark mx-auto"></div>
+            <p className="mt-4 text-choco-light">Завантаження товарів...</p>
+          </div>
+        </div>
       </div>
     )
   }
 
-  if (productsError) {
+  if (error) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <div className="text-center">
-          <p className="text-red-600 mb-4">Помилка завантаження товарів</p>
-          <button 
-            onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-products'] })}
-            className="px-4 py-2 bg-choco-dark text-creamy rounded-lg hover:opacity-90"
-          >
-            Оновити
-          </button>
+      <div className="min-h-screen bg-creamy p-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center py-8">
+            <p className="text-red-600">Помилка завантаження товарів</p>
+            <button 
+              onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-products'] })}
+              className="mt-4 px-4 py-2 bg-choco-dark text-creamy rounded-lg hover:opacity-90"
+            >
+              Оновити
+            </button>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-cormorant font-bold text-choco-dark">
-          Список товарів ({products.length})
-        </h2>
-        <button
-          onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-products'] })}
-          disabled={productsLoading}
-          className="px-4 py-2 bg-dark-creamy text-choco-dark rounded-lg hover:bg-button-primary transition-colors disabled:opacity-50"
-        >
-          {productsLoading ? 'Оновлення...' : 'Оновити'}
-        </button>
-      </div>
-
-      {/* Фильтры */}
-      <div className="mb-6 space-y-4">
-        <div className="flex flex-wrap gap-2">
+    <div className="w-full">
+      <div className="w-full max-w-[1440px] mx-auto py-[12px]">
+        {/* Header Button */}
+        <div className="flex justify-start mb-[26px]">
           <button
-            onClick={() => setFilter('all')}
-            className={`px-4 py-2 rounded-lg text-sm transition-colors ${
-              filter === 'all'
-                ? 'bg-choco-dark text-creamy'
-                : 'bg-creamy text-choco-light hover:bg-dark-creamy'
-            }`}
+            onClick={() => onEditProduct && onEditProduct(null)}
+            className="w-full sm:w-[226px] h-[40px] bg-wine-red rounded-[31px] flex items-center justify-center gap-[10px] sm:gap-[14px] hover:opacity-90 transition-opacity"
           >
-            Всі ({products.length})
+            <span className="text-creamy text-[20px] sm:text-[15px] leading-none">+</span>
+            <span className="font-montserrat font-medium text-[14px] text-creamy whitespace-nowrap">Додати товар</span>
           </button>
-          {categories.map(category => {
-            const count = products.filter(p => p.category?._id === category._id).length
-            return (
-              <button
-                key={category._id}
-                onClick={() => setFilter(category._id)}
-                className={`px-4 py-2 rounded-lg text-sm transition-colors ${
-                  filter === category._id
-                    ? 'bg-choco-dark text-creamy'
-                    : 'bg-creamy text-choco-light hover:bg-dark-creamy'
-                }`}
-              >
-                {category.name} ({count})
-              </button>
-            )
-          })}
         </div>
 
-        {/* Поиск */}
-        <div className="max-w-md">
-          <input
-            type="text"
-            placeholder="Пошук товарів..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dark-creamy focus:border-transparent"
-          />
-        </div>
-      </div>
-
-      {/* Список товаров */}
-      {filteredProducts.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-choco-light">
-            {searchTerm ? 'Товарів не знайдено за запитом' : 'Товарів поки що немає'}
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-6">
-          {filteredProducts.map((product) => (
-            <div key={product._id} className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
-              <div className="flex gap-8">
-                {/* ЛЕВАЯ ЧАСТЬ - ИЗОБРАЖЕНИЯ */}
-                <div className="flex-shrink-0">
-                  {product.images && product.images.length > 0 ? (
-                    <div className="space-y-3">
-                      {/* Основное изображение */}
-                      <div className="w-32 h-24 rounded-lg overflow-hidden border">
-                        <img 
-                          src={product.images[0].url} 
-                          alt={product.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => { e.target.style.display = 'none' }}
-                        />
-                      </div>
-                      
-                      {/* Остальные изображения под основным */}
-                      {product.images.length > 1 && (
-                        <div className="flex gap-2 max-w-[128px]">
-                          {product.images.slice(1, 6).map((img, index) => (
-                            <img 
-                              key={index + 1}
-                              src={img.url} 
-                              alt={`${product.name} ${index + 2}`}
-                              className="w-8 h-6 object-cover rounded border opacity-75 hover:opacity-100 transition-opacity cursor-pointer"
-                              onError={(e) => { e.target.style.display = 'none' }}
-                            />
-                          ))}
-                          {product.images.length > 6 && (
-                            <div className="w-8 h-6 bg-gray-100 border rounded text-xs flex items-center justify-center text-gray-500">
-                              +{product.images.length - 6}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      
-                      {/* Кнопки действий под картинками */}
-                      <div className="flex flex-col gap-1 mt-3">
-                        <button
-                          onClick={() => handleEdit(product._id)}
-                          className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded hover:bg-blue-200 transition-colors"
-                          title="Редагувати товар"
-                        >
-                          Редагувати
-                        </button>
-                        <button
-                          onClick={() => handleDelete(product._id, product.name)}
-                          className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded hover:bg-red-200 transition-colors"
-                          title="Видалити товар"
-                        >
-                          Видалити
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="w-32 h-24 bg-gray-100 border border-gray-300 rounded-lg flex items-center justify-center">
-                      <div className="text-center">
-                        <svg className="w-8 h-8 text-gray-400 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <div className="text-xs text-gray-400">Без фото</div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* ПРАВАЯ ЧАСТЬ - ИНФОРМАЦИЯ */}
-                <div className="flex-1 max-w-2xl">
-                  {/* Верхние две части: 2/3 + 1/3 */}
-                  <div className="flex gap-4 mb-4">
-                    {/* ПЕРВАЯ ЧАСТЬ - 2/3 пространства */}
-                    <div className="flex-[2] space-y-3">
-                      {/* Название */}
-                      <h3 className="text-lg font-medium text-gray-800">{product.name}</h3>
-
-                      {/* Краткий опис */}
-                      {product.summary && (
-                        <div>
-                          <ul className="space-y-0.5 text-gray-600">
-                            {product.summary.split(/[\n,]/).filter(item => item.trim()).map((item, index) => (
-                              <li key={index} className="flex items-start">
-                                <span className="text-gray-400 mr-1 text-xs">•</span>
-                                <span className="text-xs whitespace-pre-line">{item.trim()}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {/* Склад */}
-                      {product.ingredients && (
-                        <div className="flex items-start gap-1">
-                          <span className="font-medium text-gray-800 text-xs">Склад:</span>
-                          <span className="text-gray-600 text-xs leading-relaxed whitespace-pre-line">{product.ingredients}</span>
-                        </div>
-                      )}
-
-                      {/* Полное описание */}
-                      {product.description && (
-                        <div className="flex items-start gap-1">
-                          <span className="font-medium text-gray-800 text-xs">Опис:</span>
-                          <span className="text-gray-600 text-xs leading-relaxed whitespace-pre-line">{product.description}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* ВТОРАЯ ЧАСТЬ - 1/3 пространства */}
-                    <div className="flex-[1] space-y-2">
-                      {/* Рекомендований */}
-                      {product.isFeatured && (
-                        <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
-                          ⭐ Рекомендований
-                        </span>
-                      )}
-
-                      {/* Категорія */}
-                      <div className="flex items-center gap-1">
-                        {product.category?.image?.url && (
-                          <img 
-                            src={product.category.image.url} 
-                            alt={product.category.name}
-                            className="w-6 h-6 rounded object-cover"
-                            onError={(e) => { e.target.style.display = 'none' }}
-                          />
-                        )}
-                        <span className="text-xs text-gray-600">{product.category?.name || 'Без категорії'}</span>
-                      </div>
-
-                      {/* Характеристики */}
-                      <div className="space-y-1">
-                        {product.weight > 0 && (
-                          <div className="flex items-center gap-1">
-                            <span className="text-gray-600 text-xs">Вага:</span>
-                            <span className="font-medium text-gray-800 text-xs">{product.weight} г</span>
-                          </div>
-                        )}
-                        <div className="flex items-center gap-1">
-                          <span className="text-gray-600 text-xs">Термін зберігання:</span>
-                          <span className="font-medium text-gray-800 text-xs">{product.shelfLife}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span className="text-gray-600 text-xs">Умови зберігання:</span>
-                          <span className="font-medium text-gray-800 text-xs">{product.storageConditions}</span>
-                        </div>
-                      </div>
-
-                      {/* Містить алергени */}
-                      {product.contains && Object.values(product.contains).some(v => v) && (
-                        <div className="flex items-center gap-1 flex-wrap">
-                          <span className="text-xs font-medium text-gray-800">Містить:</span>
-                          {product.contains.lactose && <span className="px-1.5 py-0.5 bg-yellow-100 text-yellow-800 text-xs rounded">Лактоза</span>}
-                          {product.contains.gluten && <span className="px-1.5 py-0.5 bg-orange-100 text-orange-800 text-xs rounded">Глютен</span>}
-                          {product.contains.nuts && <span className="px-1.5 py-0.5 bg-red-100 text-red-800 text-xs rounded">Горіхи</span>}
-                          {product.contains.palmOil && <span className="px-1.5 py-0.5 bg-purple-100 text-purple-800 text-xs rounded">Пальмова олія</span>}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* НИЖНЯЯ ЧАСТЬ - Количество и цена на всю ширину */}
-                  <div className="border-t border-gray-200 pt-3">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">Кількість на складі:</span>
-                        <span className={`px-1.5 py-0.5 text-xs rounded-full font-medium ${
-                          product.qty > 0 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-red-100 text-red-800'
-                        }`}>
-                          {product.qty} шт
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-600">Ціна:</span>
-                        <div className="flex items-center gap-1">
-                          <span className="font-semibold text-sm text-gray-800">
-                            {formatPrice(product.discountPrice > 0 ? product.discountPrice : product.price)}
-                          </span>
-                          {product.discountPrice > 0 && (
-                            <span className="text-xs text-gray-400 line-through">
-                              {formatPrice(product.price)}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+        {products.length === 0 ? (
+          <div className="text-center py-12 bg-[rgba(245,238,224,0.4)] rounded-[12px]">
+            <div className="text-6xl mb-4">📦</div>
+            <h3 className="text-[18px] font-montserrat font-semibold text-choco-light mb-2">Немає товарів</h3>
+            <p className="text-[14px] font-medium text-choco-light font-montserrat">Додайте перший товар для відображення</p>
+          </div>
+        ) : (
+          <div className="w-full bg-[rgba(245,238,224,0.4)] rounded-[12px]" style={{minHeight: '620px'}}>
+            
+            {/* Unified Table Headers (responsive) */}
+            <div className="grid grid-cols-[60px_1fr_60px_50px_50px_40px] md:grid-cols-[150px_1fr_150px_120px_100px_100px] gap-1 md:gap-4 mb-[20px] md:mb-[25px]">
+              <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">Фото</div>
+              <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">Назва</div>
+              <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">
+                <div className="md:hidden">Кат</div>
+                <div className="hidden md:block">Категорія</div>
               </div>
+              <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">Ціна</div>
+              <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">
+                <div className="md:hidden">К-ть</div>
+                <div className="hidden md:block">Кількість</div>
+              </div>
+              <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">Дії</div>
             </div>
-          ))}
-        </div>
-      )}
+
+            {/* Header Line (desktop only) */}
+            <div className="hidden md:block w-full h-[1px] bg-choco-light opacity-60 mb-[25px]"></div>
+            
+            {/* Unified Product Rows (responsive) */}
+            <div className="space-y-[20px] md:space-y-[25px]">
+              {products.map((product) => (
+                <div key={product._id} className="grid grid-cols-[60px_1fr_60px_50px_50px_40px] md:grid-cols-[150px_1fr_150px_120px_100px_100px] gap-1 md:gap-4 items-center">
+                  
+                  {/* Photo (responsive) */}
+                  <div className="flex justify-center">
+                    <div className="w-[50px] h-[50px] rounded-[25px] md:w-[120px] md:h-[60px] md:rounded-[20px] overflow-hidden bg-gray-100 flex items-center justify-center">
+                      {product.images && product.images.length > 0 ? (
+                        <img src={product.images[0].url} alt={product.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="text-gray-400 text-xs">Без фото</div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Name (responsive) */}
+                  <div className="flex justify-center items-center px-1">
+                    <span className="font-montserrat font-medium text-[10px] md:text-[14px] text-choco-light text-center line-clamp-2">
+                      {product.name}
+                    </span>
+                  </div>
+                  
+                  {/* Category (responsive) */}
+                  <div className="flex justify-center items-center">
+                    <span className="font-montserrat font-medium text-[10px] md:text-[12px] text-choco-light text-center line-clamp-1">
+                      {product.category?.name || 'Без категорії'}
+                    </span>
+                  </div>
+                  
+                  {/* Price (responsive) */}
+                  <div className="flex justify-center items-center">
+                    <div className="text-center">
+                      <div className="font-montserrat font-semibold text-[10px] md:text-[12px] text-choco-light">
+                        {formatPrice(product.discountPrice > 0 ? product.discountPrice : product.price)}
+                      </div>
+                      {product.discountPrice > 0 && (
+                        <div className="font-montserrat text-[8px] md:text-[10px] text-gray-400 line-through">
+                          {formatPrice(product.price)}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Quantity (responsive) */}
+                  <div className="flex justify-center items-center">
+                    <span className={`font-montserrat font-semibold text-[10px] md:text-[12px] ${
+                      product.qty === 0 ? 'text-error-red' 
+                      : product.qty <= 5 ? 'text-warning-yellow' 
+                      : 'text-correct-green'
+                    }`}>
+                      {product.qty}
+                    </span>
+                  </div>
+                  
+                  {/* Actions (responsive) */}
+                  <div className="flex justify-center items-center">
+                    <div className="flex flex-col items-center gap-[3px]">
+                      <button
+                        onClick={() => handleEdit(product._id)}
+                        className="w-[20px] h-[20px] md:w-[31px] md:h-[31px] bg-creamy-light rounded-full flex items-center justify-center transition-colors hover:opacity-80"
+                        title="Редагувати"
+                      >
+                        <EditIcon className="w-[10px] h-[10px] md:w-[14.74px] md:h-[14.57px]" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(product._id, product.name)}
+                        className="w-[20px] h-[20px] md:w-[31px] md:h-[31px] bg-creamy-light rounded-full flex items-center justify-center transition-colors hover:opacity-80"
+                        title="Видалити"
+                      >
+                        <BasketIcon className="w-[10px] h-[10px] md:w-[14px] md:h-[15.77px]" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
