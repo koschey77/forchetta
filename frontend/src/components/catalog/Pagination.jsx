@@ -1,4 +1,6 @@
 import useFilterStore from '../../stores/useFilterStore';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { DropdownArrowIcon } from '../icons';
 
 const Pagination = ({ totalPages = 0, totalItems = 0 }) => {
   const { 
@@ -65,22 +67,34 @@ const Pagination = ({ totalPages = 0, totalItems = 0 }) => {
 
       {/* Переключатель количества товаров на страницу */}
       <div className="flex items-center gap-2 text-sm">
-        <span className="text-choco-light">Показывать по:</span>
-        <div className="flex gap-1">
-          {[12, 24, 48].map((size) => (
-            <button
-              key={size}
-              onClick={() => handleItemsPerPageChange(size)}
-              className={`px-3 py-1 rounded text-sm transition-colors ${
-                itemsPerPage === size
-                  ? 'bg-choco-light text-creamy'
-                  : 'bg-creamy border border-choco-light text-choco-light hover:bg-dark-creamy'
-              }`}
-            >
-              {size}
+        <DropdownMenu.Root modal={false}>
+          <DropdownMenu.Trigger asChild>
+            <button className="flex items-center gap-2 px-3 py-2 bg-creamy border border-choco-light text-choco-light rounded text-sm hover:bg-dark-creamy transition-colors">
+              <span>Показати {itemsPerPage}</span>
+              <DropdownArrowIcon className="w-4 h-4" stroke="currentColor" strokeWidth={2} />
             </button>
-          ))}
-        </div>
+          </DropdownMenu.Trigger>
+
+          <DropdownMenu.Portal>
+            <DropdownMenu.Content
+              className="bg-creamy border border-choco-light rounded-md shadow-lg py-1 z-50 min-w-[80px]"
+              sideOffset={5}
+              align="center"
+            >
+              {[12, 24, 48].map((size) => (
+                <DropdownMenu.Item
+                  key={size}
+                  className={`px-3 py-2 text-sm cursor-pointer outline-none hover:bg-dark-creamy transition-colors ${
+                    itemsPerPage === size ? 'bg-choco-light text-creamy' : 'text-choco-light'
+                  }`}
+                  onSelect={() => handleItemsPerPageChange(size)}
+                >
+                  {size}
+                </DropdownMenu.Item>
+              ))}
+            </DropdownMenu.Content>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Root>
       </div>
 
       {/* Навигация по страницам - показываем только если страниц больше 1 */}

@@ -38,7 +38,7 @@ const SearchFilter = () => {
           placeholder="Пошук товарів..."
           value={searchQuery}
           onChange={handleSearchChange}
-          className="w-full h-[45px] pl-[45px] pr-[15px] py-[12px] bg-creamy border border-choco-light rounded-[10px] text-figma-md font-montserrat font-light text-choco-dark placeholder-choco-light/60 focus:outline-none focus:border-choco-dark focus:ring-1 focus:ring-choco-light/20 transition-colors"
+          className="w-full h-[40px] pl-[45px] pr-[15px] py-[8px] bg-creamy border border-choco-light rounded-[10px] text-figma-md font-montserrat font-light text-choco-dark placeholder-choco-light/60 focus:outline-none focus:border-choco-dark focus:ring-1 focus:ring-choco-light/20 transition-colors"
         />
       </div>
     </div>

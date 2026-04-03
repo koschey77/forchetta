@@ -26,12 +26,12 @@ const FilterControls = () => {
               Підтвердити скидання
             </AlertDialog.Title>
             <AlertDialog.Description className="text-figma-md font-montserrat font-light text-choco-light mb-6">
-              Ви впевнені, що хочете очистити всі фільтри?
+              Ви впевнені, що хочете очистити фільтри та пошук?
             </AlertDialog.Description>
 
             <div className="flex justify-end gap-3">
               <AlertDialog.Cancel asChild>
-                <button className="px-[15px] sm:px-[30px] lg:px-[60px] py-2 bg-transparent border border-choco-light text-choco-light rounded-[10px] text-figma-sm font-montserrat font-light hover:bg-dark-creamy transition-colors">
+                <button className="px-[20px] sm:px-[25px] lg:px-[30px] py-2 bg-transparent border border-choco-light text-choco-light rounded-[10px] text-figma-sm font-montserrat font-light hover:bg-dark-creamy transition-colors whitespace-nowrap min-w-[80px]">
                   Ні
                 </button>
               </AlertDialog.Cancel>
@@ -39,7 +39,7 @@ const FilterControls = () => {
               <AlertDialog.Action asChild>
                 <button
                   onClick={handleClearAll}
-                  className="px-[15px] sm:px-[30px] lg:px-[60px] py-2 bg-choco-light text-creamy rounded-[10px] text-figma-sm font-montserrat font-medium hover:bg-choco-dark transition-colors"
+                  className="px-[20px] sm:px-[25px] lg:px-[30px] py-2 bg-choco-light text-creamy rounded-[10px] text-figma-sm font-montserrat font-medium hover:bg-choco-dark transition-colors whitespace-nowrap min-w-[120px]"
                 >
                   Так, очистити
                 </button>

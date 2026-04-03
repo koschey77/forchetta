@@ -20,7 +20,7 @@ const FilterDropdown = ({ title, options = [],  selected = [], onChange, isLoadi
     <div className="flex flex-col gap-[20px] w-full">
       <DropdownMenu.Root modal={false}>
         <DropdownMenu.Trigger asChild>
-          <button className="flex flex-row justify-between items-center px-[15px] py-[10px] gap-[10px] w-full h-[59px] bg-creamy border border-choco-light rounded-[10px] transition-all duration-200 hover:opacity-90">
+          <button className="flex flex-row justify-between items-center px-[15px] py-[8px] gap-[10px] w-full h-[40px] bg-creamy border border-choco-light rounded-[10px] transition-all duration-200 hover:opacity-90">
             <span className="text-figma-base font-montserrat font-light text-choco-light">
               {isLoading ? "Завантаження..." : title}
             </span>

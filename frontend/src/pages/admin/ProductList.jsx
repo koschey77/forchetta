@@ -2,9 +2,17 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { productsAPI } from '../../services/api'
 import { EditIcon, BasketIcon } from '../../components/icons'
+import useFilterStore from '../../stores/useFilterStore'
+import CategoryFilter from '../../components/catalog/filters/CategoryFilter'
+import FilterControls from '../../components/catalog/filters/FilterControls'
+import SearchFilter from '../../components/catalog/filters/SearchFilter'
+import Pagination from '../../components/catalog/Pagination'
 
 const ProductList = ({ onEditProduct }) => {
   const queryClient = useQueryClient()
+  
+  // Фильтры для админки
+  const { appliedFilters, currentPage, itemsPerPage } = useFilterStore()
   
   // TanStack Query для загрузки товаров
   const { 
@@ -12,14 +20,23 @@ const ProductList = ({ onEditProduct }) => {
     isLoading, 
     error 
   } = useQuery({
-    queryKey: ['admin-products'],
-    queryFn: () => productsAPI.getMany({ limit: 100 }),
+    queryKey: ['admin-products', appliedFilters, currentPage, itemsPerPage],
+    queryFn: () => productsAPI.getMany({ 
+      ...appliedFilters, 
+      page: currentPage,
+      limit: itemsPerPage
+    }),
     staleTime: 0, // Всегда актуальные данные в админке
     refetchOnWindowFocus: true, // Обновлять при фокусе окна
   })
   
-  // Извлекаем товары из ответа API
+  // Извлекаем данные из ответа API
   const products = productsResponse?.products || []
+  const totalPages = productsResponse?.pagination?.totalPages || 0
+  const totalItems = productsResponse?.pagination?.total || 0
+  
+  // Отладка pagination объекта
+  console.log('pagination object:', productsResponse?.pagination)
 
   // Mutation для удаления товара
   const deleteProduct = useMutation({
@@ -86,8 +103,8 @@ const ProductList = ({ onEditProduct }) => {
   return (
     <div className="w-full">
       <div className="w-full max-w-[1440px] mx-auto py-[12px]">
-        {/* Header Button */}
-        <div className="flex justify-start mb-[26px]">
+        {/* Row 1: Add Button and Clear Filters */}
+        <div className="flex justify-between items-center gap-4 mb-4">
           <button
             onClick={() => onEditProduct && onEditProduct(null)}
             className="w-full sm:w-[226px] h-[40px] bg-wine-red rounded-[31px] flex items-center justify-center gap-[10px] sm:gap-[14px] hover:opacity-90 transition-opacity"
@@ -95,6 +112,21 @@ const ProductList = ({ onEditProduct }) => {
             <span className="text-creamy text-[20px] sm:text-[15px] leading-none">+</span>
             <span className="font-montserrat font-medium text-[14px] text-creamy whitespace-nowrap">Додати товар</span>
           </button>
+          
+          {/* Clear Filters Button */}
+          <div className="w-auto">
+            <FilterControls />
+          </div>
+        </div>
+
+        {/* Row 2: Search and Category Filter */}
+        <div className="flex justify-between items-center mb-[22px] gap-4">
+          <div className="flex-1 sm:max-w-[400px]">
+            <SearchFilter />
+          </div>
+          <div className="flex-1 sm:w-[298px] sm:flex-none h-[40px]">
+            <CategoryFilter />
+          </div>
         </div>
 
         {products.length === 0 ? (
@@ -204,6 +236,11 @@ const ProductList = ({ onEditProduct }) => {
             </div>
           </div>
         )}
+        
+        {/* Пагинация */}
+        <div className="mb-20">
+          <Pagination totalPages={totalPages} totalItems={totalItems} />
+        </div>
       </div>
     </div>
   )
