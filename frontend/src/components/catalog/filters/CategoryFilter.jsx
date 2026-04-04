@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { categoriesAPI } from '../../../services/api';
 import useFilterStore from '../../../stores/useFilterStore';
-import FilterDropdown from './FilterDropdown';
+import { FilterDropdown } from '../../ui/dropdowns';
 
 const CategoryFilter = () => {
   const { appliedFilters, updateFilter } = useFilterStore();

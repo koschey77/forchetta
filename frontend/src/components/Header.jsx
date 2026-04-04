@@ -3,9 +3,14 @@ import { useUserStore } from "../stores/useUserStore"
 import { Logo } from "./Logos/Logo.jsx"
 import { SearchIcon, ProfileIcon, HeartIcon, CartIcon, DotsIcon, MenuIcon } from "./icons/index.jsx"
 import HeaderMobileMenu from "./HeaderMobileMenu.jsx"
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import { MenuDropdown } from "./ui/dropdowns"
 
-const NAV_ITEMS = ["Новинки", "Набори", "Акції", "Журнал"]
+const NAV_ITEMS = [
+  { value: "new", label: "Новинки" },
+  { value: "sets", label: "Набори" },
+  { value: "sales", label: "Акції" },
+  { value: "blog", label: "Журнал" }
+]
 
 // Переиспользуемые компоненты
 const UserAvatar = ({ userAvatar, onClick, className = "", strokeWidth = 3 }) => (
@@ -46,33 +51,20 @@ const CatalogButton = ({ onClick, className = "" }) => (
   </button>
 )
 
-const MenuDropdown = () => (
+const HeaderMenuDropdown = () => (
   <div className="hidden sm:block">
-    <DropdownMenu.Root modal={false}>
-      <DropdownMenu.Trigger asChild>
+    <MenuDropdown
+      variant="navigation"
+      options={NAV_ITEMS}
+      selected={""}
+      onChange={(value) => console.log(value)}
+      showCheckmarks={false}
+      customTrigger={
         <button className="h-[40px] w-[45px] flex items-center justify-center rounded-xl transition duration-300 hover:bg-dark-creamy/60">
           <MenuIcon className="shrink-0" />
         </button>
-      </DropdownMenu.Trigger>
-
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          className="bg-creamy shadow-lg border border-choco-light/20 rounded-xl py-2 px-2 min-w-[200px] z-50"
-          sideOffset={5}
-          align="end"
-        >
-          {NAV_ITEMS.map((item) => (
-            <DropdownMenu.Item
-              key={item}
-              className="rounded-xl px-4 py-3 text-left font-normal text-[16px] leading-[20px] text-choco-light transition duration-300 hover:bg-dark-creamy/50 hover:text-choco-dark cursor-pointer outline-none"
-              onSelect={() => console.log(item)}
-            >
-              {item}
-            </DropdownMenu.Item>
-          ))}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+      }
+    />
   </div>
 )
 
@@ -131,12 +123,12 @@ const Header = () => {
               
               {NAV_ITEMS.map((item) => (
                 <button
-                  key={item}
-                  aria-label={item}
-                  onClick={() => console.log(item)}
+                  key={item.value}
+                  aria-label={item.label}
+                  onClick={() => console.log(item.value)}
                   className="whitespace-nowrap font-normal text-[16px] leading-[20px] text-choco-light transition duration-300 hover:text-choco-light-50"
                 >
-                  {item}
+                  {item.label}
                 </button>
               ))}
             </div>
@@ -198,7 +190,7 @@ const Header = () => {
             />
             
             {/* Меню кнопка - показывается на sm+ (>=640px) */}
-            <MenuDropdown />
+            <HeaderMenuDropdown />
             
           </div>
         </div>

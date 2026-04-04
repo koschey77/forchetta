@@ -6,13 +6,13 @@ import useFilterStore from '../../stores/useFilterStore'
 import CategoryFilter from '../../components/catalog/filters/CategoryFilter'
 import FilterControls from '../../components/catalog/filters/FilterControls'
 import SearchFilter from '../../components/catalog/filters/SearchFilter'
-import Pagination from '../../components/catalog/Pagination'
+import { TopPaginationControls, BottomPaginationControls } from '../../components/catalog/pagination'
 
 const ProductList = ({ onEditProduct }) => {
   const queryClient = useQueryClient()
   
   // Фильтры для админки
-  const { appliedFilters, currentPage, itemsPerPage } = useFilterStore()
+  const { appliedFilters, currentPage, itemsPerPage, setCurrentPage, setItemsPerPage } = useFilterStore()
   
   // TanStack Query для загрузки товаров
   const { 
@@ -33,10 +33,6 @@ const ProductList = ({ onEditProduct }) => {
   // Извлекаем данные из ответа API
   const products = productsResponse?.products || []
   const totalPages = productsResponse?.pagination?.totalPages || 0
-  const totalItems = productsResponse?.pagination?.total || 0
-  
-  // Отладка pagination объекта
-  console.log('pagination object:', productsResponse?.pagination)
 
   // Mutation для удаления товара
   const deleteProduct = useMutation({
@@ -239,7 +235,19 @@ const ProductList = ({ onEditProduct }) => {
         
         {/* Пагинация */}
         <div className="mb-20">
-          <Pagination totalPages={totalPages} totalItems={totalItems} />
+          <div className="flex flex-col gap-6">
+            <TopPaginationControls
+              itemsPerPage={itemsPerPage}
+              onItemsPerPageChange={setItemsPerPage}
+              pageSizeOptions={[12, 24, 48]}
+            />
+            <BottomPaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              scrollToTop={false}
+            />
+          </div>
         </div>
       </div>
     </div>

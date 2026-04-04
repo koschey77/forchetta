@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { productsAPI, categoriesAPI } from '../../services/api'
 import { PRODUCT_ENUMS } from '../../constants/enums'
+import { MenuDropdown } from '../../components/ui/dropdowns'
 import toast from 'react-hot-toast'
 
 const ProductEdit = ({ productId, onCancel, onSuccess }) => {
@@ -45,6 +46,22 @@ const ProductEdit = ({ productId, onCancel, onSuccess }) => {
   // Используем константы из файла (БЕЗ ХАРДКОДА!)
   const shelfLifeOptions = PRODUCT_ENUMS.shelfLife
   const storageOptions = PRODUCT_ENUMS.storageConditions
+  
+  // Подготовка данных для MenuDropdown
+  const categoryOptions = categories.map(category => ({
+    value: category._id,
+    label: category.name
+  }))
+  
+  const shelfLifeDropdownOptions = shelfLifeOptions.map(option => ({
+    value: option,
+    label: option
+  }))
+  
+  const storageDropdownOptions = storageOptions.map(option => ({
+    value: option,
+    label: option
+  }))
   
   const [formData, setFormData] = useState({
     name: '',
@@ -155,6 +172,19 @@ const ProductEdit = ({ productId, onCancel, onSuccess }) => {
 
   const removeExistingImage = (index) => {
     setExistingImages(prevImages => prevImages.filter((_, i) => i !== index))
+  }
+
+  // Обработчики для dropdown'ов
+  const handleCategoryChange = (value) => {
+    setFormData(prev => ({ ...prev, category: value }))
+  }
+
+  const handleShelfLifeChange = (value) => {
+    setFormData(prev => ({ ...prev, shelfLife: value }))
+  }
+
+  const handleStorageConditionsChange = (value) => {
+    setFormData(prev => ({ ...prev, storageConditions: value }))
   }
 
   const handleSubmit = async (e) => {
@@ -293,23 +323,14 @@ const ProductEdit = ({ productId, onCancel, onSuccess }) => {
                 <label className="block text-sm font-medium text-choco-dark mb-2">
                   Категорія *
                 </label>
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dark-creamy focus:border-transparent"
-                  required
-                  disabled={categoriesLoading}
-                >
-                  <option value="">
-                    {categoriesLoading ? "Завантаження..." : "Оберіть категорію"}
-                  </option>
-                  {categories.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
+                <MenuDropdown
+                  variant="default"
+                  options={categoryOptions}
+                  selected={formData.category}
+                  onChange={handleCategoryChange}
+                  placeholder={categoriesLoading ? "Завантаження..." : "Оберіть категорію"}
+                  showCheckmarks={false}
+                />
               </div>
             </div>
 
@@ -455,40 +476,28 @@ const ProductEdit = ({ productId, onCancel, onSuccess }) => {
                 <label className="block text-sm font-medium text-choco-dark mb-2">
                   Термін зберігання *
                 </label>
-                <select
-                  name="shelfLife"
-                  value={formData.shelfLife}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dark-creamy focus:border-transparent"
-                  required
-                >
-                  <option value="">Оберіть термін</option>
-                  {shelfLifeOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
+                <MenuDropdown
+                  variant="default"
+                  options={shelfLifeDropdownOptions}
+                  selected={formData.shelfLife}
+                  onChange={handleShelfLifeChange}
+                  placeholder="Оберіть термін"
+                  showCheckmarks={false}
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-choco-dark mb-2">
                   Умови зберігання *
                 </label>
-                <select
-                  name="storageConditions"
-                  value={formData.storageConditions}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-dark-creamy focus:border-transparent"
-                  required
-                >
-                  <option value="">Оберіть умови</option>
-                  {storageOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
+                <MenuDropdown
+                  variant="default"
+                  options={storageDropdownOptions}
+                  selected={formData.storageConditions}
+                  onChange={handleStorageConditionsChange}
+                  placeholder="Оберіть умови"
+                  showCheckmarks={false}
+                />
               </div>
             </div>
 

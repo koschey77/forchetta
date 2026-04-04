@@ -4,11 +4,30 @@ import useFilterStore from '../../../stores/useFilterStore';
 // Компонент контроля фильтров (кнопка очистки с подтверждением)
 
 const FilterControls = () => {
-  const { resetAll } = useFilterStore();
+  const { resetAll, hasAppliedFilters, sortOption } = useFilterStore();
 
   const handleClearAll = () => {
     resetAll();
   };
+
+  // Проверяем, есть ли примененные фильтры или сортировка
+  const hasAnyFilters = hasAppliedFilters() || sortOption !== '';
+
+  // Если нет фильтров и сортировки, отключаем кнопку
+  if (!hasAnyFilters) {
+    return (
+      <div className="flex flex-row items-center justify-center w-full h-[41px]">
+        <button 
+          disabled
+          className="flex flex-row justify-center items-center px-[30px] py-[10px] gap-[6px] w-full h-[41px] bg-creamy-light border border-creamy-light rounded-[22.5px] text-figma-xs font-montserrat font-light text-choco-light/50 cursor-not-allowed whitespace-nowrap"
+        >
+          Очистити все
+        </button>
+      </div>
+    );
+  }
+
+  // Если есть фильтры или сортировка, показываем диалог подтверждения
 
   return (
     <div className="flex flex-row items-center justify-center w-full h-[41px]">

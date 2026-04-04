@@ -448,6 +448,31 @@ export const ExitIcon = ({ className = "w-[20px] h-[20px]", stroke = "#705A5A", 
     </svg>
 )
 
+// Стрелки для пагинации
+export const PaginationLeftArrow = ({ className = "text-[#F5EEE0]" }) => (
+  <svg width="24" height="16" viewBox="0 0 24 16" fill="none" className={className}>
+    <path 
+      d="M15 3L9 8L15 13" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+)
+
+export const PaginationRightArrow = ({ className = "text-[#F5EEE0]" }) => (
+  <svg width="24" height="16" viewBox="0 0 24 16" fill="none" className={className}>
+    <path 
+      d="M9 3L15 8L9 13" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+)
+
 export const OrdersIcon = ({ className = "w-[24px] h-[24px]", fill = "#705A5A" }) => (
     <svg
       width="24"

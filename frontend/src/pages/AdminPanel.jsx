@@ -3,7 +3,7 @@ import { useUserStore } from '../stores/useUserStore'
 import { Navigate, useSearchParams } from 'react-router-dom'
 import { ExitIcon, DropdownArrowIcon, DashboardIcon, ReviewsIcon, OrdersIcon, CartIcon, DotsIcon, ProfileIcon, BookIcon } from '../components/icons'
 import { ProductList, ProductEdit, CategoryList, CategoryEditor, ProductCreate } from './admin'
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import { MenuDropdown } from '../components/ui/dropdowns'
 
 const AdminPanel = () => {
   const { user, logout } = useUserStore()
@@ -25,6 +25,13 @@ const AdminPanel = () => {
     reviews: { name: 'Відгуки', icon: ReviewsIcon },
     journal: { name: 'Журнал', icon: BookIcon }
   }
+
+  // Опции для MenuDropdown
+  const pageOptions = Object.entries(pageMapping).map(([key, page]) => ({
+    value: key,
+    label: page.name,
+    icon: page.icon
+  }))
 
   // Проверка прав админа
   if (!user || user.role !== 'admin') {
@@ -126,8 +133,13 @@ const AdminPanel = () => {
 
       {/* Navigation Dropdown */}
       <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] py-4">
-        <DropdownMenu.Root modal={false}>
-          <DropdownMenu.Trigger asChild>
+        <MenuDropdown
+          variant="admin"
+          options={pageOptions}
+          selected={currentPage}
+          onChange={handlePageSelect}
+          showCheckmarks={false}
+          customTrigger={
             <button className="flex flex-row justify-between items-center px-[15px] gap-[10px] w-full sm:w-[349px] h-[44px] bg-dark-creamy rounded-[30px] transition-colors hover:opacity-90">
               <div className="flex flex-row items-center gap-[10px] min-w-[200px] h-[24px]">
                 {React.createElement(pageMapping[currentPage].icon, { 
@@ -137,33 +149,8 @@ const AdminPanel = () => {
               </div>
               <DropdownArrowIcon className="w-[19px] h-[16px]" stroke="#705A5A" strokeWidth={2} />
             </button>
-          </DropdownMenu.Trigger>
-
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content
-              className="bg-creamy rounded-md py-2 px-2 w-full sm:w-[349px] z-50"
-              sideOffset={5}
-              align="start"
-            >
-              {Object.entries(pageMapping).map(([key, page]) => {
-                const Icon = page.icon;
-                const isActive = currentPage === key;
-                return (
-                  <DropdownMenu.Item 
-                    key={key}
-                    className={`flex flex-row items-center pl-[15px] gap-[10px] w-full sm:w-[223px] h-[35px] rounded-[31px] transition duration-300 cursor-pointer outline-none ${
-                      isActive ? 'bg-dark-creamy' : 'hover:bg-dark-creamy/50'
-                    }`}
-                    onSelect={() => handlePageSelect(key)}
-                  >
-                    <Icon className="w-[24px] h-[24px] text-[#705A5A]" />
-                    <span className="font-montserrat font-medium text-[14px] leading-[17px] text-choco-light">{page.name}</span>
-                  </DropdownMenu.Item>
-                )
-              })}
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+          }
+        />
       </div>
 
       {/* Main Content */}

@@ -1,5 +1,5 @@
 import useFilterStore from '../../../stores/useFilterStore';
-import FilterDropdown from './FilterDropdown';
+import { FilterDropdown } from '../../ui/dropdowns';
 
 // Компонент фильтра по весу товаров
 

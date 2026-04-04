@@ -15,6 +15,22 @@ const IngredientsFilter = () => {
   ];
 
   const handleIngredientChange = (ingredient) => {
+    // Специальная логика для орехов - если выбирается противоположный, убираем текущий
+    if (ingredient === 'З горіхами' && selectedIngredients.includes('Без горіхів')) {
+      const newIngredients = selectedIngredients.filter(item => item !== 'Без горіхів');
+      newIngredients.push(ingredient);
+      updateFilter('ingredients', newIngredients);
+      return;
+    }
+    
+    if (ingredient === 'Без горіхів' && selectedIngredients.includes('З горіхами')) {
+      const newIngredients = selectedIngredients.filter(item => item !== 'З горіхами');
+      newIngredients.push(ingredient);
+      updateFilter('ingredients', newIngredients);
+      return;
+    }
+
+    // Стандартная логика для всех остальных ингредиентов
     const newIngredients = selectedIngredients.includes(ingredient)
       ? selectedIngredients.filter(item => item !== ingredient)
       : [...selectedIngredients, ingredient];

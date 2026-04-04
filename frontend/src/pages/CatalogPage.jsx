@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import CatalogHeader from '../components/catalog/CatalogHeader';
 import Sidebar from '../components/catalog/Sidebar';
 import ProductCard from '../components/catalog/ProductCard';
-import Pagination from '../components/catalog/Pagination';
+import BottomPaginationControls from '../components/catalog/pagination/BottomPaginationControls';
 import { productsAPI } from '../services/api';
 import useFilterStore from '../stores/useFilterStore';
 
@@ -96,19 +96,7 @@ const CatalogPage = () => {
   return (
     <div className="min-h-screen bg-creamy py-6">
       <div className="w-full">
-        {/* Название выбранной категории */}
-        <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] mb-4">
-          <div className="text-center">
-            <h2 className="text-2xl font-montserrat font-semibold leading-[29px] text-choco-light">
-              {hasFiltersApplied 
-                ? <>Знайдено товарів: <span className="font-cormorant oldstyle">{totalItems}</span></>
-                : 'Всі категорії'
-              }
-            </h2>
-          </div>
-        </div>
-        
-        <CatalogHeader />
+        <CatalogHeader totalItems={totalItems} hasFilters={hasFiltersApplied} />
         
         {/* Основной контент с минимальной высотой для предотвращения перекрытия Footer */}
         <div className="max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] mt-6 pb-16 min-h-[600px]">
@@ -135,7 +123,7 @@ const CatalogPage = () => {
                 </div>
               ) : displayProducts.length > 0 ? (
                 displayProducts.map(product => (
-                  <ProductCard key={product._id} product={product} />
+                  <ProductCard key={product.id} product={product} />
                 ))
               ) : (
                 <NoProductsMessage />
@@ -145,7 +133,15 @@ const CatalogPage = () => {
 
           {/* Пагинация - показывается для всех размеров экранов */}
           {!productsLoading && !error && (
-            <Pagination totalPages={totalPages} totalItems={totalItems} />
+            <BottomPaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => {
+                const { setCurrentPage } = useFilterStore.getState();
+                setCurrentPage(page);
+              }}
+              className="mt-8"
+            />
           )}
         </div>
       </div>

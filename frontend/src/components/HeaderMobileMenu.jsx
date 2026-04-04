@@ -1,7 +1,12 @@
 import { DotsIcon, HeartIcon, CartIcon, MenuIcon, HomeIcon } from "./icons/index.jsx"
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import { MenuDropdown } from "./ui/dropdowns"
 
-const NAV_ITEMS = ["Новинки", "Набори", "Акції", "Журнал"]
+const NAV_ITEMS = [
+  { value: "new", label: "Новинки" },
+  { value: "sets", label: "Набори" },
+  { value: "sales", label: "Акції" },
+  { value: "blog", label: "Журнал" }
+]
 
 const HeaderMobileMenu = ({ 
   onCatalogClick, 
@@ -55,39 +60,24 @@ const HeaderMobileMenu = ({
             <span className="text-center text-[10px] font-light leading-[12px] text-choco-light">Кошик</span>
           </button>
 
-          {/* Меню (больше) с Radix UI */}
+          {/* Меню (больше) с MenuDropdown */}
           <div className="sm:hidden">
-            <DropdownMenu.Root modal={false}>
-              <DropdownMenu.Trigger asChild>
+            <MenuDropdown
+              variant="navigation"
+              options={NAV_ITEMS}
+              selected={""}
+              onChange={(value) => console.log(value)}
+              showCheckmarks={false}
+              customTrigger={
                 <button className="flex w-[37px] flex-col items-center gap-[3px] transition duration-300 hover:opacity-80">
                   <div className="flex h-[30px] items-center justify-center">
                     <MenuIcon className="shrink-0 w-[37px] h-[30px]" />
                   </div>
                   <span className="text-center text-[10px] font-light leading-[12px] text-choco-light">Більше</span>
                 </button>
-              </DropdownMenu.Trigger>
-
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content
-                  className="bg-creamy border border-choco-light/10 rounded-xl py-4 px-4 min-w-[200px] z-50 mb-2"
-                  sideOffset={8}
-                  align="center"
-                  side="top"
-                >
-                  {NAV_ITEMS.map((item) => (
-                    <DropdownMenu.Item
-                      key={item}
-                      className="rounded-xl px-3 py-2 text-left font-normal text-[16px] leading-[20px] text-choco-light transition duration-300 hover:bg-dark-creamy/70 cursor-pointer outline-none"
-                      onSelect={() => console.log(item)}
-                    >
-                      {item}
-                    </DropdownMenu.Item>
-                  ))}
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
-            </DropdownMenu.Root>
+              }
+            />
           </div>
-          
         </div>
       </nav>
     </>
