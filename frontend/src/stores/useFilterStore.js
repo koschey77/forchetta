@@ -36,7 +36,14 @@ const useFilterStore = create((set, get) => ({
   
   // Установка всех фильтров сразу
   setAppliedFilters: (filters) => {
-    set({ appliedFilters: filters })
+    set((state) => {
+      // Сбрасываем страницу только если фильтры реально изменились
+      const filtersChanged = JSON.stringify(state.appliedFilters) !== JSON.stringify(filters);
+      return {
+        appliedFilters: filters,
+        ...(filtersChanged && { currentPage: 1 })
+      };
+    })
   },
   
   // Сброс всех фильтров
@@ -48,19 +55,27 @@ const useFilterStore = create((set, get) => ({
         priceRange: [1, 2500],
         weights: [],
         search: ''
-      }
+      },
+      currentPage: 1 // Сбрасываем страницу при сбросе фильтров
     })
   },
   
   // Обновление поискового запроса
   setSearchFilter: (searchTerm) => {
-    set((state) => ({
-      appliedFilters: {
-        ...state.appliedFilters,
-        search: searchTerm
-      },
-      currentPage: 1 // Сбрасываем на первую страницу при поиске
-    }))
+    set((state) => {
+      // Сбрасываем страницу только если поисковый запрос РЕАЛЬНО изменился
+      if (state.appliedFilters.search !== searchTerm) {
+        return {
+          appliedFilters: {
+            ...state.appliedFilters,
+            search: searchTerm
+          },
+          currentPage: 1 // Сбрасываем на первую страницу только при реальном изменении поиска
+        };
+      }
+      // Если поиск не изменился, не трогаем currentPage
+      return state;
+    })
   },
   
   // =============================================
@@ -69,7 +84,13 @@ const useFilterStore = create((set, get) => ({
   
   // Установка сортировки
   setSortOption: (sortOption) => {
-    set({ sortOption, currentPage: 1 }) // Сбрасываем на первую страницу при изменении сортировки
+    set((state) => {
+      // Сбрасываем страницу только если сортировка реально изменилась
+      if (state.sortOption !== sortOption) {
+        return { sortOption, currentPage: 1 };
+      }
+      return { sortOption };
+    })
   },
   
   // Сброс сортировки
@@ -87,8 +108,15 @@ const useFilterStore = create((set, get) => ({
   },
   
   // Установка количества товаров на страницу
-  setItemsPerPage: (itemsPerPage) => {
-    set({ itemsPerPage, currentPage: 1 }) // Сбрасываем на первую страницу при изменении лимита
+  setItemsPerPage: (newItemsPerPage) => {
+    set((state) => {
+      // Сбрасываем страницу только при РЕАЛЬНОМ изменении количества
+      if (state.itemsPerPage !== newItemsPerPage) {
+        return { itemsPerPage: newItemsPerPage, currentPage: 1 };
+      }
+      // Если значение не изменилось, оставляем состояние как есть
+      return state;
+    });
   },
 
   // =============================================
@@ -164,9 +192,13 @@ const useFilterStore = create((set, get) => ({
   
   // Применение фильтров с автоматическим закрытием на мобильных
   applyFilters: (filters) => {
-    set({ 
-      appliedFilters: filters,
-      currentPage: 1 // Сбрасываем на первую страницу при изменении фильтров
+    set((state) => {
+      // Сбрасываем страницу только если фильтры реально изменились
+      const filtersChanged = JSON.stringify(state.appliedFilters) !== JSON.stringify(filters);
+      return {
+        appliedFilters: filters,
+        ...(filtersChanged && { currentPage: 1 })
+      };
     })
     
     // Закрываем сайдбар только на мобильной версии
@@ -177,13 +209,19 @@ const useFilterStore = create((set, get) => ({
   
   // Обновление конкретного типа фильтра с сбросом пагинации
   updateFilter: (filterType, value) => {
-    set((state) => ({
-      appliedFilters: {
-        ...state.appliedFilters,
-        [filterType]: value
-      },
-      currentPage: 1 // Сбрасываем на первую страницу при изменении фильтра
-    }))
+    set((state) => {
+      // Сбрасываем страницу только если значение фильтра реально изменилось
+      const currentValue = state.appliedFilters[filterType];
+      const valueChanged = JSON.stringify(currentValue) !== JSON.stringify(value);
+      
+      return {
+        appliedFilters: {
+          ...state.appliedFilters,
+          [filterType]: value
+        },
+        ...(valueChanged && { currentPage: 1 })
+      };
+    })
   },
   
 }))

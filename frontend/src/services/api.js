@@ -38,6 +38,8 @@ export const productsAPI = {
   
   getRecommendations: () => axiosInstance.get("/products/recommendations").then(res => res.data),
   
+  getAvailableWeights: () => axiosInstance.get("/products/weights").then(res => res.data),
+  
   toggleFeatured: (id) => axiosInstance.patch(`/products/${id}`).then(res => res.data),
 }
 

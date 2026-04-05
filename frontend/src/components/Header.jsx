@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useUserStore } from "../stores/useUserStore"
 import { Logo } from "./Logos/Logo.jsx"
@@ -13,21 +14,41 @@ const NAV_ITEMS = [
 ]
 
 // Переиспользуемые компоненты
-const UserAvatar = ({ userAvatar, onClick, className = "", strokeWidth = 3 }) => (
-  <button
-    aria-label="Профиль"
-    onClick={onClick}
-    className={`rounded-full transition duration-300 ${
-      userAvatar ? "p-0 hover:ring-2 hover:ring-choco-light/30" : "p-1 hover:bg-dark-creamy/60"
-    } ${className}`}
-  >
-    {userAvatar ? (
-      <img src={userAvatar} alt="Аватар пользователя" className="min-w-[30px] h-[30px] rounded-full object-cover" />
-    ) : (
-      <ProfileIcon className="shrink-0 text-choco-light" strokeWidth={strokeWidth} />
-    )}
-  </button>
-)
+const UserAvatar = ({ userAvatar, onClick, className = "", strokeWidth = 3 }) => {
+  const [imageError, setImageError] = useState(false)
+  
+  // Сбрасываем ошибку при изменении аватара
+  useEffect(() => {
+    setImageError(false)
+  }, [userAvatar])
+  
+  const handleImageError = () => {
+    setImageError(true)
+  }
+
+  const hasValidImage = userAvatar && !imageError
+
+  return (
+    <button
+      aria-label="Профиль"
+      onClick={onClick}
+      className={`rounded-full transition duration-300 ${
+        hasValidImage ? "p-0 hover:ring-2 hover:ring-choco-light/30" : "p-1 hover:bg-dark-creamy/60"
+      } ${className}`}
+    >
+      {hasValidImage ? (
+        <img 
+          src={userAvatar} 
+          alt="Аватар пользователя" 
+          className="min-w-[30px] h-[30px] rounded-full object-cover"
+          onError={handleImageError}
+        />
+      ) : (
+        <ProfileIcon className="shrink-0 text-choco-light" strokeWidth={strokeWidth} />
+      )}
+    </button>
+  )
+}
 
 const IconButton = ({ icon: Icon, label, onClick, className = "", strokeWidth = 2, ...props }) => (
   <button 

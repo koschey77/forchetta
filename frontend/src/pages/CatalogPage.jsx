@@ -1,15 +1,23 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import CatalogHeader from '../components/catalog/CatalogHeader';
+import { CatalogFilterIcon, CrossIcon } from '../components/icons';
+import { MenuDropdown } from '../components/ui/dropdowns';
 import Sidebar from '../components/catalog/Sidebar';
 import ProductCard from '../components/catalog/ProductCard';
-import BottomPaginationControls from '../components/catalog/pagination/BottomPaginationControls';
+import { TopPaginationControls, BottomPaginationControls } from '../components/common/pagination';
 import { productsAPI } from '../services/api';
 import useFilterStore from '../stores/useFilterStore';
 
 const CatalogPage = () => {
   // Получаем состояние фильтров из централизованного стора
-  const { appliedFilters, sortOption, isFilterOpen, hasAppliedFilters, currentPage, itemsPerPage } = useFilterStore();
+  const { appliedFilters, sortOption, isFilterOpen, hasAppliedFilters, currentPage, itemsPerPage, setSortOption, setIsFilterOpen, setItemsPerPage } = useFilterStore();
+  
+  const sortOptions = [
+    { value: 'price-asc', label: 'Від дешевих' },
+    { value: 'price-desc', label: 'Від дорогих' },
+    { value: 'new', label: 'Новинки' },
+    { value: 'sales', label: 'Акції' },
+  ];
 
   // TanStack Query для загрузки товаров
   const { 
@@ -96,7 +104,99 @@ const CatalogPage = () => {
   return (
     <div className="min-h-screen bg-creamy py-6">
       <div className="w-full">
-        <CatalogHeader totalItems={totalItems} hasFilters={hasFiltersApplied} />
+        {/* Встроенный CatalogHeader */}
+        <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px]">
+          <div className="flex flex-col gap-3">
+            {/* На малых экранах < md: количество товаров и селектор СВЕРХУ */}
+            <div className="flex md:hidden flex-row justify-between items-center gap-2 w-full">
+              {/* Количество товаров */}
+              <div className="text-sm sm:text-lg font-montserrat font-semibold text-choco-light flex-1 text-left min-h-[24px] flex items-center">
+                {totalItems > 0 ? (
+                  <>
+                    {hasFiltersApplied ? "Знайдено:" : "Кількість товарів: "}{" "}
+                    <span className="font-montserrat text-xs sm:text-sm font-bold">{totalItems}</span>
+                  </>
+                ) : (
+                  <span className="opacity-0">Кількість товарів: 0</span>
+                )}
+              </div>
+
+              {/* Селектор количества */}
+              <div className="flex flex-shrink-0">
+                <TopPaginationControls
+                  itemsPerPage={itemsPerPage}
+                  onItemsPerPageChange={setItemsPerPage}
+                  pageSizeOptions={[12, 24, 48]}
+                />
+              </div>
+            </div>
+
+            {/* Desktop версия >= md: всё в одной строке ИЛИ мобильная версия < md: фильтры + сортировка */}
+            <div className="flex flex-row justify-between items-center w-full gap-2 md:gap-4 h-[35px]">
+              {/* Левая часть: кнопка фільтрів */}
+              <div className="flex flex-row items-center gap-[10px] w-[126px] sm:w-[126px] h-[35px] flex-1 sm:flex-none">
+                <button
+                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                  className="box-border flex flex-row justify-between items-center px-[15px] py-[5px] gap-[19px] w-full h-[35px] bg-choco-light border border-choco-light rounded-[5px] transition-all duration-200 hover:opacity-90"
+                >
+                  <div className="flex flex-row items-center gap-[5px] flex-1 h-[24px] text-creamy">
+                    <CatalogFilterIcon width={24} height={24} strokeWidth={2} />
+                    <span className="text-figma-base font-light text-center text-creamy">Фільтри</span>
+                  </div>
+
+                  <div className="w-[20px] h-[20px] flex items-center justify-center text-creamy">
+                    {isFilterOpen && <CrossIcon width={20} height={20} />}
+                  </div>
+                </button>
+              </div>
+
+              {/* Правая часть - разная для desktop и mobile */}
+              <div className="flex flex-row items-center gap-2 md:gap-4 flex-1 sm:flex-auto justify-start sm:justify-end md:justify-between">
+                {/* Desktop: количество + селектор + сортировка */}
+                <div className="hidden md:flex text-lg lg:text-xl font-montserrat font-semibold text-choco-light whitespace-nowrap min-h-[35px] items-center gap-1">
+                  {totalItems > 0 ? (
+                    <>
+                      <span>{hasFiltersApplied ? "Знайдено товарів:" : "Кількість товарів:"}</span>
+                      <span className="font-montserrat text-lg lg:text-xl font-bold">{totalItems}</span>
+                    </>
+                  ) : (
+                    <span className="opacity-0">Кількість товарів: 0</span>
+                  )}
+                </div>
+
+                <div className="hidden md:flex items-center gap-4">
+                  <TopPaginationControls itemsPerPage={itemsPerPage} onItemsPerPageChange={setItemsPerPage} pageSizeOptions={[12, 24, 48]} />
+
+                  {/* Сортировка - везде */}
+                  <div className="flex flex-row items-center gap-[10px] w-[150px] h-[35px]">
+                    <MenuDropdown
+                      options={sortOptions}
+                      selected={sortOption}
+                      onChange={setSortOption}
+                      placeholder="Сортування"
+                      showCheckmarks={true}
+                      variant="catalog"
+                      triggerIcon={CatalogFilterIcon}
+                    />
+                  </div>
+                </div>
+
+                {/* Сортировка - только для мобильных */}
+                <div className="flex md:hidden flex-row items-center gap-[10px] w-[150px] sm:w-[150px] h-[35px] flex-1 sm:flex-none">
+                  <MenuDropdown
+                    options={sortOptions}
+                    selected={sortOption}
+                    onChange={setSortOption}
+                    placeholder="Сортування"
+                    showCheckmarks={true}
+                    variant="catalog"
+                    triggerIcon={CatalogFilterIcon}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         
         {/* Основной контент с минимальной высотой для предотвращения перекрытия Footer */}
         <div className="max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] mt-6 pb-16 min-h-[600px]">
@@ -104,7 +204,6 @@ const CatalogPage = () => {
           <div className="flex items-start gap-6">
             <Sidebar 
               className={`${isFilterOpen ? 'w-full min-w-[300px] sm:w-auto' : 'hidden'}`} 
-              products={products} 
             />
             
             {/* Товары - скрываются на мобильных когда открыты фильтры */}

@@ -10,6 +10,7 @@ import {
   toggleFeaturedProduct,
   updateProduct,
   getProductById,
+  getAvailableWeights,
 
 } from "../controllers/product.controller.js"
 
@@ -20,6 +21,7 @@ const router = express.Router()
 router.get("/", getAllProducts)
 
 router.get("/featured", getFeaturedProducts)
+router.get("/weights", getAvailableWeights)
 router.get("/category/:category", getProductsByCategory)
 router.get("/recommendations", getRecommendedProducts)
 router.get("/:id", getProductById)

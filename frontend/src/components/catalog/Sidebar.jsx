@@ -6,7 +6,7 @@ import IngredientsFilter from './filters/IngredientsFilter';
 import PriceFilter from './filters/PriceFilter';
 import WeightFilter from './filters/WeightFilter';
 
-const Sidebar = ({ className, products = [] }) => {
+const Sidebar = ({ className }) => {
   return (
     <div className={`flex flex-col items-start gap-[20px] w-full sm:w-[300px] h-[691px] relative z-10 ${className || ""}`}>
       <FilterControls />
@@ -14,7 +14,7 @@ const Sidebar = ({ className, products = [] }) => {
       <CategoryFilter />
       <IngredientsFilter />
       <PriceFilter />
-      <WeightFilter products={products} />
+      <WeightFilter />
     </div>
   );
 };

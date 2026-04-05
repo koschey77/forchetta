@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { categoriesAPI } from '../../services/api'
+import imageService from '../../services/imageService'
 
 const CategoryEditor = ({ categoryId = null, onCancel, onSuccess }) => {
   const queryClient = useQueryClient()
@@ -13,6 +14,9 @@ const CategoryEditor = ({ categoryId = null, onCancel, onSuccess }) => {
     description: '',
     image: null
   })
+
+  // Состояние для drag & drop
+  const [isDragging, setIsDragging] = useState(false)
 
   // Загрузка данных для редактирования
   const { data: category, isLoading } = useQuery({
@@ -61,7 +65,7 @@ const CategoryEditor = ({ categoryId = null, onCancel, onSuccess }) => {
       // Отправляем изображение только если это новый файл
       if (formData.image instanceof File) {
         try {
-          const base64 = await fileToBase64(formData.image)
+          const base64 = await imageService.fileToBase64(formData.image)
           submitData.image = base64
         } catch (error) {
           console.error('Error processing image:', error)
@@ -78,33 +82,46 @@ const CategoryEditor = ({ categoryId = null, onCancel, onSuccess }) => {
     processSubmit()
   }
 
-  // Вспомогательная функция для конвертации файла в base64
-  const fileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = () => resolve(reader.result)
-      reader.onerror = error => reject(error)
-    })
-  }
-
+  // Обработчики изображений с imageService
   const handleImageChange = (e) => {
     const file = e.target.files[0]
-    if (file) {
+    if (file && imageService.validateSingleFile(file)) {
       setFormData(prev => ({ ...prev, image: file }))
     }
+    e.target.value = '' // Очищаем input
   }
 
-  // Заполнение формы при редактировании
+  // Drag & Drop обработчики из imageService
+  const { handleDragEnter, handleDragLeave, handleDragOver, handleDrop } = imageService.createDragHandlers(
+    setIsDragging,
+    (files) => {
+      if (files.length > 0) {
+        const file = files[0] // Только одно изображение для категории
+        setFormData(prev => ({ ...prev, image: file }))
+      }
+    },
+    1, // Максимум 1 изображение для категории
+    0  // Для категории всегда 0 - мы заменяем изображение, а не добавляем к существующему
+  )
+
+  // Управление формой при смене категории или режима  
   useEffect(() => {
     if (category && isEdit) {
+      // Заполняем форму данными категории
       setFormData({
         name: category.name || '',
         description: category.description || '',
         image: category.image || null
       })
+    } else {
+      // Очищаем форму (создание новой или смена categoryId)
+      setFormData({
+        name: '',
+        description: '',
+        image: null
+      })
     }
-  }, [category, isEdit])
+  }, [category, isEdit, categoryId])
 
   if (isLoading && isEdit) {
     return (
@@ -144,8 +161,18 @@ const CategoryEditor = ({ categoryId = null, onCancel, onSuccess }) => {
             </div>
           </div>
 
-          {/* Image Upload */}
-          <div className="w-[288px] h-[264px] bg-creamy border border-choco-light rounded-[10px] flex flex-col items-center pt-[22px] pb-[33px] pl-[29px] pr-[40px] gap-[44px] sm:w-[261px] sm:h-[318px] sm:rounded-[20px] sm:col-start-2 sm:row-start-1 sm:row-span-2 hover:border-wine-red transition-colors cursor-pointer">
+          {/* Image Upload with Drag & Drop */}
+          <div 
+            className={`w-[288px] h-[264px] bg-creamy border-2 border-dashed rounded-[10px] flex flex-col items-center pt-[22px] pb-[33px] pl-[29px] pr-[40px] gap-[44px] sm:w-[261px] sm:h-[318px] sm:rounded-[20px] sm:col-start-2 sm:row-start-1 sm:row-span-2 transition-all cursor-pointer ${
+              isDragging 
+                ? 'border-wine-red bg-wine-red/10' 
+                : 'border-choco-light hover:border-wine-red'
+            }`}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
             <input
               type="file"
               id="categoryImage"
@@ -157,31 +184,45 @@ const CategoryEditor = ({ categoryId = null, onCancel, onSuccess }) => {
               htmlFor="categoryImage" 
               className="w-full h-full flex flex-col items-center justify-center gap-[44px] cursor-pointer"
             >
-              <div className="font-montserrat font-normal text-[16px] leading-[20px] text-[#888888] text-center">
-                {formData.image ? 'Змінити фото категорії' : 'Додайте фото категорії'}
+              <div className={`font-montserrat font-normal text-[16px] leading-[20px] text-center transition-colors ${
+                isDragging ? 'text-wine-red' : 'text-[#888888]'
+              }`}>
+                {isDragging 
+                  ? 'Відпустіть щоб завантажити'
+                  : formData.image 
+                    ? 'Змінити фото категорії' 
+                    : 'Додайте фото категорії'
+                }
               </div>
               
-              {formData.image ? (
+              {formData.image && !isDragging ? (
                 <div className="w-[120px] h-[80px] rounded-lg overflow-hidden">
                   <img 
-                    src={
-                      formData.image instanceof File 
-                        ? URL.createObjectURL(formData.image) 
-                        : (typeof formData.image === 'string' ? formData.image : formData.image?.url)
-                    } 
+                    src={imageService.getDisplayUrl(formData.image)}
                     alt="Category preview" 
                     className="w-full h-full object-cover"
                   />
                 </div>
               ) : (
-                <div className="relative w-[54px] h-[54px]">
-                  <span className="absolute top-1/2 left-1/2 w-[54px] h-[3px] bg-choco-light/50 -translate-x-1/2 -translate-y-1/2"></span>
-                  <span className="absolute top-1/2 left-1/2 w-[54px] h-[3px] bg-choco-light/50 -translate-x-1/2 -translate-y-1/2 rotate-90"></span>
+                <div className={`relative w-[54px] h-[54px] transition-colors ${
+                  isDragging ? 'opacity-75' : 'opacity-100'
+                }`}>
+                  <span className={`absolute top-1/2 left-1/2 w-[54px] h-[3px] -translate-x-1/2 -translate-y-1/2 transition-colors ${
+                    isDragging ? 'bg-wine-red' : 'bg-choco-light/50'
+                  }`}></span>
+                  <span className={`absolute top-1/2 left-1/2 w-[54px] h-[3px] -translate-x-1/2 -translate-y-1/2 rotate-90 transition-colors ${
+                    isDragging ? 'bg-wine-red' : 'bg-choco-light/50'
+                  }`}></span>
                 </div>
               )}
               
-              <div className="font-montserrat font-normal text-[13px] leading-[16px] text-[#888888] text-center w-[186px]">
-                Перетягніть фото сюди або натисніть щоб завантажити
+              <div className={`font-montserrat font-normal text-[13px] leading-[16px] text-center w-[186px] transition-colors ${
+                isDragging ? 'text-wine-red' : 'text-[#888888]'
+              }`}>
+                {isDragging 
+                  ? 'Відпустіть файл тут'
+                  : 'Перетягніть фото сюди або натисніть щоб завантажити'
+                }
               </div>
             </label>
           </div>

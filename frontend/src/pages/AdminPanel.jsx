@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useUserStore } from '../stores/useUserStore'
 import { Navigate, useSearchParams } from 'react-router-dom'
 import { ExitIcon, DropdownArrowIcon, DashboardIcon, ReviewsIcon, OrdersIcon, CartIcon, DotsIcon, ProfileIcon, BookIcon } from '../components/icons'
-import { ProductList, ProductEdit, CategoryList, CategoryEditor, ProductCreate } from './admin'
+import { ProductList, CategoryList, CategoryEditor, ProductEditor } from './admin'
 import { MenuDropdown } from '../components/ui/dropdowns'
 
 const AdminPanel = () => {
@@ -89,9 +89,9 @@ const AdminPanel = () => {
     
     if (currentPage === 'products') {
       if (mode === 'edit' && editingId) {
-        return <ProductEdit productId={editingId} onCancel={handleCancelEdit} onSuccess={handleSuccessEdit} />
+        return <ProductEditor productId={editingId} onCancel={handleCancelEdit} onSuccess={handleSuccessEdit} />
       } else if (mode === 'create') {
-        return <ProductCreate onCancel={handleCancelEdit} onSuccess={handleSuccessEdit} />
+        return <ProductEditor productId={null} onCancel={handleCancelEdit} onSuccess={handleSuccessEdit} />
       } else {
         return <ProductList onEditProduct={(id) => handleEdit('products', id)} />
       }

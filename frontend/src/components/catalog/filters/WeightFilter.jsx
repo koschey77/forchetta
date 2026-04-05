@@ -1,31 +1,26 @@
+import { useQuery } from '@tanstack/react-query';
+import { productsAPI } from '../../../services/api';
 import useFilterStore from '../../../stores/useFilterStore';
 import { FilterDropdown } from '../../ui/dropdowns';
 
 // Компонент фильтра по весу товаров
 
-const WeightFilter = ({ products = [] }) => {
+const WeightFilter = () => {
   const { appliedFilters, updateFilter } = useFilterStore();
   const selectedWeights = appliedFilters.weights;
 
-  // Получаем уникальные значения веса из товаров
-  const getUniqueWeights = () => {
-    if (!products || products.length === 0) return [];
-    
-    const weights = products
-      .map(product => product.weight)
-      .filter(weight => weight != null)
-      .sort((a, b) => a - b); // сортируем по возрастанию
-    
-    // Удаляем дубликаты
-    const uniqueWeights = [...new Set(weights)];
-    
-    return uniqueWeights.map(weight => ({
-      value: weight.toString(),
-      label: weight >= 1000 ? `${weight / 1000} кг` : `${weight} г`
-    }));
-  };
-  
-  const weightOptions = getUniqueWeights();
+  // Загружаем доступные веса через TanStack Query (независимо от фильтров)
+  const { data: availableWeights = [], isLoading } = useQuery({
+    queryKey: ['available-weights'],
+    queryFn: productsAPI.getAvailableWeights,
+    staleTime: 10 * 60 * 1000, // 10 минут кэш весов (данные редко меняются)
+  });
+
+  // Преобразуем данные backend в формат для FilterDropdown
+  const weightOptions = availableWeights.map(weight => ({
+    value: weight.toString(),
+    label: weight >= 1000 ? `${weight / 1000} кг` : `${weight} г`
+  }));
 
   const handleWeightChange = (weightValue) => {
     const newWeights = selectedWeights.includes(weightValue)
@@ -41,7 +36,7 @@ const WeightFilter = ({ products = [] }) => {
       options={weightOptions}
       selected={selectedWeights}
       onChange={handleWeightChange}
-      isLoading={false}
+      isLoading={isLoading}
     />
   );
 };

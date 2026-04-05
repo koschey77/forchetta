@@ -222,6 +222,7 @@ export const createProduct = async (req, res) => {
     // Очищаем кеши при создании нового продукта
     await redis.del("featured_products")
     await redis.del("recommended_products")
+    await redis.del("available_weights")
 
     res.status(201).json(product)
   } catch (error) {
@@ -301,6 +302,7 @@ export const updateProduct = async (req, res) => {
     // Очищаем кеши
     await redis.del("featured_products")
     await redis.del("recommended_products")
+    await redis.del("available_weights")
 
     res.json(updatedProduct)
   } catch (error) {
@@ -345,6 +347,7 @@ export const deleteProduct = async (req, res) => {
     // Очищаем кеши после удаления продукта
     await redis.del("featured_products")
     await redis.del("recommended_products")
+    await redis.del("available_weights")
 
     res.json({ message: "Product deleted successfully" })
   } catch (error) {
@@ -406,12 +409,39 @@ export const toggleFeaturedProduct = async (req, res) => {
       product.isFeatured = !product.isFeatured
       const updatedProduct = await product.save()
       await redis.del("featured_products")
+      await redis.del("available_weights")
       res.json(updatedProduct)
     } else {
       res.status(404).json({ message: "Product not found" })
     }
   } catch (error) {
     console.log("Error in toggleFeaturedProduct controller", error.message)
+    res.status(500).json({ message: "Server error", error: error.message })
+  }
+}
+
+export const getAvailableWeights = async (req, res) => {
+  try {
+    // Проверяем кэш
+    let availableWeights = await redis.get("available_weights")
+    if (availableWeights) {
+      return res.json(JSON.parse(availableWeights))
+    }
+
+    // Получаем все уникальные веса из базы данных
+    const weights = await Product.distinct('weight')
+    
+    // Фильтруем null значения и сортируем
+    const filteredWeights = weights
+      .filter(weight => weight != null && weight > 0)
+      .sort((a, b) => a - b)
+
+    // Кешируем на 1 час (данные редко меняются)
+    await redis.setex("available_weights", 3600, JSON.stringify(filteredWeights))
+
+    res.json(filteredWeights)
+  } catch (error) {
+    console.log("Error in getAvailableWeights controller", error.message)
     res.status(500).json({ message: "Server error", error: error.message })
   }
 }

@@ -6,13 +6,13 @@ import useFilterStore from '../../stores/useFilterStore'
 import CategoryFilter from '../../components/catalog/filters/CategoryFilter'
 import FilterControls from '../../components/catalog/filters/FilterControls'
 import SearchFilter from '../../components/catalog/filters/SearchFilter'
-import { TopPaginationControls, BottomPaginationControls } from '../../components/catalog/pagination'
+import { TopPaginationControls, BottomPaginationControls } from '../../components/common/pagination'
 
 const ProductList = ({ onEditProduct }) => {
   const queryClient = useQueryClient()
   
   // Фильтры для админки
-  const { appliedFilters, currentPage, itemsPerPage, setCurrentPage, setItemsPerPage } = useFilterStore()
+  const { appliedFilters, currentPage, itemsPerPage, setItemsPerPage, hasAppliedFilters } = useFilterStore()
   
   // TanStack Query для загрузки товаров
   const { 
@@ -32,7 +32,9 @@ const ProductList = ({ onEditProduct }) => {
   
   // Извлекаем данные из ответа API
   const products = productsResponse?.products || []
+  const totalItems = productsResponse?.pagination?.total || 0
   const totalPages = productsResponse?.pagination?.totalPages || 0
+  const hasFilters = hasAppliedFilters()
 
   // Mutation для удаления товара
   const deleteProduct = useMutation({
@@ -108,7 +110,7 @@ const ProductList = ({ onEditProduct }) => {
             <span className="text-creamy text-[20px] sm:text-[15px] leading-none">+</span>
             <span className="font-montserrat font-medium text-[14px] text-creamy whitespace-nowrap">Додати товар</span>
           </button>
-          
+
           {/* Clear Filters Button */}
           <div className="w-auto">
             <FilterControls />
@@ -125,6 +127,47 @@ const ProductList = ({ onEditProduct }) => {
           </div>
         </div>
 
+        {/* Row 3: Счетчик товаров + Пагинация (соответствует структуре каталога) */}
+        <div className="flex flex-col gap-4 md:gap-0 md:flex-row md:items-center md:justify-between mb-6">
+          {/* Mobile: элементы в одной строке */}
+          <div className="flex flex-row justify-between items-center gap-2 md:hidden">
+            {/* Счетчик товаров */}
+            <div className="text-base font-montserrat font-semibold text-choco-light flex-1">
+              {totalItems > 0 ? (
+                <>
+                  <span>{hasFilters ? "Знайдено товарів:" : "Кількість товарів:"} </span>
+                  <span className="font-montserrat text-base font-bold">{totalItems}</span>
+                </>
+              ) : (
+                <span>Товари не знайдено</span>
+              )}
+            </div>
+
+            {/* Пагинация */}
+            <div className="flex-shrink-0">
+              <TopPaginationControls itemsPerPage={itemsPerPage} onItemsPerPageChange={setItemsPerPage} pageSizeOptions={[12, 24, 48]} />
+            </div>
+          </div>
+
+          {/* Desktop: счетчик слева, пагинация справа */}
+          <div className="hidden md:flex md:flex-row md:items-center md:justify-between md:w-full">
+            {/* Счетчик товаров (прижат влево к поиску) */}
+            <div className="text-lg font-montserrat font-semibold text-choco-light whitespace-nowrap">
+              {totalItems > 0 ? (
+                <>
+                  <span>{hasFilters ? "Знайдено товарів:" : "Кількість товарів: "} </span>
+                  <span className="font-montserrat text-lg font-bold">{totalItems}</span>
+                </>
+              ) : (
+                <span>Товари не знайдено</span>
+              )}
+            </div>
+
+            {/* Пагинация (прижата вправо к фильтру) */}
+            <TopPaginationControls itemsPerPage={itemsPerPage} onItemsPerPageChange={setItemsPerPage} pageSizeOptions={[12, 24, 48]} />
+          </div>
+        </div>
+
         {products.length === 0 ? (
           <div className="text-center py-12 bg-[rgba(245,238,224,0.4)] rounded-[12px]">
             <div className="text-6xl mb-4">📦</div>
@@ -132,8 +175,7 @@ const ProductList = ({ onEditProduct }) => {
             <p className="text-[14px] font-medium text-choco-light font-montserrat">Додайте перший товар для відображення</p>
           </div>
         ) : (
-          <div className="w-full bg-[rgba(245,238,224,0.4)] rounded-[12px]" style={{minHeight: '620px'}}>
-            
+          <div className="w-full bg-[rgba(245,238,224,0.4)] rounded-[12px]" style={{ minHeight: "620px" }}>
             {/* Unified Table Headers (responsive) */}
             <div className="grid grid-cols-[60px_1fr_60px_50px_50px_40px] md:grid-cols-[150px_1fr_150px_120px_100px_100px] gap-1 md:gap-4 mb-[20px] md:mb-[25px]">
               <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">Фото</div>
@@ -152,12 +194,14 @@ const ProductList = ({ onEditProduct }) => {
 
             {/* Header Line (desktop only) */}
             <div className="hidden md:block w-full h-[1px] bg-choco-light opacity-60 mb-[25px]"></div>
-            
+
             {/* Unified Product Rows (responsive) */}
             <div className="space-y-[20px] md:space-y-[25px]">
               {products.map((product) => (
-                <div key={product._id} className="grid grid-cols-[60px_1fr_60px_50px_50px_40px] md:grid-cols-[150px_1fr_150px_120px_100px_100px] gap-1 md:gap-4 items-center">
-                  
+                <div
+                  key={product._id}
+                  className="grid grid-cols-[60px_1fr_60px_50px_50px_40px] md:grid-cols-[150px_1fr_150px_120px_100px_100px] gap-1 md:gap-4 items-center"
+                >
                   {/* Photo (responsive) */}
                   <div className="flex justify-center">
                     <div className="w-[50px] h-[50px] rounded-[25px] md:w-[120px] md:h-[60px] md:rounded-[20px] overflow-hidden bg-gray-100 flex items-center justify-center">
@@ -168,21 +212,21 @@ const ProductList = ({ onEditProduct }) => {
                       )}
                     </div>
                   </div>
-                  
+
                   {/* Name (responsive) */}
                   <div className="flex justify-center items-center px-1">
                     <span className="font-montserrat font-medium text-[10px] md:text-[14px] text-choco-light text-center line-clamp-2">
                       {product.name}
                     </span>
                   </div>
-                  
+
                   {/* Category (responsive) */}
                   <div className="flex justify-center items-center">
                     <span className="font-montserrat font-medium text-[10px] md:text-[12px] text-choco-light text-center line-clamp-1">
-                      {product.category?.name || 'Без категорії'}
+                      {product.category?.name || "Без категорії"}
                     </span>
                   </div>
-                  
+
                   {/* Price (responsive) */}
                   <div className="flex justify-center items-center">
                     <div className="text-center">
@@ -190,24 +234,22 @@ const ProductList = ({ onEditProduct }) => {
                         {formatPrice(product.discountPrice > 0 ? product.discountPrice : product.price)}
                       </div>
                       {product.discountPrice > 0 && (
-                        <div className="font-montserrat text-[8px] md:text-[10px] text-gray-400 line-through">
-                          {formatPrice(product.price)}
-                        </div>
+                        <div className="font-montserrat text-[8px] md:text-[10px] text-gray-400 line-through">{formatPrice(product.price)}</div>
                       )}
                     </div>
                   </div>
-                  
+
                   {/* Quantity (responsive) */}
                   <div className="flex justify-center items-center">
-                    <span className={`font-montserrat font-semibold text-[10px] md:text-[12px] ${
-                      product.qty === 0 ? 'text-error-red' 
-                      : product.qty <= 5 ? 'text-warning-yellow' 
-                      : 'text-correct-green'
-                    }`}>
+                    <span
+                      className={`font-montserrat font-semibold text-[10px] md:text-[12px] ${
+                        product.qty === 0 ? "text-error-red" : product.qty <= 5 ? "text-warning-yellow" : "text-correct-green"
+                      }`}
+                    >
                       {product.qty}
                     </span>
                   </div>
-                  
+
                   {/* Actions (responsive) */}
                   <div className="flex justify-center items-center">
                     <div className="flex flex-col items-center gap-[3px]">
@@ -232,22 +274,18 @@ const ProductList = ({ onEditProduct }) => {
             </div>
           </div>
         )}
-        
-        {/* Пагинация */}
+
+        {/* Нижняя пагинация (стрелки) */}
         <div className="mb-20">
-          <div className="flex flex-col gap-6">
-            <TopPaginationControls
-              itemsPerPage={itemsPerPage}
-              onItemsPerPageChange={setItemsPerPage}
-              pageSizeOptions={[12, 24, 48]}
-            />
-            <BottomPaginationControls
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-              scrollToTop={false}
-            />
-          </div>
+          <BottomPaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => {
+              const { setCurrentPage } = useFilterStore.getState()
+              setCurrentPage(page)
+            }}
+            scrollToTop={false}
+          />
         </div>
       </div>
     </div>
