@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { HeartSolidIcon, HeartIcon, CartSolidIcon } from '../icons';
 
 const ProductCard = ({ product }) => {
   const [isFavorite, setIsFavorite] = useState(false);
+  const navigate = useNavigate();
 
   const tagStyles = {
     'dark': 'absolute top-2 left-2 w-[90px] h-[30px] bg-choco-dark border border-choco-light text-creamy flex items-center justify-center rounded-[13.5px] font-montserrat font-medium text-[12px] leading-[15px]',
@@ -20,8 +22,15 @@ const ProductCard = ({ product }) => {
     // TODO: Добавить логику работы с избранным
   };
 
+  const handleProductClick = () => {
+    navigate(`/product/${product.id}`);
+  };
+
   return (
-    <div className="flex flex-col group cursor-pointer h-full pb-6 bg-creamy overflow-hidden transition-shadow duration-300">
+    <div 
+      className="flex flex-col group cursor-pointer h-full pb-6 bg-creamy overflow-hidden transition-shadow duration-300"
+      onClick={handleProductClick}
+    >
       <div className="relative w-full h-[185px] mb-4 overflow-hidden">
         <img
           src={product?.image}

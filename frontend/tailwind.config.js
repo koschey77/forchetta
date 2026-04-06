@@ -65,6 +65,15 @@ export default {
       },
       // Font weights специально для Figma дизайна
       fontWeight: {
+        // Стандартные Tailwind веса (используются в компонентах)
+        'extralight': '200',      // font-extralight для Cormorant Garamond
+        'light': '300',           // font-light для стандартных классов
+        'normal': '400',          // font-normal для стандартных классов  
+        'medium': '500',          // font-medium для стандартных классов
+        'semibold': '600',        // font-semibold для стандартных классов
+        'bold': '700',            // font-bold для стандартных классов
+        
+        // Figma-специфичные веса (для будущего использования)
         'figma-light': '300',     // Montserrat легкий (для мобильных цен)
         'figma-regular': '400',   // Montserrat обычный
         'figma-medium': '500',    // Montserrat средний
