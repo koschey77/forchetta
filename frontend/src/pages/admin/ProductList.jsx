@@ -177,17 +177,17 @@ const ProductList = ({ onEditProduct }) => {
         ) : (
           <div className="w-full bg-[rgba(245,238,224,0.4)] rounded-[12px]" style={{ minHeight: "620px" }}>
             {/* Unified Table Headers (responsive) */}
-            <div className="grid grid-cols-[60px_1fr_60px_50px_50px_40px] md:grid-cols-[150px_1fr_150px_120px_100px_100px] gap-1 md:gap-4 mb-[20px] md:mb-[25px]">
+            <div className="grid grid-cols-[60px_1fr_100px_50px_30px_30px] md:grid-cols-[150px_1fr_150px_80px_60px_60px] gap-1 md:gap-4 mb-[20px] md:mb-[25px]">
               <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">Фото</div>
               <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">Назва</div>
               <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">
-                <div className="md:hidden">Кат</div>
+                <div className="md:hidden">Категорія</div>
                 <div className="hidden md:block">Категорія</div>
               </div>
               <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">Ціна</div>
               <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">
                 <div className="md:hidden">К-ть</div>
-                <div className="hidden md:block">Кількість</div>
+                <div className="hidden md:block">К-ть</div>
               </div>
               <div className="font-montserrat font-medium md:font-semibold text-[12px] md:text-[18px] text-choco-light text-center">Дії</div>
             </div>
@@ -200,7 +200,7 @@ const ProductList = ({ onEditProduct }) => {
               {products.map((product) => (
                 <div
                   key={product._id}
-                  className="grid grid-cols-[60px_1fr_60px_50px_50px_40px] md:grid-cols-[150px_1fr_150px_120px_100px_100px] gap-1 md:gap-4 items-center"
+                  className="grid grid-cols-[60px_1fr_100px_50px_30px_30px] md:grid-cols-[150px_1fr_150px_80px_60px_60px] gap-1 md:gap-4 items-center"
                 >
                   {/* Photo (responsive) */}
                   <div className="flex justify-center">
@@ -223,7 +223,7 @@ const ProductList = ({ onEditProduct }) => {
                   {/* Category (responsive) */}
                   <div className="flex justify-center items-center">
                     <span className="font-montserrat font-medium text-[10px] md:text-[12px] text-choco-light text-center line-clamp-1">
-                      {product.category?.name || "Без категорії"}
+                      {product.category?.name}
                     </span>
                   </div>
 
