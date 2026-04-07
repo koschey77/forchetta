@@ -20,6 +20,7 @@ import {
 import LoadingSpinner from './components/LoadingSpinner'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
   const { user, checkingAuth } = useUserStore()
@@ -28,6 +29,7 @@ function App() {
   
   return (
     <div className="min-h-screen bg-orange-50 text-black flex flex-col">
+      <ScrollToTop />
       <div className="relative z-50">
         <Header />
       </div>

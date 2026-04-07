@@ -113,8 +113,8 @@ const CatalogPage = () => {
               <div className="text-sm sm:text-lg font-montserrat font-semibold text-choco-light flex-1 text-left min-h-[24px] flex items-center">
                 {totalItems > 0 ? (
                   <>
-                    {hasFiltersApplied ? "Знайдено:" : "Кількість товарів: "}{" "}
-                    <span className="font-montserrat text-xs sm:text-sm font-bold">{totalItems}</span>
+                    {hasFiltersApplied ? "Знайдено:" : "Кількість товарів:"}
+                    <span className="font-montserrat text-xs sm:text-sm font-bold ml-1">{totalItems}</span>
                   </>
                 ) : (
                   <span className="opacity-0">Кількість товарів: 0</span>
@@ -123,11 +123,7 @@ const CatalogPage = () => {
 
               {/* Селектор количества */}
               <div className="flex flex-shrink-0">
-                <TopPaginationControls
-                  itemsPerPage={itemsPerPage}
-                  onItemsPerPageChange={setItemsPerPage}
-                  pageSizeOptions={[12, 24, 48]}
-                />
+                <TopPaginationControls itemsPerPage={itemsPerPage} onItemsPerPageChange={setItemsPerPage} pageSizeOptions={[12, 24, 48]} />
               </div>
             </div>
 
@@ -157,7 +153,7 @@ const CatalogPage = () => {
                   {totalItems > 0 ? (
                     <>
                       <span>{hasFiltersApplied ? "Знайдено товарів:" : "Кількість товарів:"}</span>
-                      <span className="font-montserrat text-lg lg:text-xl font-bold">{totalItems}</span>
+                      <span className="font-montserrat text-lg lg:text-xl font-bold ml-1">{totalItems}</span>
                     </>
                   ) : (
                     <span className="opacity-0">Кількість товарів: 0</span>
@@ -197,21 +193,19 @@ const CatalogPage = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Основной контент с минимальной высотой для предотвращения перекрытия Footer */}
         <div className="max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] mt-6 pb-16 min-h-[600px]">
           {/* Единый блок для всех экранов */}
           <div className="flex items-start gap-6">
-            <Sidebar 
-              className={`${isFilterOpen ? 'w-full min-w-[300px] sm:w-auto' : 'hidden'}`} 
-            />
-            
+            <Sidebar className={`${isFilterOpen ? "w-full min-w-[300px] sm:w-auto" : "hidden"}`} />
+
             {/* Товары - скрываются на мобильных когда открыты фильтры */}
-            <div className={`grid gap-x-4 gap-y-8 sm:gap-x-6 flex-grow transition-all duration-300 ease-in-out ${
-              isFilterOpen 
-                ? 'hidden sm:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
-                : 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
-            }`}>
+            <div
+              className={`grid gap-x-4 gap-y-8 sm:gap-x-6 flex-grow transition-all duration-300 ease-in-out ${
+                isFilterOpen ? "hidden sm:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+              }`}
+            >
               {productsLoading ? (
                 <div className="col-span-2 sm:col-span-full flex justify-center items-center py-20">
                   <div className="text-choco-light text-lg sm:text-xl">Завантаження товарів...</div>
@@ -221,9 +215,7 @@ const CatalogPage = () => {
                   <div className="text-choco-light text-lg sm:text-xl">Помилка завантаження товарів</div>
                 </div>
               ) : displayProducts.length > 0 ? (
-                displayProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))
+                displayProducts.map((product) => <ProductCard key={product.id} product={product} />)
               ) : (
                 <NoProductsMessage />
               )}
@@ -236,8 +228,8 @@ const CatalogPage = () => {
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={(page) => {
-                const { setCurrentPage } = useFilterStore.getState();
-                setCurrentPage(page);
+                const { setCurrentPage } = useFilterStore.getState()
+                setCurrentPage(page)
               }}
               className="mt-8"
             />
@@ -245,7 +237,7 @@ const CatalogPage = () => {
         </div>
       </div>
     </div>
-  );
+  )
 };
 
 export default CatalogPage;

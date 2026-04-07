@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { productsAPI } from "../services/api"
 import { ImagePlaceholderIcon, HeartIcon, HeartSolidIcon, WeightIcon, ClockIcon, TemperatureIcon } from "../components/icons"
+import { Carousel, CarouselContent, CarouselItem, CarouselDots } from "../components/ui/carousel"
 
 const ProductPage = () => {
   const { id } = useParams()
@@ -26,6 +27,7 @@ const ProductPage = () => {
 
   const [mainImage, setMainImage] = useState(imageUrls[0] || null)
   const [isLiked, setIsLiked] = useState(false)
+  const [carouselApi, setCarouselApi] = useState(null)
 
   // Обновляем главное изображение при загрузке товара
   useEffect(() => {
@@ -105,50 +107,75 @@ const ProductPage = () => {
 
           <div className="w-full flex flex-col md:flex-row gap-5 lg:gap-10 items-start">
             {/* Left Column: Images */}
-            <div className="w-full md:w-1/2 flex flex-col gap-8">
-              {/* Main Photo Container */}
-              <div className="relative aspect-square w-full bg-cover bg-center bg-gray-100 flex items-center justify-center" style={mainImage ? { backgroundImage: `url(${mainImage})` } : {}}>
-                {!mainImage && (
-                  <div className="flex flex-col items-center justify-center text-choco-light/60">
-                    <ImagePlaceholderIcon className="w-20 h-20 mb-4" />
-                    <span className="text-sm font-medium text-center">Зображення відсутнє</span>
-                  </div>
-                )}
-                
-                {/* Badge */}
-                {isFeatured && (
-                  <div className="absolute top-5 left-2 md:left-5 bg-dark-creamy rounded-full px-4 py-2 flex items-center justify-center">
-                    <span className="text-choco-dark text-[9px] md:text-[14px] leading-[11px] md:leading-[17px] font-medium font-montserrat text-center">
-                      Топ продажів
-                    </span>
-                  </div>
-                )}
-                
-                {/* Like Icon */}
-                <button 
-                  onClick={toggleLike}
-                  className="absolute top-3 right-3 w-10 h-10 flex items-center justify-center transition-colors hover:scale-110"
-                >
-                  {isLiked ? (
-                    <HeartSolidIcon className="text-creamy w-[30px] h-[30px]" />
+            <div className="w-full md:w-1/2 flex flex-col gap-8 overflow-hidden">
+              {/* Main Photo Container - Carousel */}
+              <Carousel
+                className="w-full relative"
+                setApi={setCarouselApi}
+                onSlideChange={(index) => setMainImage(imageUrls[index])}
+              >
+                <CarouselContent>
+                  {imageUrls.length > 0 ? (
+                    imageUrls.map((img, idx) => (
+                      <CarouselItem key={idx}>
+                        <div
+                          className="relative aspect-square w-full bg-cover bg-center bg-gray-100 flex items-center justify-center"
+                          style={{ backgroundImage: `url(${img})` }}
+                        >
+                          {/* Badge */}
+                          {isFeatured && (
+                            <div className="absolute top-5 left-2 md:left-5 bg-dark-creamy rounded-full px-4 py-2 flex items-center justify-center">
+                              <span className="text-choco-dark text-[9px] md:text-[14px] leading-[11px] md:leading-[17px] font-medium font-montserrat text-center">
+                                Топ продажів
+                              </span>
+                            </div>
+                          )}
+                          
+                          {/* Like Icon */}
+                          <button 
+                            onClick={toggleLike}
+                            className="absolute top-3 right-3 w-10 h-10 flex items-center justify-center transition-colors hover:scale-110 z-10"
+                          >
+                            {isLiked ? (
+                              <HeartSolidIcon className="text-creamy w-[30px] h-[30px]" />
+                            ) : (
+                              <HeartIcon className="text-creamy w-[30px] h-[30px]" strokeWidth={2} />
+                            )}
+                          </button>
+                        </div>
+                      </CarouselItem>
+                    ))
                   ) : (
-                    <HeartIcon className="text-creamy w-[30px] h-[30px]" strokeWidth={2} />
+                    <CarouselItem>
+                      <div className="relative aspect-square w-full bg-gray-100 flex flex-col items-center justify-center text-choco-light/60">
+                        <ImagePlaceholderIcon className="w-20 h-20 mb-4" />
+                        <span className="text-sm font-medium text-center">Зображення відсутнє</span>
+                      </div>
+                    </CarouselItem>
                   )}
-                </button>
-              </div>
+                </CarouselContent>
+                
+                {/* Индикаторы (точки) поверх картинки */}
+                <CarouselDots className="absolute bottom-4 left-0 right-0 z-10" />
+              </Carousel>
 
               {/* Thumbnail Navigation */}
               {imageUrls.length > 1 && (
-                <div className="flex items-center justify-center gap-4 md:gap-8">
-                  <div className="flex gap-4">
+                <div className="flex items-center justify-center w-full max-w-full overflow-hidden">
+                  <div className="flex gap-3 md:gap-3 lg:gap-4 overflow-x-auto pb-2 snap-x scroll-smooth custom-scrollbar [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                     {imageUrls.map((img, idx) => (
                       <div
                         key={idx}
-                        className={`w-[60px] h-[60px] md-w-[85px] md-h-[85px] lg:w-[75px] lg:h-[75px] xl:w-[90px] xl:h-[90px] bg-cover bg-center cursor-pointer transition-all ${
-                          mainImage === img ? "ring-2 ring-choco-light" : ""
+                        className={`w-[60px] h-[60px] md:w-[55px] md:h-[55px] lg:w-[70px] lg:h-[70px] xl:w-[85px] xl:h-[85px] bg-cover bg-center cursor-pointer transition-all shrink-0 snap-center rounded-sm ${
+                          mainImage === img ? "ring-2 ring-choco-light opacity-100" : "opacity-60 hover:opacity-100"
                         }`}
                         style={{ backgroundImage: `url(${img})` }}
-                        onClick={() => setMainImage(img)}
+                        onClick={() => {
+                          setMainImage(img);
+                          if (carouselApi) {
+                            carouselApi.scrollTo(idx);
+                          }
+                        }}
                       />
                     ))}
                   </div>

@@ -284,7 +284,7 @@ const ProductList = ({ onEditProduct }) => {
               const { setCurrentPage } = useFilterStore.getState()
               setCurrentPage(page)
             }}
-            scrollToTop={false}
+            scrollToTop={true}
           />
         </div>
       </div>
