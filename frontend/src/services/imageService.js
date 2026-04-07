@@ -17,7 +17,7 @@ export const imageService = {
   // ======================================================================
   
   /**
-   * Валидация файлов (из ProductCreate.jsx логики)
+   * Валидация файлов (из ProductEditor.jsx логики)
    * @param {FileList|File[]} files - файлы для проверки  
    * @param {number} maxCount - максимальное количество
    * @param {number} currentCount - текущее количество изображений
@@ -126,7 +126,7 @@ export const imageService = {
   },
 
   /**
-   * Удаление изображения по индексу (из ProductEdit.jsx)
+   * Удаление изображения по индексу (из ProductEditor.jsx)
    */
   removeImage: (images, index) => {
     return images.filter((_, i) => i !== index)
