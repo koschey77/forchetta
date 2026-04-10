@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useUserStore } from '../stores/useUserStore'
 import { Navigate, useSearchParams } from 'react-router-dom'
 import { ExitIcon, DropdownArrowIcon, DashboardIcon, ReviewsIcon, OrdersIcon, CartIcon, DotsIcon, ProfileIcon, BookIcon } from '../components/icons'
-import { ProductList, CategoryList, CategoryEditor, ProductEditor } from './admin'
+import { ProductList, CategoryList, CategoryEditor, ProductEditor, UserList } from './admin'
 import { MenuDropdown } from '../components/ui/dropdowns'
 
 const AdminPanel = () => {
@@ -97,6 +97,11 @@ const AdminPanel = () => {
       }
     }
     
+    if (currentPage === 'users') {
+      // Пока что редактора нет, просто выводим список (таблицу)
+      return <UserList onEditUser={(id) => handleEdit('users', id)} />
+    }
+    
     // Заглушка для остальных страниц
     return (
       <div className="text-center py-12">
@@ -118,15 +123,8 @@ const AdminPanel = () => {
             <span className="font-montserrat font-medium text-base leading-5 text-choco-light">{user?.name}</span>
             <span className="font-montserrat font-medium text-sm leading-[17px] text-choco-light opacity-50">{user?.email}</span>
           </div>
-          <button 
-            onClick={() => logout()}
-            className="cursor-pointer hover:opacity-75 transition-opacity"
-          >
-            <ExitIcon 
-              className="w-5 h-5 transform scale-x-[-1] text-choco-light" 
-              stroke="currentColor" 
-              strokeWidth={2} 
-            />
+          <button onClick={() => logout()} className="cursor-pointer hover:opacity-75 transition-opacity">
+            <ExitIcon className="w-5 h-5 transform scale-x-[-1] text-choco-light" stroke="currentColor" strokeWidth={2} />
           </button>
         </div>
       </div>
@@ -142,10 +140,12 @@ const AdminPanel = () => {
           customTrigger={
             <button className="flex flex-row justify-between items-center px-[15px] gap-[10px] w-full sm:w-[349px] h-[44px] bg-dark-creamy rounded-[30px] transition-colors hover:opacity-90">
               <div className="flex flex-row items-center gap-[10px] min-w-[200px] h-[24px]">
-                {React.createElement(pageMapping[currentPage].icon, { 
-                  className: "w-[24px] h-[24px] flex-shrink-0 text-[#705A5A]"
+                {React.createElement(pageMapping[currentPage].icon, {
+                  className: "w-[24px] h-[24px] flex-shrink-0 text-choco-light strokeWidth={2}",
                 })}
-                <span className="font-montserrat font-semibold text-[18px] leading-[22px] text-choco-light whitespace-nowrap">{pageMapping[currentPage].name}</span>
+                <span className="font-montserrat font-semibold text-[18px] leading-[22px] text-choco-light whitespace-nowrap">
+                  {pageMapping[currentPage].name}
+                </span>
               </div>
               <DropdownArrowIcon className="w-[19px] h-[16px]" stroke="#705A5A" strokeWidth={2} />
             </button>
@@ -154,9 +154,7 @@ const AdminPanel = () => {
       </div>
 
       {/* Main Content */}
-      <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] pb-6">
-        {renderContent()}
-      </div>
+      <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] pb-6">{renderContent()}</div>
     </div>
   )
 }

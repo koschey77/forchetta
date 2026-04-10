@@ -1,6 +1,8 @@
 import { create } from "zustand"
 import axios from "../lib/axios"
 import { toast } from "react-hot-toast"
+import { queryClient } from "../main"
+import useCartStore from "./useCartStore"
 
 export const useUserStore = create((set, get) => ({
   user: null,
@@ -48,6 +50,9 @@ export const useUserStore = create((set, get) => ({
         loading: false
       })
       
+      // Синхронизируем корзину после регистрации и входа
+      useCartStore.getState().syncCartWithServer()
+      
       toast.success("Реєстрація завершена! Ласкаво просимо!")
       return res.data
     } catch (error) {
@@ -87,6 +92,10 @@ export const useUserStore = create((set, get) => ({
     try {
       const res = await axios.post("/auth/login", { email, password })
       set({ user: res.data, loading: false })
+      
+      // Синхронизируем корзину после логина
+      useCartStore.getState().syncCartWithServer()
+      
       toast.success("Успішний вхід!")
     } catch (error) {
       set({ loading: false })
@@ -99,9 +108,13 @@ export const useUserStore = create((set, get) => ({
     try {
       await axios.post("/auth/logout")
       set({ user: null })
+      queryClient.clear() // Очищаем кэш React Query (корзина, избранное и т.д.)
+      useCartStore.getState().clearCart() // Очищаем локальную корзину
     } catch (error) {
       toast.error(error.response?.data?.message || "Помилка при виході")
       set({ user: null })
+      queryClient.clear() // Очищаем кэш даже при ошибке выхода
+      useCartStore.getState().clearCart() // Очищаем локальную корзину
     }
   },
 
@@ -145,6 +158,7 @@ export const useUserStore = create((set, get) => ({
     } catch (error) {
       console.log(error.message)
       set({ checkingAuth: false, user: null })
+      queryClient.clear() // Если сессия истекла, чистим приватный кэш
     }
   },
 
@@ -162,6 +176,18 @@ export const useUserStore = create((set, get) => ({
 }))
 
 // Axios interceptor for token refresh
+
+// Предотвращение бесконечного цикла:
+//     используем originalRequest._retry = true.
+// Игнорирование /auth/refresh-token: 
+//      Если сам рефреш падает с 401, он не пытается обновить токен бесконечно.
+// Паттерн Singleton для промиса: 
+//    Если несколько запросов падают одновременно (например, грузятся картинки и корзина), 
+//    первый запрос создает refreshPromise. Остальные видят if (refreshPromise), 
+//    просто останавливаются и ждут его (await refreshPromise), а затем повторяют свои запросы.
+// Централизация логики выхода: 
+//    Если рефреш или повторный запрос падает окончательно, 
+//    он корректно вызывает useUserStore.getState().logout().
 let refreshPromise = null;
 
 axios.interceptors.response.use(

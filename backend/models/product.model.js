@@ -38,6 +38,7 @@ const productSchema = new mongoose.Schema(
       enum: PRODUCT_ENUMS.storageConditions
     },
     isFeatured: { type: Boolean, default: false },
+    salesCount: { type: Number, default: 0 },
   },
   { timestamps: true },
 )

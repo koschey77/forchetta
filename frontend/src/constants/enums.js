@@ -9,4 +9,10 @@ export const PRODUCT_ENUMS = {
   storageConditions: ["від +2°C до +6°C", "до +20°C"],
 }
 
+export const ORDER_ENUMS = {
+  status: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
+  paymentMethod: ['card', 'cash'],
+  paymentStatus: ['pending', 'paid', 'failed']
+}
+
 export default PRODUCT_ENUMS

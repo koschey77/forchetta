@@ -8,13 +8,13 @@ import CartPage from './pages/CartPage'
 import CatalogPage from './pages/CatalogPage'
 import ProductPage from './pages/ProductPage'
 import AdminPanel from './pages/AdminPanel'
+import UserPanel from './pages/UserPanel'
 import {
   SignUpPage,
   LoginPage,
   EmailVerificationPage,
   ForgotPasswordPage,
   ResetPasswordPage,
-  ProfilePage
 } from './pages/auth'
 
 import LoadingSpinner from './components/LoadingSpinner'
@@ -45,7 +45,8 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/catalog" element={<CatalogPage />} />
           <Route path="/product/:id" element={<ProductPage />} />
-          <Route path="/profile" element={user ? <ProfilePage /> : <Navigate to="/login" />} />
+          <Route path="/profile" element={user ? <Navigate to="/user-panel" replace /> : <Navigate to="/login" />} />
+          <Route path="/user-panel" element={user ? <UserPanel /> : <Navigate to="/login" />} />
           <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </div>

@@ -118,7 +118,7 @@ const MenuDropdown = ({
           >
             {/* Иконка для admin варианта */}
             {variant === 'admin' && option.icon && (
-              <option.icon className="w-[24px] h-[24px] text-[#705A5A]" />
+              <option.icon className="w-[24px] h-[24px] text-[#705A5A]" strokeWidth={2} />
             )}
             
             <span className={`${styles.itemText} ${

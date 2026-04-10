@@ -7,7 +7,7 @@ import App from './App.jsx'
 import './index.css'
 
 // Создание QueryClient с базовой конфигурацией
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 минут - данные считаются свежими

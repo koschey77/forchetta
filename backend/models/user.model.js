@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+    phone: {
+      type: String,
+      default: '',
+    },
     password: {
       type: String,
       // Пароль необязателен для Google OAuth пользователей
@@ -55,6 +59,52 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    // Избранные товары (Сердечки)
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+      }
+    ],
+    // Накопленные бонусные баллы
+    bonusPoints: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    // Массив адресов доставки и получателей
+    addresses: [
+      {
+        // Контактные данные получателя (могут отличаться от данных аккаунта)
+        firstName: String,
+        lastName: String,
+        phone: String,
+        // Физический адрес
+        region: String, // Область
+        city: String,
+        street: String,
+        house: String,
+        apartment: String,
+        postalCode: String, // Поштовий індекс
+        // Позволяет выбрать адрес по умолчанию, чтобы сразу подставлять при оформлении заказа
+        isDefault: {
+          type: Boolean,
+          default: false
+        }
+      }
+    ],
+    // История заказов (ссылки на отдельную модель Order, которую мы создадим позже)
+    orders: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
+      }
+    ],
+    // Статус блокировки (мягкое удаление) админом
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
     role: {
       type: String,
       enum: ['customer', 'admin'],

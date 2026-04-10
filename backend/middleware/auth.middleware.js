@@ -17,6 +17,11 @@ export const protectRoute = async (req, res, next) => {
         return res.status(401).json({ message: "User not found" })
       }
 
+      // Проверяем, не заблокирован ли пользователь админом
+      if (!user.isActive) {
+        return res.status(403).json({ message: "Обліковий запис заблоковано адміністратором." })
+      }
+
       req.user = user
 
       next()
