@@ -58,37 +58,34 @@ const UserPanel = () => {
   return (
     <div className="min-h-screen bg-creamy relative z-0 pb-16">
       {/* Header Profile */}
-      <div className="w-full max-w-[1440px] h-[53px] flex items-center justify-between px-[15px] sm:px-[30px] lg:px-[60px] py-[12px] bg-creamy mx-auto">
-        <div className="flex items-center">
-          <h1 className="font-montserrat font-light text-lg sm:text-2xl leading-[20px] md:leading-[29px] text-choco-dark">
-            Мій акаунт
-          </h1>
-        </div>
-        <div className="flex items-center gap-5 h-[42px]">
-          {user?.role === 'admin' && (
-            <Link 
-              to="/admin" 
-              className="hidden sm:inline-flex items-center justify-center px-[20px] h-[34px] bg-choco-dark text-creamy rounded-[30px] font-montserrat text-sm font-medium transition-opacity hover:opacity-90"
-            >
-              До Адмін панелі
-            </Link>
-          )}
-          <div className="flex flex-col flex-1 text-right gap-[5px] h-[42px] justify-center items-end sm:items-start sm:text-left">
-            <span className="font-montserrat font-medium text-base leading-5 text-choco-light truncate w-full">{user?.name}</span>
-            <span className="font-montserrat font-medium text-sm leading-[17px] text-choco-light opacity-50 truncate w-[150px] sm:w-auto">{user?.email}</span>
+      <div className="w-full max-w-[1440px] flex flex-col gap-4 px-[15px] sm:px-[30px] lg:px-[60px] py-[12px] bg-creamy mx-auto">
+        <div className="w-full flex items-center justify-between h-[42px]">
+          <div className="flex items-center">
+            <h1 className="font-montserrat font-light text-lg sm:text-2xl leading-[20px] md:leading-[29px] text-choco-dark">Мій акаунт</h1>
           </div>
-          <button 
-            onClick={() => logout()}
-            className="cursor-pointer hover:opacity-75 transition-opacity"
-            title="Вийти"
-          >
-            <ExitIcon 
-              className="w-5 h-5 transform scale-x-[-1] text-choco-light" 
-              stroke="currentColor" 
-              strokeWidth={2} 
-            />
-          </button>
+          <div className="flex items-center gap-5 h-[42px]">
+            <div className="flex flex-col flex-1 text-right gap-[5px] h-[42px] justify-center items-end sm:items-start sm:text-left">
+              <span className="font-montserrat font-medium text-base leading-5 text-choco-light truncate w-full">{user?.name}</span>
+              <span className="font-montserrat font-medium text-sm leading-[17px] text-choco-light opacity-50 truncate w-[150px] sm:w-auto">
+                {user?.email}
+              </span>
+            </div>
+            <button onClick={() => logout()} className="cursor-pointer hover:opacity-75 transition-opacity" title="Вийти">
+              <ExitIcon className="w-5 h-5 transform scale-x-[-1] text-choco-light" stroke="currentColor" strokeWidth={2} />
+            </button>
+          </div>
         </div>
+
+        {user?.role === "admin" && (
+          <div className="flex justify-end w-full">
+            <Link
+              to="/admin"
+              className="inline-flex items-center justify-center px-[20px] h-[34px] bg-choco-light text-creamy rounded-[30px] font-montserrat text-sm font-medium transition-opacity hover:opacity-90"
+            >
+              Адмін панель
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Navigation Dropdown */}
@@ -102,9 +99,9 @@ const UserPanel = () => {
           customTrigger={
             <button className="flex flex-row justify-between items-center px-[15px] gap-[10px] w-full sm:w-[349px] h-[44px] bg-dark-creamy rounded-[30px] transition-colors hover:opacity-90">
               <div className="flex flex-row items-center gap-[10px] min-w-[200px] h-[24px]">
-                {React.createElement(pageMapping[currentPage].icon, { 
+                {React.createElement(pageMapping[currentPage].icon, {
                   className: "w-[24px] h-[24px] flex-shrink-0 text-[#705A5A]",
-                  strokeWidth: 2
+                  strokeWidth: 2,
                 })}
                 <span className="font-montserrat font-semibold text-[18px] leading-[22px] text-choco-light whitespace-nowrap overflow-hidden text-ellipsis text-left">
                   {pageMapping[currentPage].name}
@@ -117,9 +114,7 @@ const UserPanel = () => {
       </div>
 
       {/* Main Content */}
-      <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] relative z-0">
-        {renderContent()}
-      </div>
+      <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] relative z-0">{renderContent()}</div>
     </div>
   )
 }

@@ -4,6 +4,9 @@ import { CatalogFilterIcon, CrossIcon } from '../components/icons';
 import { MenuDropdown } from '../components/ui/dropdowns';
 import Sidebar from '../components/catalog/Sidebar';
 import ProductCard from '../components/catalog/ProductCard';
+import ProductCardSkeleton from '../components/catalog/ProductCardSkeleton';
+import NoResults from '../components/errors/NoResults';
+import NoConnection from '../components/errors/NoConnection';
 import { TopPaginationControls, BottomPaginationControls } from '../components/common/pagination';
 import { productsAPI } from '../services/api';
 import useFilterStore from '../stores/useFilterStore';
@@ -80,26 +83,6 @@ const CatalogPage = () => {
 
   // Получаем информацию о примененных фильтрах из стора
   const hasFiltersApplied = hasAppliedFilters();
-
-  // Компонент "товары не найдены"
-  const NoProductsMessage = () => (
-    <div className="col-span-2 sm:col-span-full flex flex-col justify-center items-center py-20">
-      <div className="text-choco-light text-lg sm:text-xl mb-2">
-        {hasFiltersApplied
-          ? 'Товари за заданими фільтрами не знайдені'
-          : appliedFilters.categories.length > 0 
-            ? 'Товари в цих категоріях не знайдені' 
-            : 'Товари не знайдені'
-        }
-      </div>
-      <div className="text-choco-light text-sm text-center sm:text-left">
-        {hasFiltersApplied
-          ? 'Спробуйте скинути фільтри або вибрати інші параметри'
-          : 'Спробуйте вибрати іншу категорію'
-        }
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-creamy py-6">
@@ -207,17 +190,18 @@ const CatalogPage = () => {
               }`}
             >
               {productsLoading ? (
-                <div className="col-span-2 sm:col-span-full flex justify-center items-center py-20">
-                  <div className="text-choco-light text-lg sm:text-xl">Завантаження товарів...</div>
-                </div>
+                // Рендерим набор скелетонов, чтобы заполнить сетку (по количеству itemsPerPage)
+                Array.from({ length: itemsPerPage || 12 }).map((_, index) => (
+                  <ProductCardSkeleton key={`skeleton-${index}`} />
+                ))
               ) : error ? (
-                <div className="col-span-2 sm:col-span-full flex justify-center items-center py-20">
-                  <div className="text-choco-light text-lg sm:text-xl">Помилка завантаження товарів</div>
+                <div className="col-span-2 sm:col-span-full">
+                  <NoConnection onRetry={() => window.location.reload()} />
                 </div>
               ) : displayProducts.length > 0 ? (
                 displayProducts.map((product) => <ProductCard key={product.id} product={product} />)
               ) : (
-                <NoProductsMessage />
+                <NoResults />
               )}
             </div>
           </div>

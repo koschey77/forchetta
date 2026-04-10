@@ -4,6 +4,9 @@ import { useQuery } from "@tanstack/react-query"
 import { productsAPI } from "../services/api"
 import { ImagePlaceholderIcon, HeartIcon, HeartSolidIcon, WeightIcon, ClockIcon, TemperatureIcon } from "../components/icons"
 import { Carousel, CarouselContent, CarouselItem, CarouselDots } from "../components/ui/carousel"
+import ProductPageSkeleton from "../components/catalog/ProductPageSkeleton"
+import NoConnection from "../components/errors/NoConnection"
+import Error404 from "../components/errors/Error404"
 
 const ProductPage = () => {
   const { id } = useParams()
@@ -80,18 +83,24 @@ const ProductPage = () => {
 
   // Loading state
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-choco-light text-lg">Загружается товар...</div>
-      </div>
-    )
+    return <ProductPageSkeleton />
   }
 
   // Error state
   if (error) {
+    // Если бэкенд ответил 404 — такого товара не существует
+    if (error.response?.status === 404) {
+      return (
+        <div className="min-h-[70vh] flex items-center justify-center">
+          <Error404 />
+        </div>
+      )
+    }
+
+    // Во всех остальных случаях (сервер выключен, нет сети, 500 ошибка) показываем разрыв соединения
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-red-500 text-lg">Ошибка загрузки товара</div>
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <NoConnection />
       </div>
     )
   }

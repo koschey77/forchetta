@@ -6,6 +6,7 @@ import useFilterStore from '../../stores/useFilterStore'
 import CategoryFilter from '../../components/catalog/filters/CategoryFilter'
 import FilterControls from '../../components/catalog/filters/FilterControls'
 import SearchFilter from '../../components/catalog/filters/SearchFilter'
+import NoResults from '../../components/errors/NoResults'
 import { TopPaginationControls, BottomPaginationControls } from '../../components/common/pagination'
 
 const ProductList = ({ onEditProduct }) => {
@@ -139,7 +140,7 @@ const ProductList = ({ onEditProduct }) => {
                   <span className="font-montserrat text-base font-bold">{totalItems}</span>
                 </>
               ) : (
-                <span>Товари не знайдено</span>
+                <span className="opacity-0">Кількість товарів: 0</span>
               )}
             </div>
 
@@ -159,7 +160,7 @@ const ProductList = ({ onEditProduct }) => {
                   <span className="font-montserrat text-lg font-bold">{totalItems}</span>
                 </>
               ) : (
-                <span>Товари не знайдено</span>
+                <span className="opacity-0">Кількість товарів: 0</span>
               )}
             </div>
 
@@ -169,11 +170,15 @@ const ProductList = ({ onEditProduct }) => {
         </div>
 
         {products.length === 0 ? (
-          <div className="text-center py-12 bg-[rgba(245,238,224,0.4)] rounded-[12px]">
-            <div className="text-6xl mb-4">📦</div>
-            <h3 className="text-[18px] font-montserrat font-semibold text-choco-light mb-2">Немає товарів</h3>
-            <p className="text-[14px] font-medium text-choco-light font-montserrat">Додайте перший товар для відображення</p>
-          </div>
+          hasFilters ? (
+            <NoResults />
+          ) : (
+            <div className="text-center py-12 bg-[rgba(245,238,224,0.4)] rounded-[12px]">
+              <div className="text-6xl mb-4">📦</div>
+              <h3 className="text-[18px] font-montserrat font-semibold text-choco-light mb-2">Немає товарів</h3>
+              <p className="text-[14px] font-medium text-choco-light font-montserrat">Додайте перший товар для відображення</p>
+            </div>
+          )
         ) : (
           <div className="w-full bg-[rgba(245,238,224,0.4)] rounded-[12px]" style={{ minHeight: "620px" }}>
             {/* Unified Table Headers (responsive) */}

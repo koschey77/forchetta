@@ -21,6 +21,7 @@ import LoadingSpinner from './components/LoadingSpinner'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
+import Error404 from './components/errors/Error404'
 
 function App() {
   const { user, checkingAuth } = useUserStore()
@@ -48,6 +49,9 @@ function App() {
           <Route path="/profile" element={user ? <Navigate to="/user-panel" replace /> : <Navigate to="/login" />} />
           <Route path="/user-panel" element={user ? <UserPanel /> : <Navigate to="/login" />} />
           <Route path="/admin" element={<AdminPanel />} />
+          
+          {/* Catch-all маршрут 404 */}
+          <Route path="*" element={<Error404 />} />
         </Routes>
       </div>
       <Footer />
