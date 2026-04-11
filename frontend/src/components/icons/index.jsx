@@ -98,12 +98,12 @@ export const CartIcon = ({ className = "w-[30px] h-[30px]", strokeWidth = 3 }) =
   </svg>
 )
 
-export const HeartIcon = ({ className = "w-[30px] h-[30px]", strokeWidth = 3 }) => (
+export const HeartIcon = ({ className = "w-[30px] h-[30px]", strokeWidth = 3, isFilled = false }) => (
   <svg
     width="30"
     height="30"
     viewBox="0 0 30 30"
-    fill="none"
+    fill={isFilled ? "currentColor" : "none"}
     xmlns="http://www.w3.org/2000/svg"
     className={className}
   >

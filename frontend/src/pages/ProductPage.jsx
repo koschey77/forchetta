@@ -2,11 +2,13 @@ import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { productsAPI } from "../services/api"
-import { ImagePlaceholderIcon, HeartIcon, HeartSolidIcon, WeightIcon, ClockIcon, TemperatureIcon } from "../components/icons"
+import { ImagePlaceholderIcon, WeightIcon, ClockIcon, TemperatureIcon } from "../components/icons"
 import { Carousel, CarouselContent, CarouselItem, CarouselDots } from "../components/ui/carousel"
 import ProductPageSkeleton from "../components/catalog/ProductPageSkeleton"
 import NoConnection from "../components/errors/NoConnection"
 import Error404 from "../components/errors/Error404"
+import FavoriteButton from "../components/common/FavoriteButton"
+import { useAddToCartAction } from "../hooks/useAddToCartAction"
 
 const ProductPage = () => {
   const { id } = useParams()
@@ -29,8 +31,9 @@ const ProductPage = () => {
   const imageUrls = images?.length > 0 ? images.map(img => img.url) : []
 
   const [mainImage, setMainImage] = useState(imageUrls[0] || null)
-  const [isLiked, setIsLiked] = useState(false)
   const [carouselApi, setCarouselApi] = useState(null)
+  
+  const { handleAddToCart, isAdding } = useAddToCartAction(product)
 
   // Обновляем главное изображение при загрузке товара
   useEffect(() => {
@@ -53,12 +56,6 @@ const ProductPage = () => {
   // Форматирование цены
   const formatPrice = (price) => {
     return `${price} грн`
-  }
-
-  // Функция переключения избранного
-  const toggleLike = () => {
-    setIsLiked(!isLiked)
-    // Здесь можно добавить API вызов для сохранения в избранное
   }
 
   // Функция для отображения цены
@@ -142,17 +139,11 @@ const ProductPage = () => {
                             </div>
                           )}
                           
-                          {/* Like Icon */}
-                          <button 
-                            onClick={toggleLike}
-                            className="absolute top-3 right-3 w-10 h-10 flex items-center justify-center transition-colors hover:scale-110 z-10"
-                          >
-                            {isLiked ? (
-                              <HeartSolidIcon className="text-creamy w-[30px] h-[30px]" />
-                            ) : (
-                              <HeartIcon className="text-creamy w-[30px] h-[30px]" strokeWidth={2} />
-                            )}
-                          </button>
+                            {/* Favorite Button */}
+                            <FavoriteButton 
+                              productId={product.id || product._id}
+                              className="absolute top-3 right-3 w-10 h-10 flex items-center justify-center transition-colors hover:scale-110 z-10"
+                            />
                         </div>
                       </CarouselItem>
                     ))
@@ -223,8 +214,14 @@ const ProductPage = () => {
                   {getStockStatus(qty || 0).text}
                 </span>
                 {renderPriceSection("text-[24px] leading-[29px]", "items-center")}
-                <button className="w-[270px] bg-choco-light text-creamy py-4 rounded-lg uppercase font-semibold text-[18px] leading-[22px] font-montserrat">
-                  Додати в кошик
+                  <button 
+                    onClick={(e) => handleAddToCart(e, 1)}
+                    disabled={isAdding}
+                    className={`w-[270px] bg-choco-light text-creamy py-4 rounded-lg uppercase font-semibold text-[18px] leading-[22px] font-montserrat transition-all ${
+                      isAdding ? 'opacity-50 cursor-not-allowed' : 'hover:bg-choco-light-50 active:scale-[0.98]'
+                    }`}
+                  >
+                    {isAdding ? "Додається..." : "Додати в кошик"}
                 </button>
               </div>
 
@@ -287,8 +284,14 @@ const ProductPage = () => {
               {/* Footer Price & Button - Responsive Layout */}
               <div className="hidden md:flex flex-col lg:flex-row items-center lg:justify-between gap-6 lg:gap-8 mt-1 pt-1">
                 {renderPriceSection("text-[32px]", "items-center lg:items-start")}
-                <button className="w-full lg:flex-1 max-w-[300px] bg-choco-light text-creamy py-5 rounded-lg uppercase font-medium text-[18px] hover:bg-choco-light-50 transition-colors">
-                  Додати в кошик
+                <button 
+                  onClick={(e) => handleAddToCart(e, 1)}
+                  disabled={isAdding}
+                  className={`w-full lg:flex-1 max-w-[300px] bg-choco-light text-creamy py-5 rounded-lg uppercase font-medium text-[18px] transition-all hover:bg-choco-light-50 ${
+                    isAdding ? 'opacity-50 cursor-not-allowed' : 'active:scale-[0.98]'
+                  }`}
+                >
+                  {isAdding ? "Додається..." : "Додати в кошик"}
                 </button>
               </div>
             </div>

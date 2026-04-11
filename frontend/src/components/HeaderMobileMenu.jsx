@@ -12,7 +12,9 @@ const HeaderMobileMenu = ({
   onCatalogClick, 
   onFavoritesClick, 
   onCartClick,
-  onHomeClick
+  onHomeClick,
+  favoritesCount = 0,
+  cartItemsCount = 0
 }) => {
   return (
     <>
@@ -34,10 +36,19 @@ const HeaderMobileMenu = ({
           <button
             aria-label="Избранное"
             onClick={onFavoritesClick}
-            className="flex w-[41px] flex-col items-center gap-[1px] transition duration-300 hover:opacity-80"
+            className="flex w-[41px] flex-col items-center gap-[1px] transition duration-300 hover:opacity-80 relative"
           >
-            <HeartIcon className="shrink-0 text-choco-light" />
-            <span className="text-center text-[10px] font-light leading-[12px] text-choco-light">Обране</span>
+            <div className="relative">
+              <HeartIcon className="shrink-0 text-choco-light" />
+              {favoritesCount > 0 && (
+                <div className="absolute flex justify-center items-center w-[20px] h-[20px] -right-[10px] -top-[3px] bg-choco-light rounded-[10px]">
+                  <span className="font-montserrat font-bold text-[10px] leading-[12px] text-center text-dark-creamy">
+                    {favoritesCount > 99 ? '99+' : favoritesCount}
+                  </span>
+                </div>
+              )}
+            </div>
+            <span className="text-center text-[10px] font-light leading-[12px] text-choco-light mt-[2px]">Обране</span>
           </button>
 
           {/* Каталог */}
@@ -54,10 +65,19 @@ const HeaderMobileMenu = ({
           <button
             aria-label="Корзина"
             onClick={onCartClick}
-            className="flex w-[36px] flex-col items-center gap-[3px] transition duration-300 hover:opacity-80"
+            className="flex w-[36px] flex-col items-center gap-[3px] transition duration-300 hover:opacity-80 relative"
           >
-            <CartIcon className="shrink-0 text-choco-light" strokeWidth={3} />
-            <span className="text-center text-[10px] font-light leading-[12px] text-choco-light">Кошик</span>
+            <div className="relative">
+              <CartIcon className="shrink-0 text-choco-light" strokeWidth={3} />
+              {cartItemsCount > 0 && (
+                <div className="absolute flex justify-center items-center w-[20px] h-[20px] -right-[10px] -top-[3px] bg-choco-light rounded-[10px] z-10">
+                  <span className="font-montserrat font-bold text-[10px] leading-[12px] text-center text-dark-creamy">
+                    {cartItemsCount > 99 ? '99+' : cartItemsCount}
+                  </span>
+                </div>
+              )}
+            </div>
+            <span className="text-center text-[10px] font-light leading-[12px] text-choco-light mt-[1px]">Кошик</span>
           </button>
 
           {/* Меню (больше) с MenuDropdown */}

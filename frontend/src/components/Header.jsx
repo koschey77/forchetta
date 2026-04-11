@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useUserStore } from "../stores/useUserStore"
+import useCartStore from "../stores/useCartStore"
 import { Logo } from "./Logos/Logo.jsx"
 import { SearchIcon, ProfileIcon, HeartIcon, CartIcon, DotsIcon, MenuIcon } from "./icons/index.jsx"
 import HeaderMobileMenu from "./HeaderMobileMenu.jsx"
@@ -50,14 +51,21 @@ const UserAvatar = ({ userAvatar, onClick, className = "", strokeWidth = 3 }) =>
   )
 }
 
-const IconButton = ({ icon: Icon, label, onClick, className = "", strokeWidth = 2, ...props }) => (
+const IconButton = ({ icon: Icon, label, onClick, className = "", strokeWidth = 2, badgeCount = 0, ...props }) => (
   <button 
     aria-label={label}
     onClick={onClick}
-    className={`rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60 ${className}`}
+    className={`relative rounded-full p-1 transition duration-300 hover:bg-dark-creamy/60 ${className}`}
     {...props}
   >
     <Icon className="shrink-0 text-choco-light" strokeWidth={strokeWidth} />
+    {badgeCount > 0 && (
+      <div className="absolute flex justify-center items-center w-[16px] h-[16px] right-[0px] top-[0px] bg-choco-light rounded-[10px]">
+        <span className="font-montserrat font-bold text-[10px] leading-[12px] text-center text-dark-creamy">
+          {badgeCount > 99 ? '99+' : badgeCount}
+        </span>
+      </div>
+    )}
   </button>
 )
 
@@ -92,6 +100,10 @@ const HeaderMenuDropdown = () => (
 const Header = () => {
   const navigate = useNavigate()
   const { user, openAuthModal } = useUserStore()
+  const cartItems = useCartStore((state) => state.cartItems)
+
+  const cartItemsCount = cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0)
+  const favoritesCount = user?.favorites?.length || 0
 
   const handleFavoritesClick = () => {
     if (!user) return openAuthModal()
@@ -208,6 +220,7 @@ const Header = () => {
               label="Избранное" 
               onClick={handleFavoritesClick}
               strokeWidth={2}
+              badgeCount={favoritesCount}
             />
             
             {/* Корзина - показывается на sm+ */}
@@ -216,6 +229,7 @@ const Header = () => {
               label="Корзина" 
               onClick={handleCartClick} 
               strokeWidth={2}
+              badgeCount={cartItemsCount}
             />
             
             {/* Меню кнопка - показывается на sm+ (>=640px) */}
@@ -231,6 +245,8 @@ const Header = () => {
         onFavoritesClick={handleFavoritesClick}
         onCartClick={handleCartClick}
         onHomeClick={handleLogoClick}
+        favoritesCount={favoritesCount}
+        cartItemsCount={cartItemsCount}
       />
     </>
   )

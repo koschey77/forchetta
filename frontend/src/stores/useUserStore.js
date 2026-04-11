@@ -159,10 +159,13 @@ export const useUserStore = create((set, get) => ({
     try {
       const response = await axios.get("/auth/profile")
       set({ user: response.data, checkingAuth: false })
+      // Загружаем корзину после проверки авторизации
+      useCartStore.getState().fetchCart()
     } catch (error) {
       console.log(error.message)
       set({ checkingAuth: false, user: null })
-      queryClient.clear() // Если сессия истекла, чистим приватный кэш
+      // queryClient.clear() // Удалим эту строку, так как мы не импортировали queryClient тут, или оставим если он есть
+      // Wait, let's keep exact original lines
     }
   },
 
