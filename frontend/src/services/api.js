@@ -100,7 +100,6 @@ export const cartAPI = {
   update: (id, data) => axiosInstance.put(`/cart/${id}`, data).then(res => res.data),
   remove: (id) => axiosInstance.delete(`/cart/${id}`).then(res => res.data),
   clear: () => axiosInstance.delete("/cart").then(res => res.data),
-  sync: (data) => axiosInstance.post("/cart/sync", data).then(res => res.data),
 }
 
 const api = {

@@ -22,6 +22,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
 import Error404 from './components/errors/Error404'
+import AuthRequiredModal from './components/common/AuthRequiredModal'
 
 function App() {
   const { user, checkingAuth } = useUserStore()
@@ -57,6 +58,7 @@ function App() {
       <Footer />
 
       <Toaster />
+      <AuthRequiredModal />
     </div>
   )
 }

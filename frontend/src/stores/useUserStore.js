@@ -9,6 +9,10 @@ export const useUserStore = create((set, get) => ({
   loading: false,
   checkingAuth: true,
   verificationEmail: null,
+  isAuthModalOpen: false,
+
+  openAuthModal: () => set({ isAuthModalOpen: true }),
+  closeAuthModal: () => set({ isAuthModalOpen: false }),
 
   signup: async ({ name, email, password }) => {
     set({ loading: true })
@@ -50,8 +54,8 @@ export const useUserStore = create((set, get) => ({
         loading: false
       })
       
-      // Синхронизируем корзину после регистрации и входа
-      useCartStore.getState().syncCartWithServer()
+      // Загружаем корзину после регистрации и входа
+      useCartStore.getState().fetchCart()
       
       toast.success("Реєстрація завершена! Ласкаво просимо!")
       return res.data
@@ -93,8 +97,8 @@ export const useUserStore = create((set, get) => ({
       const res = await axios.post("/auth/login", { email, password })
       set({ user: res.data, loading: false })
       
-      // Синхронизируем корзину после логина
-      useCartStore.getState().syncCartWithServer()
+      // Загружаем корзину после логина
+      useCartStore.getState().fetchCart()
       
       toast.success("Успішний вхід!")
     } catch (error) {

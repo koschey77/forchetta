@@ -324,6 +324,9 @@ export const getProductById = async (req, res) => {
 
     res.json(product)
   } catch (error) {
+    if (error.name === 'CastError') {
+      return res.status(404).json({ message: "Товар не знайдено (невірний ID)" })
+    }
     console.log("Error in getProductById controller", error.message)
     res.status(500).json({ message: "Server error", error: error.message })
   }

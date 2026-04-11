@@ -125,33 +125,3 @@ export const removeAllFromCart = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
-export const syncCart = async (req, res) => {
-  try {
-    const { cartItems: localCartItems } = req.body; // Ожидаем массив [{ productId, quantity }] из LocalStorage
-    const userId = req.user._id.toString();
-
-    const cartStr = await redis.get(`cart:${userId}`);
-    let redisCartItems = cartStr ? JSON.parse(cartStr) : [];
-
-    if (localCartItems && localCartItems.length > 0) {
-      localCartItems.forEach((localItem) => {
-        const existing = redisCartItems.find((item) => item.productId === localItem.productId);
-        if (existing) {
-          existing.quantity += localItem.quantity;
-        } else {
-          redisCartItems.push(localItem);
-        }
-      });
-      
-      await redis.set(`cart:${userId}`, JSON.stringify(redisCartItems), "EX", CART_TTL);
-    }
-
-    // Возвращаем результат синхронизации для фронтенда 
-    // (он очистит свой LocalStorage и запишет то, что вернул сервер)
-    res.json(redisCartItems);
-  } catch (error) {
-    console.error("Error in syncCart controller:", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};

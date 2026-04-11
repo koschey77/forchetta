@@ -88,8 +88,10 @@ const ProductPage = () => {
 
   // Error state
   if (error) {
-    // Если бэкенд ответил 404 — такого товара не существует
-    if (error.response?.status === 404) {
+    const status = error.response?.status;
+
+    // Если бэкенд ответил 404 или 400 (недопустимый ID) — показываем страницу 404
+    if (status === 404 || status === 400) {
       return (
         <div className="min-h-[70vh] flex items-center justify-center">
           <Error404 />
@@ -97,7 +99,7 @@ const ProductPage = () => {
       )
     }
 
-    // Во всех остальных случаях (сервер выключен, нет сети, 500 ошибка) показываем разрыв соединения
+    // Во всех остальных случаях (сервер выключен, нет сети, 500 ошибка)
     return (
       <div className="min-h-[70vh] flex items-center justify-center">
         <NoConnection />

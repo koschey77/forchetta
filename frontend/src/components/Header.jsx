@@ -91,10 +91,18 @@ const HeaderMenuDropdown = () => (
 
 const Header = () => {
   const navigate = useNavigate()
-  const { user } = useUserStore()
+  const { user, openAuthModal } = useUserStore()
 
-  const handleFavoritesClick = () => console.log("favorites")
-  const handleCartClick = () => navigate('/cart')
+  const handleFavoritesClick = () => {
+    if (!user) return openAuthModal()
+    console.log("favorites")
+  }
+  
+  const handleCartClick = () => {
+    if (!user) return openAuthModal()
+    navigate('/cart')
+  }
+  
   const handleCatalogClick = () => navigate('/catalog')
   const handleLogoClick = () => navigate('/')
   
@@ -102,7 +110,7 @@ const Header = () => {
     if (user) {
       navigate('/profile')
     } else {
-      navigate('/login')
+      openAuthModal()
     }
   }
 
