@@ -7,13 +7,12 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen items-center justify-center bg-creamy py-[40px]">
       {/* Контейнер для видео размером 350x350 (мобилка) и 500x500 (десктоп) */}
-      <div className="relative w-[350px] h-[350px] sm:w-[500px] sm:h-[500px] overflow-hidden rounded-[20px] shadow-md bg-choco-light/10">
+      <div className="relative w-[350px] h-[300px] sm:w-[500px] sm:h-[400px] overflow-hidden rounded-[20px] shadow-md bg-choco-light/10">
         <video 
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover [&:fullscreen]:object-contain [&:-webkit-full-screen]:object-contain"
           src={videoService.getOptimizedVideoUrl(heroVideoUrl, { q_auto: true, f_auto: true })}
-          autoPlay 
+          controls
           loop 
-          muted 
           playsInline
         />
       </div>
