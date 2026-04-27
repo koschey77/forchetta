@@ -46,11 +46,11 @@ const ProductCard = ({ product }) => {
             <div className="flex flex-col gap-0.5">
               {product.oldPrice && (
                 <span className="w-[114px] h-[15px] font-montserrat font-figma-light text-figma-xs text-choco-light line-through opacity-60 sm:text-[13px] sm:font-medium sm:text-text-secondary sm:w-auto sm:h-auto">
-                  {product.oldPrice} ₴
+                  {product.oldPrice} 
                 </span>
               )}
               <span className="w-[114px] h-[15px] font-montserrat font-figma-light text-figma-xs text-choco-light flex-none order-1 grow-0 whitespace-nowrap overflow-hidden sm:font-medium sm:text-[14px] sm:leading-[17px] sm:w-auto sm:h-auto">
-                {product.price} ₴
+                {product.price} 
               </span>
             </div>
           </div>

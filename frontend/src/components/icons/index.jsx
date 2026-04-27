@@ -197,13 +197,14 @@ export const DotsIcon = ({ className = "w-6 h-6 text-[#705A5A]" }) => (
 export const CheckboxIcon = ({ className = "text-creamy" }) => (
   <svg 
     width="12" 
-    height="9" 
+    height="9"
     viewBox="0 0 12 9" 
     fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
     className={className}
   >
     <path 
-      d="M1 4.5L4 7.5L11 1" 
+      d="M1 4.5L4 7.5L11 1.5" 
       stroke="currentColor" 
       strokeWidth="2" 
       strokeLinecap="round" 
@@ -211,6 +212,59 @@ export const CheckboxIcon = ({ className = "text-creamy" }) => (
     />
   </svg>
 )
+
+export const CartCheckIcon = ({ className = "w-[30px] h-[30px]" }) => (
+  <svg 
+    width="30" 
+    height="30" 
+    viewBox="0 0 30 30" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <rect width="30" height="30" rx="15" fill="#893E3E"/>
+    <path d="M12.9581 19.4227L8.81641 15.281L9.41141 14.6868L12.9581 18.2335L20.5881 10.6035L21.1822 11.1985L12.9581 19.4227Z" fill="#F5F7F8"/>
+  </svg>
+);
+
+export const CartMinusIcon = ({ className = "w-[20px] h-[20px]" }) => (
+  <svg 
+    width="20" 
+    height="20" 
+    viewBox="0 0 20 20" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path d="M14.9993 10.8307H4.99935C4.77834 10.8307 4.56637 10.7429 4.41009 10.5867C4.25381 10.4304 4.16602 10.2184 4.16602 9.9974C4.16602 9.77638 4.25381 9.56442 4.41009 9.40814C4.56637 9.25186 4.77834 9.16406 4.99935 9.16406H14.9993C15.2204 9.16406 15.4323 9.25186 15.5886 9.40814C15.7449 9.56442 15.8327 9.77638 15.8327 9.9974C15.8327 10.2184 15.7449 10.4304 15.5886 10.5867C15.4323 10.7429 15.2204 10.8307 14.9993 10.8307Z" fill="currentColor" fillOpacity={className.includes('text') ? undefined : 1}/>
+  </svg>
+);
+
+export const CartPlusIcon = ({ className = "w-[20px] h-[20px]" }) => (
+  <svg 
+    width="20" 
+    height="20" 
+    viewBox="0 0 20 20" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    <path d="M14.9993 10.8307H10.8327V14.9974C10.8327 15.2184 10.7449 15.4304 10.5886 15.5867C10.4323 15.7429 10.2204 15.8307 9.99935 15.8307C9.77834 15.8307 9.56637 15.7429 9.41009 15.5867C9.25381 15.4304 9.16602 15.2184 9.16602 14.9974V10.8307H4.99935C4.77834 10.8307 4.56637 10.7429 4.41009 10.5867C4.25381 10.4304 4.16602 10.2184 4.16602 9.9974C4.16602 9.77638 4.25381 9.56442 4.41009 9.40814C4.56637 9.25186 4.77834 9.16406 4.99935 9.16406H9.16602V4.9974C9.16602 4.77638 9.25381 4.56442 9.41009 4.40814C9.56637 4.25186 9.77834 4.16406 9.99935 4.16406C10.2204 4.16406 10.4323 4.25186 10.5886 4.40814C10.7449 4.56442 10.8327 4.77638 10.8327 4.9974V9.16406H14.9993C15.2204 9.16406 15.4323 9.25186 15.5886 9.40814C15.7449 9.56442 15.8327 9.77638 15.8327 9.9974C15.8327 10.2184 15.7449 10.4304 15.5886 10.5867C15.4323 10.7429 15.2204 10.8307 14.9993 10.8307Z" fill="currentColor" fillOpacity={className.includes('text') ? undefined : 1}/>
+  </svg>
+);
+
+export const CartRemoveIcon = ({ className = "w-[16px] h-[16px]" }) => (
+  <svg 
+    width="16" 
+    height="16" 
+    viewBox="0 0 16 16" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}  
+  >
+    <path d="M0.293256 0.464556C0.683669 0.0741434 1.31692 0.0743653 1.70747 0.464556L7.7455 6.50258L13.9555 0.292613C14.346 -0.0975777 14.9793 -0.0977995 15.3697 0.292613C15.7598 0.683047 15.7598 1.31636 15.3697 1.70683L9.15971 7.9168L14.7185 13.4756C15.1089 13.8661 15.109 14.4993 14.7185 14.8898C14.328 15.28 13.6947 15.2801 13.3043 14.8898L7.7455 9.33101L2.35864 14.7179C1.9682 15.1082 1.33495 15.1081 0.94443 14.7179C0.553926 14.3274 0.553966 13.6942 0.94443 13.3037L6.33129 7.9168L0.293256 1.87877C-0.0968323 1.48832 -0.0968504 0.854994 0.293256 0.464556Z" fill="currentColor" fillOpacity={className.includes('text') ? undefined : 1}/>
+  </svg>
+);
 
 export const FacebookIcon = ({ width = 30, height = 30, className = "" }) => (
   <svg 
