@@ -7,7 +7,7 @@ import Product from "../models/product.model.js";
 // @access Private
 export const createOrder = async (req, res) => {
   try {
-    const { items, shippingAddress, contactPhone, paymentMethod, appliedBonuses, userNotes } = req.body;
+    const { items, shippingAddress, contactPhone, paymentMethod, appliedBonuses, userNotes, packagingPrice = 0 } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ message: "Немає товарів у замовленні" });
@@ -44,6 +44,9 @@ export const createOrder = async (req, res) => {
       product.salesCount += item.quantity;
       await product.save();
     }
+
+    // Додаємо вартість пакування до загальної суми
+    subtotal += Number(packagingPrice);
 
     // Розрахунок бонусів
     // Якщо адмін створює замовлення для когось, він може передати userId

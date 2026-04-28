@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast"
 
 import HomePage from './pages/HomePage'
 import CartPage from './pages/CartPage'
+import CheckoutPage from './pages/CheckoutPage'
 import CatalogPage from './pages/CatalogPage'
 import ProductPage from './pages/ProductPage'
 import AdminPanel from './pages/AdminPanel'
@@ -32,7 +33,7 @@ function App() {
   return (
     <div className="min-h-screen bg-orange-50 text-black flex flex-col">
       <ScrollToTop />
-      <div className="relative z-50">
+      <div className="sticky top-0 z-50">
         <Header />
       </div>
       
@@ -45,6 +46,7 @@ function App() {
           <Route path="/forgot-password" element={!user ? <ForgotPasswordPage /> : <Navigate to="/" />} />
           <Route path="/reset-password" element={!user ? <ResetPasswordPage /> : <Navigate to="/" />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/catalog" element={<CatalogPage />} />
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/profile" element={user ? <Navigate to="/user-panel" replace /> : <Navigate to="/login" />} />

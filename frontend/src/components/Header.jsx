@@ -129,7 +129,7 @@ const Header = () => {
   return (
     <>
       {/* Единый адаптивный хедер */}
-      <header className="h-[87px] sm:h-[87px] w-full bg-creamy font-[Montserrat]">
+      <header className="h-[87px] sm:h-[87px] w-full bg-creamy font-[Montserrat] shadow-sm relative z-50">
         <div className="mx-auto flex h-full w-full max-w-[1440px] items-center justify-between px-[15px] sm:px-[30px] lg:px-[60px]">
           
           {/* Логотип - всегда показывается */}

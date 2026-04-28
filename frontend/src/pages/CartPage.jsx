@@ -439,9 +439,13 @@ const CartPage = () => {
                 </div>
 
                 <div className="flex flex-col items-center gap-[10px] lg:gap-[20px] xl:gap-[20px] w-full lg:w-[349px] xl:w-[341px] lg:h-[100px] xl:h-[100px]">
-                  <button className="flex flex-col items-center justify-center p-[9px_10px] gap-[10px] w-full lg:w-[349px] xl:w-[341px] lg:h-[40px] xl:h-[40px] bg-[#893E3E] rounded-[50px] font-sans font-semibold text-[14px] lg:text-[16px] xl:text-[18px] lg:leading-[20px] xl:leading-[22px] text-center text-[#F5EEE0] hover:opacity-90 transition-opacity">
+                  <Link 
+                    to="/checkout" 
+                    state={{ unselectedItems, selectedPackagings, packagingCounts }}
+                    className="flex flex-col items-center justify-center p-[9px_10px] gap-[10px] w-full lg:w-[349px] xl:w-[341px] lg:h-[40px] xl:h-[40px] bg-[#893E3E] rounded-[50px] font-sans font-semibold text-[14px] lg:text-[16px] xl:text-[18px] lg:leading-[20px] xl:leading-[22px] text-center text-[#F5EEE0] hover:opacity-90 transition-opacity"
+                  >
                     Оформити
-                  </button>
+                  </Link>
                   <Link to="/catalog" className="box-border flex flex-row justify-center items-center p-[5px_20px] lg:p-[5px_40px] xl:p-[5px_40px] gap-[10px] w-full lg:w-[349px] xl:w-[341px] h-[40px] lg:h-[40px] xl:h-[40px] border border-[#893E3E] rounded-[50px] font-sans font-normal text-[14px] lg:text-[16px] xl:text-[16px] leading-[20px] text-center text-[#893E3E] hover:bg-[#893E3E] hover:text-white transition-colors group">
                     <svg width="20" height="17" viewBox="0 0 20 17" fill="none" className="-rotate-90 group-hover:text-white text-[#893E3E]">
                       <path d="M15.8333 8.5L9.99998 14.3333L4.16665 8.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
