@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast"
 import HomePage from './pages/HomePage'
 import CartPage from './pages/CartPage'
 import CheckoutPage from './pages/CheckoutPage'
+import SuccessPage from './pages/SuccessPage'
 import CatalogPage from './pages/CatalogPage'
 import ProductPage from './pages/ProductPage'
 import AdminPanel from './pages/AdminPanel'
@@ -47,6 +48,7 @@ function App() {
           <Route path="/reset-password" element={!user ? <ResetPasswordPage /> : <Navigate to="/" />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/success" element={<SuccessPage />} />
           <Route path="/catalog" element={<CatalogPage />} />
           <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/profile" element={user ? <Navigate to="/user-panel" replace /> : <Navigate to="/login" />} />

@@ -1,6 +1,9 @@
 import Order from "../models/order.model.js";
 import User from "../models/user.model.js";
 import Product from "../models/product.model.js";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // @desc Create a new order
 // @route POST /api/orders
@@ -74,7 +77,7 @@ export const createOrder = async (req, res) => {
     // Mock policy: Даємо бонуси відразу за купівлю (5% від загальної суми) 
     const earnedBonuses = Math.floor(subtotal * 0.05);
 
-    // Створюємо заказ
+    // Створюємо заказ (поки що зі статусом pending / несплачено)
     const order = new Order({
       orderNumber,
       user: user._id,
@@ -85,18 +88,81 @@ export const createOrder = async (req, res) => {
       appliedBonuses: actualAppliedBonuses,
       earnedBonuses,
       paymentMethod,
+      paymentStatus: paymentMethod === 'card' ? 'pending' : 'pending', // Для "cash" теж буде pending поки не доставлять (можна змінити)
       userNotes
     });
 
     const createdOrder = await order.save();
 
-    // Зараховуємо зароблені бонуси
+    // Зараховуємо зароблені бонуси (Навіть без оплати вони зберігаються - можна змінити логіку в майбутньому)
     user.bonusPoints += earnedBonuses;
     if (!user.orders) user.orders = [];
     user.orders.push(createdOrder._id);
     await user.save();
 
-    return res.status(201).json(createdOrder);
+    // Якщо це оплата карткою -> створюємо Stripe Checkout Session
+    if (paymentMethod === 'card') {
+      const lineItems = validatedItems.map(item => ({
+        price_data: {
+          currency: 'uah',
+          product_data: {
+            name: item.nameAtPurchase,
+          },
+          unit_amount: item.priceAtPurchase * 100, // Stripe рахує в копійках
+        },
+        quantity: item.quantity,
+      }));
+
+      // Якщо була доставка або упаковка або знижка/бонуси, треба скорегувати
+      // Найпростіший спосіб: якщо сума не співпадає з lineItems, додати "Коригування / Пакування / Знижка"
+      const currentItemsTotal = validatedItems.reduce((acc, i) => acc + (i.priceAtPurchase * i.quantity), 0);
+      const diff = subtotal - currentItemsTotal;
+      
+      if (diff !== 0) {
+        lineItems.push({
+          price_data: {
+            currency: 'uah',
+            product_data: {
+              name: diff > 0 ? "Пакування / Доставка" : "Знижка (Бонуси)",
+            },
+            unit_amount: Math.abs(diff) * 100, // Завжди додатна величина
+          },
+          quantity: 1, // Якщо знижка, ми не можемо напряму передати мінусове значення в Stripe, але якщо totalAmount коректний, треба обіграти
+        });
+      }
+
+      // Stripe хоче, щоб ціни були додатними
+      // Більш правильний підхід - створити один загальний "Item", або coupon_id.
+      // Але для простоти зробимо єдиний товар "Замовлення №...", якщо є складнощі з бонусами (мінусом).
+      
+      const safeLineItems = [
+        {
+          price_data: {
+            currency: 'uah',
+            product_data: {
+              name: `Замовлення ${orderNumber}`,
+              description: `Оплата за замовлення у кондитерській Forchetta (Враховуючи бонуси та пакування)`,
+            },
+            unit_amount: subtotal * 100,
+          },
+          quantity: 1,
+        }
+      ];
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: safeLineItems,
+        mode: 'payment',
+        success_url: `${process.env.CLIENT_URL}/success?orderId=${createdOrder._id}`,
+        cancel_url: `${process.env.CLIENT_URL}/cart`,
+        client_reference_id: createdOrder._id.toString(),
+      });
+
+      return res.status(201).json({ order: createdOrder, url: session.url });
+    }
+
+    // Якщо це наличні
+    return res.status(201).json({ order: createdOrder });
 
   } catch (error) {
     console.error("Error in createOrder controller:", error.message);

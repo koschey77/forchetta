@@ -98,6 +98,17 @@ const CheckoutPage = () => {
       return;
     }
 
+    // Проста валідація
+    if (!formData.contactPhone || formData.contactPhone.length < 10) {
+      toast.error('Будь ласка, введіть коректний номер телефону');
+      return;
+    }
+    
+    if (!formData.shippingAddress.city || !formData.shippingAddress.street) {
+      toast.error("Будь ласка, заповніть обов'язкові поля адреси (Місто, Вулиця та Будинок)");
+      return;
+    }
+
     // Збираємо дані про додаткове пакування, щоб додати їх в коментар
     let finalNotes = formData.userNotes;
     const packagingNotes = [];
@@ -125,14 +136,20 @@ const CheckoutPage = () => {
       setIsLoading(true);
       console.log('Дані для бекенду Order Schema:', payload);
       
-      await orderAPI.create(payload);
+      const res = await orderAPI.create(payload);
       
-      // Після успішного замовлення очищуємо кошик і оновлюємо стейт
+      // Якщо це оплата карткою і ми отримали URL від Stripe
+      if (formData.paymentMethod === 'card' && res.url) {
+        window.location.href = res.url;
+        return; // Виходимо, корзину очистимо на сторінці /success
+      }
+      
+      // Після успішного замовлення "готівкою" очищуємо кошик і оновлюємо стейт
       await cartAPI.clear();
       await fetchCart();
       
       toast.success('Замовлення успішно оформлено!');
-      navigate('/user-panel');
+      navigate('/success?orderId=' + res.order?._id);
       
     } catch (error) {
       console.error(error);
