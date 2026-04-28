@@ -144,12 +144,9 @@ const CheckoutPage = () => {
         return; // Виходимо, корзину очистимо на сторінці /success
       }
       
-      // Після успішного замовлення "готівкою" очищуємо кошик і оновлюємо стейт
-      await cartAPI.clear();
-      await fetchCart();
-      
+      // Після успішного замовлення "готівкою" перенаправляємо на success-сторінку, де відбудеться часткове очищення
       toast.success('Замовлення успішно оформлено!');
-      navigate('/success?orderId=' + res.order?._id);
+      navigate(res.order?._id ? `/success?orderId=${res.order._id}` : '/success');
       
     } catch (error) {
       console.error(error);

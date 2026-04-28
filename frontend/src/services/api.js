@@ -99,6 +99,7 @@ export const cartAPI = {
   add: (data) => axiosInstance.post("/cart/add", data).then(res => res.data),
   update: (id, data) => axiosInstance.put(`/cart/${id}`, data).then(res => res.data),
   remove: (id) => axiosInstance.delete(`/cart/${id}`).then(res => res.data),
+  removeMany: (productIds) => axiosInstance.post("/cart/remove-many", { productIds }).then(res => res.data),
   clear: () => axiosInstance.delete("/cart").then(res => res.data),
 }
 

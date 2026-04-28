@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { cartAPI } from '../services/api';
+import { orderAPI, cartAPI } from '../services/api';
 import useCartStore from '../stores/useCartStore';
 
 const SuccessPage = () => {
@@ -13,10 +13,18 @@ const SuccessPage = () => {
   useEffect(() => {
     const completeOrder = async () => {
       try {
-        // Завжди очищуємо корзину після того, як потрапили сюди
-        // Адже сюди ми попадаємо тільки після успішної оплати Stripe
-        // Або після вибору "готівкою"
-        await cartAPI.clear();
+        if (orderId) {
+          // Получаем детали оформленного заказа
+          const order = await orderAPI.getById(orderId);
+          // Достаем ID товаров, которые реально были куплены
+          const purchasedItemIds = order.items.map(i => i.product._id || i.product);
+          // Удаляем только их из корзины
+          await cartAPI.removeMany(purchasedItemIds);
+        } else {
+          // Фолбэк: если orderId нет, просто чистим все
+          await cartAPI.clear();
+        }
+        
         await fetchCart();
         setCleared(true);
       } catch (err) {
@@ -27,7 +35,7 @@ const SuccessPage = () => {
     if (!cleared) {
       completeOrder();
     }
-  }, [cleared, fetchCart]);
+  }, [cleared, fetchCart, orderId]);
 
   return (
     <div className="min-h-screen bg-black/40 flex flex-col items-center justify-center p-4">

@@ -125,3 +125,26 @@ export const removeAllFromCart = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+export const removeManyFromCart = async (req, res) => {
+  try {
+    const { productIds } = req.body;
+    if (!productIds || !Array.isArray(productIds)) {
+      return res.status(400).json({ message: "productIds must be an array" });
+    }
+
+    const userId = req.user._id.toString();
+
+    const cartStr = await redis.get(`cart:${userId}`);
+    let cartItems = cartStr ? JSON.parse(cartStr) : [];
+
+    cartItems = cartItems.filter((item) => !productIds.includes(item.productId));
+
+    await redis.set(`cart:${userId}`, JSON.stringify(cartItems), "EX", CART_TTL);
+
+    res.json(cartItems);
+  } catch (error) {
+    console.error("Error in removeManyFromCart controller:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
