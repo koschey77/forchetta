@@ -7,7 +7,7 @@ import Product from "../models/product.model.js";
 export const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id)
-      .populate("favorites", "name price images") // Подгружаем избранные товары
+      .populate("favorites", "name price discountPrice weight oldPrice images") // Подгружаем избранные товары
       .select("-password");
 
     if (!user) {
@@ -170,7 +170,7 @@ export const toggleFavorite = async (req, res) => {
     // Возвращаем обновленный список избранных
     const updatedUser = await User.findById(req.user._id).populate(
       "favorites",
-      "name price images"
+      "name price discountPrice weight oldPrice images"
     );
 
     res.json(updatedUser.favorites);

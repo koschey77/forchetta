@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useCartStore from '../stores/useCartStore';
 import { useUserStore } from '../stores/useUserStore';
-import { orderAPI, cartAPI } from '../services/api';
+import { orderAPI } from '../services/api';
 import toast from 'react-hot-toast';
 
 const CheckoutPage = () => {

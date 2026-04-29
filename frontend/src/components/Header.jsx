@@ -107,7 +107,7 @@ const Header = () => {
 
   const handleFavoritesClick = () => {
     if (!user) return openAuthModal()
-    console.log("favorites")
+    navigate("/user-panel?page=favorites")
   }
   
   const handleCartClick = () => {

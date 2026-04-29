@@ -1,9 +1,11 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 import { useUserStore } from '../stores/useUserStore';
 import toast from 'react-hot-toast';
 
 export const useToggleFavorite = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (productId) => api.users.toggleFavorite(productId),
     
@@ -49,12 +51,22 @@ export const useToggleFavorite = () => {
 
     // Успех: сервер возвращает точный актуальный список избранного (с заполненными полями)
     onSuccess: (updatedFavoritesFromServer) => {
+      // 1. Обновляем zustand store
       const { user } = useUserStore.getState();
       if (user) {
         useUserStore.setState({
           user: { ...user, favorites: updatedFavoritesFromServer }
         });
       }
+      
+      // 2. Обновляем кэш TanStack Query (чтобы Favorites.jsx сразу показал новые товары)
+      queryClient.setQueryData(['userProfile'], (oldProfile) => {
+        if (!oldProfile) return oldProfile;
+        return {
+          ...oldProfile,
+          favorites: updatedFavoritesFromServer,
+        };
+      });
     }
   });
 };

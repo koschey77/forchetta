@@ -3,7 +3,7 @@ import { useUserStore } from '../stores/useUserStore'
 import { Navigate, useSearchParams, Link } from 'react-router-dom'
 import { ExitIcon, DropdownArrowIcon, CartIcon, HeartIcon, SearchIcon, DataIcon, AddressIcon, BonusIcon, SupportIcon, FaqIcon } from '../components/icons'
 import { MenuDropdown } from '../components/ui/dropdowns'
-import { GeneralData } from './user'
+import { GeneralData, Favorites } from './user'
 
 const UserPanel = () => {
   const { user, logout } = useUserStore()
@@ -42,6 +42,8 @@ const UserPanel = () => {
     switch(currentPage) {
       case 'general':
         return <GeneralData />
+      case 'favorites':
+        return <Favorites />
       default:
         // Временная заглушка для страниц профиля
         return (
