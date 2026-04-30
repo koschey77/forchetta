@@ -29,7 +29,18 @@ const ProductCard = ({ product }) => {
           alt={product?.name || product?.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
         />
-        {product.tag && <div className={tagStyles[product.tag.type]}>{product.tag.text}</div>}
+        
+        {/* Бейдж "Топ продажів" з прив'язкою до isFeatured */}
+        {product.isFeatured && (
+          <div className="absolute top-2 left-2 z-10 px-3 h-[30px] bg-dark-creamy text-choco-dark flex items-center justify-center rounded-[13.5px] font-montserrat font-medium text-[12px] leading-[15px]">
+            Топ продажів
+          </div>
+        )}
+
+        {/* Запасні/старі теги для сумісності */}
+        {!product.isFeatured && product.tag && (
+          <div className={`${tagStyles[product.tag.type]} z-10`}>{product.tag.text}</div>
+        )}
         
         <FavoriteButton 
           productId={product._id || product.id}

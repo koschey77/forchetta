@@ -337,11 +337,11 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
                   {/* Короткий опис */}
                   <div className="space-y-[6px] lg:space-y-[4px]">
                     <label className="block text-[16px] text-slate-500 font-montserrat">Короткий опис</label>
-                    <input
-                      type="text"
+                    <textarea
                       value={formData.summary}
                       onChange={(e) => handleInputChange('summary', e.target.value)}
-                      className="w-full h-[43px] px-[20px] py-[8px] bg-light-creamy border border-choco-light rounded-[31px] text-[16px] text-gray-600 placeholder-gray-400 outline-none focus:ring-2 focus:ring-choco-light-50 font-montserrat"
+                      rows={4}
+                      className="w-full px-[30px] py-[20px] bg-light-creamy border border-choco-light rounded-[10px] text-[14px] text-gray-600 placeholder-gray-400 outline-none focus:ring-2 focus:ring-choco-light-50 resize-none font-montserrat"
                     />
                   </div>
                   

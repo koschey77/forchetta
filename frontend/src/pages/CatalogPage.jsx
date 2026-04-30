@@ -70,6 +70,7 @@ const CatalogPage = () => {
       oldPrice: backendProduct.discountPrice ? `${backendProduct.price} грн` : null,
       image: backendProduct.images[0].url,
       tag,
+      isFeatured: backendProduct.isFeatured,
       // Добавляем оригинальные данные для совместимости
       originalProduct: backendProduct
     };

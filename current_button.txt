@@ -1,8 +1,0 @@
-                <div className="hidden md:flex flex-col lg:flex-row items-center lg:justify-between gap-6 lg:gap-8 mt-1 pt-1">
-                  {renderPriceSection("text-[32px]", "items-center lg:items-start")}
->                 <button className="w-full lg:flex-1 max-w-[300px] bg-choco-light text-creamy py-5 rounded-lg uppercase font-medium text-[18px] hover:bg-choco-light-50 transition-colors">
-                    Додати в кошик
-                  </button>
-                </div>
-              </div>
-            </div>

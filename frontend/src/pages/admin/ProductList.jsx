@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { productsAPI } from '../../services/api'
-import { EditIcon, BasketIcon } from '../../components/icons'
+import { EditIcon, BasketIcon, StarIcon } from '../../components/icons'
 import useFilterStore from '../../stores/useFilterStore'
 import CategoryFilter from '../../components/catalog/filters/CategoryFilter'
 import FilterControls from '../../components/catalog/filters/FilterControls'
@@ -48,6 +48,22 @@ const ProductList = ({ onEditProduct }) => {
       toast.error(error.response?.data?.message || 'Помилка видалення товару')
     },
   })
+
+  // Mutation для изменения статуса isFeatured
+  const toggleFeatured = useMutation({
+    mutationFn: productsAPI.toggleFeatured,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
+      toast.success('Статус "Топ продажів" оновлено')
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'Помилка оновлення статусу')
+    },
+  })
+
+  const handleToggleFeatured = async (id) => {
+    toggleFeatured.mutate(id)
+  }
 
   const handleDelete = async (id, name) => {
     if (window.confirm(`Ви дійсно хочете видалити товар "${name}"?`)) {
@@ -205,7 +221,7 @@ const ProductList = ({ onEditProduct }) => {
               {products.map((product) => (
                 <div
                   key={product._id}
-                  className="grid grid-cols-[60px_1fr_100px_50px_30px_30px] md:grid-cols-[150px_1fr_150px_80px_60px_60px] gap-1 md:gap-4 items-center"
+                  className="grid grid-cols-[60px_1fr_90px_50px_30px_30px] md:grid-cols-[150px_1fr_150px_80px_60px_60px] gap-1 md:gap-4 items-center"
                 >
                   {/* Photo (responsive) */}
                   <div className="flex justify-center">
@@ -220,14 +236,14 @@ const ProductList = ({ onEditProduct }) => {
 
                   {/* Name (responsive) */}
                   <div className="flex justify-center items-center px-1">
-                    <span className="font-montserrat font-medium text-[10px] md:text-[14px] text-choco-light text-center line-clamp-2">
+                    <span className="font-montserrat font-medium text-[10px] md:text-[14px] text-choco-light text-center line-clamp-3">
                       {product.name}
                     </span>
                   </div>
 
                   {/* Category (responsive) */}
                   <div className="flex justify-center items-center">
-                    <span className="font-montserrat font-medium text-[10px] md:text-[12px] text-choco-light text-center line-clamp-1">
+                    <span className="font-montserrat font-medium text-[10px] md:text-[12px] text-choco-light text-center line-clamp-2">
                       {product.category?.name}
                     </span>
                   </div>
@@ -258,6 +274,17 @@ const ProductList = ({ onEditProduct }) => {
                   {/* Actions (responsive) */}
                   <div className="flex justify-center items-center">
                     <div className="flex flex-col items-center gap-[3px]">
+                      <button
+                        onClick={() => handleToggleFeatured(product._id)}
+                        className="w-[20px] h-[20px] md:w-[31px] md:h-[31px] bg-creamy-light rounded-full flex items-center justify-center transition-colors hover:opacity-80"
+                        title={product.isFeatured ? "Прибрати з 'Топ продаж'": "Додати в 'Топ продаж'"}
+                      >
+                        <StarIcon 
+                          className="w-[10px] h-[10px] md:w-[14.74px] md:h-[14.57px]" 
+                          fill={product.isFeatured ? "#DAA520" : "none"}
+                          stroke={product.isFeatured ? "#DAA520" : "#893E3E"}
+                        />
+                      </button>
                       <button
                         onClick={() => handleEdit(product._id)}
                         className="w-[20px] h-[20px] md:w-[31px] md:h-[31px] bg-creamy-light rounded-full flex items-center justify-center transition-colors hover:opacity-80"

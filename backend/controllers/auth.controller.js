@@ -103,16 +103,10 @@ export const login = async (req, res) => {
       await storeRefreshToken(user._id, refreshToken)
       setCookies(res, accessToken, refreshToken)
 
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        phone: user.phone,
-        addresses: user.addresses,
-        favorites: user.favorites,
-        bonusPoints: user.bonusPoints,
-      })
+      const userResponse = user.toObject()
+      delete userResponse.password
+
+      res.json(userResponse)
     } else {
       res.status(400).json({message: 'Invalid email or password'})
     }
@@ -287,15 +281,14 @@ export const verifyEmail = async (req, res) => {
     await storeRefreshToken(newUser._id, refreshToken)
     // Устанавливаем HTTP-only куки с токенами
     setCookies(res, accessToken, refreshToken)
-    // Возвращаем успешный ответ с данными нового пользователя
+    
+    // Возвращаем успешный ответ с полными данными нового пользователя
+    const userResponse = newUser.toObject()
+    delete userResponse.password
+
     res.json({
       message: 'Регистрация успешно завершена!',
-      user: {
-        _id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role
-      },
+      user: userResponse,
       registrationComplete: true
     })
   } catch (error) {
