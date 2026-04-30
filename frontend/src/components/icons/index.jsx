@@ -750,3 +750,10 @@ export const CoinIcon = ({ className = "w-6 h-6", fill = "none", stroke = "curre
     <path d="M15 8.5C14.315 7.815 13.109 7.339 12 7.309M12 7.309C10.68 7.273 9.5 7.87 9.5 9.5C9.5 12.5 15 11 15 14C15 15.711 13.536 16.446 12 16.391M12 7.309V5.5M9 15C9.644 15.86 10.843 16.35 12 16.391M12 16.391V18.5" stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 )
+
+export const ChevronDownIcon = ({ className = "", strokeWidth = "2" }) => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+

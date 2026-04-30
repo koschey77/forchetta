@@ -202,7 +202,7 @@ export const createOrder = async (req, res) => {
 export const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id })
-      .populate('items.product', 'image name price')
+      .populate('items.product', 'images name price')
       .sort({ createdAt: -1 });
     
     return res.json(orders);
@@ -219,7 +219,7 @@ export const getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
       .populate('user', 'name email phone')
-      .populate('items.product', 'image');
+      .populate('items.product', 'images');
 
     if (!order) {
       return res.status(404).json({ message: "Замовлення не знайдено" });
