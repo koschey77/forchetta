@@ -1,2 +1,5 @@
 export { default as GeneralData } from './GeneralData'
 export { default as Favorites } from './Favorites'
+export { default as Addresses } from './Addresses'
+export { default as Orders } from './Orders'
+export { default as Bonuses } from './Bonuses'

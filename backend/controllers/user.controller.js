@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import Product from "../models/product.model.js";
+import { uploadImages, deleteImage } from "../lib/imageService.js";
 
 // @route   GET /api/user/profile
 // @desc    Получить профиль пользователя
@@ -22,11 +23,11 @@ export const getProfile = async (req, res) => {
 };
 
 // @route   PUT /api/user/profile
-// @desc    Оновить профиль пользователя (имя, телефон)
+// @desc    Оновить профиль пользователя (имя, телефон, аватар)
 // @access  Private
 export const updateProfile = async (req, res) => {
   try {
-    const { name, phone } = req.body;
+    const { name, phone, avatar } = req.body;
 
     const user = await User.findById(req.user._id);
 
@@ -34,8 +35,18 @@ export const updateProfile = async (req, res) => {
       return res.status(404).json({ message: "Користувача не знайдено" });
     }
 
+    // Если есть новый аватар формата base64, загружаем на Cloudinary в папку forchetta/avatars
+    if (avatar && avatar.startsWith("data:image")) {
+      // Можно опционально удалять старый аватар из клаудинари, если он не из гугла и содержит public_id,
+      // но пока просто загрузим новый и сохраним secure_url
+      const uploadedImages = await uploadImages([avatar], "forchetta/avatars");
+      if (uploadedImages && uploadedImages.length > 0) {
+        user.avatar = uploadedImages[0].url; // Сохраняем URL
+      }
+    }
+
     if (name) user.name = name;
-    if (phone) user.phone = phone;
+    if (phone !== undefined) user.phone = phone; // Позволяет очистить телефон передав пустую строку
 
     await user.save();
 
@@ -45,6 +56,7 @@ export const updateProfile = async (req, res) => {
       email: user.email,
       phone: user.phone,
       role: user.role,
+      avatar: user.avatar,
     });
   } catch (error) {
     console.error("Помилка в updateProfile:", error.message);
