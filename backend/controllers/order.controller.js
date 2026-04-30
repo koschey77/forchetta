@@ -98,6 +98,32 @@ export const createOrder = async (req, res) => {
     user.bonusPoints += earnedBonuses;
     if (!user.orders) user.orders = [];
     user.orders.push(createdOrder._id);
+
+    // Зберігаємо адресу доставки, якщо її ще немає в профілі
+    if (shippingAddress && shippingAddress.city && shippingAddress.street) {
+      if (!user.addresses) user.addresses = [];
+      
+      const addressExists = user.addresses.some(addr => 
+        addr.city === shippingAddress.city && 
+        addr.street === shippingAddress.street &&
+        addr.house === shippingAddress.house
+      );
+      
+      if (!addressExists) {
+        user.addresses.push({
+          firstName: req.user?.name || user.name,
+          phone: contactPhone,
+          region: shippingAddress.region,
+          city: shippingAddress.city,
+          street: shippingAddress.street,
+          house: shippingAddress.house,
+          apartment: shippingAddress.apartment,
+          postalCode: shippingAddress.postalCode,
+          isDefault: user.addresses.length === 0 // робимо основною, якщо це перша адреса
+        });
+      }
+    }
+
     await user.save();
 
     // Якщо це оплата карткою -> створюємо Stripe Checkout Session

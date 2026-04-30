@@ -61,10 +61,14 @@ export const userAPI = {
   updateProfile: (data) => axiosInstance.put("/users/profile", data).then(res => res.data),
   
   addAddress: (data) => axiosInstance.post("/users/addresses", data).then(res => res.data),
-  
-  deleteAddress: (id) => axiosInstance.delete(`/users/addresses/${id}`).then(res => res.data),
-  
-  toggleFavorite: (productId) => axiosInstance.post(`/users/favorites/${productId}`).then(res => res.data),
+
+    updateAddress: (id, data) => axiosInstance.put(`/users/addresses/${id}`, data).then(res => res.data),
+
+    deleteAddress: (id) => axiosInstance.delete(`/users/addresses/${id}`).then(res => res.data),
+
+    setDefaultAddress: (id) => axiosInstance.put(`/users/addresses/${id}/default`).then(res => res.data),
+
+    toggleFavorite: (productId) => axiosInstance.post(`/users/favorites/${productId}`).then(res => res.data),
 }
 
 export const adminUserAPI = {

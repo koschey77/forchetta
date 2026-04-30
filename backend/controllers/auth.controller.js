@@ -108,6 +108,10 @@ export const login = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        phone: user.phone,
+        addresses: user.addresses,
+        favorites: user.favorites,
+        bonusPoints: user.bonusPoints,
       })
     } else {
       res.status(400).json({message: 'Invalid email or password'})

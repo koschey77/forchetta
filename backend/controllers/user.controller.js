@@ -147,6 +147,76 @@ export const deleteAddress = async (req, res) => {
   }
 };
 
+// @route   PUT /api/user/addresses/:id
+// @desc    Обновить адрес
+// @access  Private
+export const updateAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "Користувача не знайдено" });
+    }
+
+    const addressIndex = user.addresses.findIndex(
+      (addr) => addr._id.toString() === req.params.id
+    );
+
+    if (addressIndex === -1) {
+      return res.status(404).json({ message: "Адресу не знайдено" });
+    }
+
+    if (req.body.isDefault) {
+      user.addresses.forEach((addr) => {
+        addr.isDefault = false;
+      });
+    }
+
+    user.addresses[addressIndex] = {
+      ...user.addresses[addressIndex].toObject(),
+      ...req.body,
+      _id: user.addresses[addressIndex]._id
+    };
+
+    await user.save();
+    res.json(user.addresses);
+  } catch (error) {
+    console.error("Помилка в updateAddress:", error.message);
+    res.status(500).json({ message: "Помилка сервера", error: error.message });
+  }
+};
+
+// @route   PUT /api/user/addresses/:id/default
+// @desc    Сделать адрес основным
+// @access  Private
+export const setDefaultAddress = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "Користувача не знайдено" });
+    }
+
+    const addressIndex = user.addresses.findIndex(
+      (addr) => addr._id.toString() === req.params.id
+    );
+
+    if (addressIndex === -1) {
+      return res.status(404).json({ message: "Адресу не знайдено" });
+    }
+
+    user.addresses.forEach((addr) => {
+      addr.isDefault = false;
+    });
+
+    user.addresses[addressIndex].isDefault = true;
+
+    await user.save();
+    res.json(user.addresses);
+  } catch (error) {
+    console.error("Помилка в setDefaultAddress:", error.message);
+    res.status(500).json({ message: "Помилка сервера", error: error.message });
+  }
+};
+
 // @route   POST /api/user/favorites/:productId
 // @desc    Добавить/удалить товар из избранного (тоггл)
 // @access  Private

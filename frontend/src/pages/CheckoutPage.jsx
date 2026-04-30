@@ -56,18 +56,44 @@ const CheckoutPage = () => {
   const totalPrice = subtotal - appliedBonuses;
 
   // Форма даних для бекенду (модель Order)
+  const defaultAddress = user?.addresses?.find(a => a.isDefault) || user?.addresses?.[0] || {};
+  
   const [formData, setFormData] = useState({
     contactPhone: user?.phone || '',
     shippingAddress: {
-      region: '',
-      city: '',
-      street: '',
-      postalCode: '',
-      apartment: '',
+      region: defaultAddress.region || '',
+      city: defaultAddress.city || '',
+      street: defaultAddress.street || '',
+      postalCode: defaultAddress.postalCode || '',
+      apartment: defaultAddress.apartment || '',
     },
     paymentMethod: 'card', // card | cash
     userNotes: '',
   });
+
+  // Автозаповнення адреси, якщо дані user оновилися/завантажилися вже після відкриття форми
+  useEffect(() => {
+    if (user && user.addresses && user.addresses.length > 0) {
+      const defAddr = user.addresses.find(a => a.isDefault) || user.addresses[0];
+      setFormData(prev => {
+        // Заповнюємо тільки якщо користувач ще нічого не ввів у вулицю
+        if (!prev.shippingAddress.street && defAddr.street) {
+          return {
+            ...prev,
+            shippingAddress: {
+              ...prev.shippingAddress,
+              region: defAddr.region || '',
+              city: defAddr.city || '',
+              street: defAddr.street || '',
+              postalCode: defAddr.postalCode || '',
+              apartment: defAddr.apartment || ''
+            }
+          };
+        }
+        return prev;
+      });
+    }
+  }, [user]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isCommentOpen, setIsCommentOpen] = useState(false);

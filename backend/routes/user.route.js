@@ -5,6 +5,8 @@ import {
   updateProfile,
   addAddress,
   deleteAddress,
+  updateAddress,
+  setDefaultAddress,
   toggleFavorite,
   getAllUsers,
   getUserById,
@@ -20,7 +22,9 @@ const router = express.Router();
 router.get("/profile", protectRoute, getProfile);
 router.put("/profile", protectRoute, updateProfile);
 router.post("/addresses", protectRoute, addAddress);
+router.put("/addresses/:id", protectRoute, updateAddress);
 router.delete("/addresses/:id", protectRoute, deleteAddress);
+router.put("/addresses/:id/default", protectRoute, setDefaultAddress);
 router.post("/favorites/:productId", protectRoute, toggleFavorite);
 
 // --- Роуты для админ-панели (доступны только администраторам) ---
