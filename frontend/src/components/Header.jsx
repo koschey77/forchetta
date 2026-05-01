@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom"
 import { useUserStore } from "../stores/useUserStore"
 import useCartStore from "../stores/useCartStore"
 import { Logo } from "./Logos/Logo.jsx"
-import { SearchIcon, ProfileIcon, HeartIcon, CartIcon, DotsIcon, MenuIcon } from "./icons/index.jsx"
+import { ProfileIcon, HeartIcon, CartIcon, DotsIcon, MenuIcon } from "./icons/index.jsx"
+import HeaderSearch from "./common/HeaderSearch.jsx"
 import HeaderMobileMenu from "./HeaderMobileMenu.jsx"
 import { MenuDropdown } from "./ui/dropdowns"
 
@@ -154,11 +155,7 @@ const Header = () => {
             
             {/* Навигационные ссылки - только Desktop xl: >=1280px */}
             <div className="hidden xl:flex h-[43px] items-center gap-[30px]">
-              <IconButton 
-                icon={SearchIcon} 
-                label="Открыть поиск" 
-                onClick={() => console.log('search')}
-              />
+              <HeaderSearch isMobile={false} />
               
               <CatalogButton onClick={handleCatalogClick} />
               
@@ -176,33 +173,20 @@ const Header = () => {
 
             {/* Tablet: md-xl (768px-1279px) - поиск + каталог, без навигации */}
             <div className="hidden md:flex xl:hidden h-[43px] items-center gap-[30px]">
-              <IconButton 
-                icon={SearchIcon} 
-                label="Открыть поиск" 
-                onClick={() => console.log('search')}
-              />
+              <HeaderSearch isMobile={false} />
               <CatalogButton onClick={handleCatalogClick} />
             </div>
 
             {/* Small screens: sm-md (640px-767px) - поиск + каталог */}
             <div className="hidden sm:flex md:hidden h-[43px] items-center gap-[30px]">
-              <IconButton 
-                icon={SearchIcon} 
-                label="Открыть поиск" 
-                onClick={() => console.log('search')}
-              />
+              <HeaderSearch isMobile={true} />
               <CatalogButton onClick={handleCatalogClick} />
             </div>
           </nav>
 
           {/* Мобильная правая секция (<640px) - поиск + профиль */}
           <div className="sm:hidden flex items-center gap-[20px] py-[5px]">
-            <IconButton 
-              icon={SearchIcon} 
-              label="Открыть поиск" 
-              onClick={() => console.log('search')}
-              strokeWidth={2}
-            />
+            <HeaderSearch isMobile={true} />
             <UserAvatar userAvatar={user?.avatar} onClick={handleProfileClick} strokeWidth={2} />
           </div>
 

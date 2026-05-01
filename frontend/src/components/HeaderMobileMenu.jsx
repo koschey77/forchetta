@@ -19,7 +19,7 @@ const HeaderMobileMenu = ({
   return (
     <>
       {/* Нижнее мобильное меню - показывается только на <640px */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 h-[107px] bg-creamy px-[15px] pb-[40px] pt-[12px] shadow-[0_-2px_10px_rgba(0,0,0,0.05)] border-t border-choco-light/10">
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 h-[67px] bg-creamy px-[15px] py-[12px] shadow-[0_-2px_10px_rgba(0,0,0,0.05)] border-t border-choco-light/10">
         <div className="flex items-center justify-between">
           
           {/* Домой */}

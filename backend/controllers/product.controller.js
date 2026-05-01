@@ -91,7 +91,7 @@ export const getAllProducts = async (req, res) => {
       filter.weight = { $in: weightList };
     }
 
-    // Поиск по названию, описанию и ингредиентам
+    // Поиск по названию, описанию, краткому описанию и ингредиентам
     if (search && search.trim()) {
       const searchTerm = search.trim();
       const searchRegex = new RegExp(searchTerm, 'i'); // case-insensitive поиск
@@ -99,8 +99,9 @@ export const getAllProducts = async (req, res) => {
       const searchConditions = {
         $or: [
           { name: { $regex: searchRegex } },
+          { summary: { $regex: searchRegex } },
           { description: { $regex: searchRegex } },
-          { 'ingredients.name': { $regex: searchRegex } } // поиск в массиве ингредиентов
+          { ingredients: { $regex: searchRegex } }
         ]
       };
 
