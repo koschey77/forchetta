@@ -3,14 +3,14 @@ import { useUserStore } from '../stores/useUserStore'
 import { Navigate, useSearchParams } from 'react-router-dom'
 import { ExitIcon, DropdownArrowIcon, CartIcon, HeartIcon, SearchIcon, DataIcon, AddressIcon, SupportIcon, FaqIcon, CoinIcon } from '../components/icons'
 import { MenuDropdown } from '../components/ui/dropdowns'
-import { GeneralData, Favorites, Addresses, Orders, Bonuses } from './user'
+import { GeneralData, Favorites, Addresses, Orders, Bonuses, ViewedProducts } from './user'
 
 const UserPanel = () => {
   const { user, logout } = useUserStore()
   const [searchParams, setSearchParams] = useSearchParams()
   const currentPage = searchParams.get('page') || 'general'
   
-  // Маппинг страниц для dropdown меню
+  // Мапінг сторінок для dropdown меню
   const pageMapping = {
     general: { name: "Загальні дані", icon: DataIcon },
     history: { name: "Історія замовлень", icon: CartIcon },
@@ -22,14 +22,14 @@ const UserPanel = () => {
     faq: { name: "FAQs", icon: FaqIcon },
   }
 
-  // Опции для MenuDropdown
+  // Опції для MenuDropdown
   const pageOptions = Object.entries(pageMapping).map(([key, page]) => ({
     value: key,
     label: page.name,
     icon: page.icon
   }))
 
-  // Проверка прав (должен быть авторизизован)
+  // Перевірка прав (повинен бути авторизований)
   if (!user) {
     return <Navigate to='/login' replace />
   }
@@ -46,12 +46,14 @@ const UserPanel = () => {
         return <Orders />
       case 'favorites':
         return <Favorites />
+      case 'viewed':
+        return <ViewedProducts />
       case 'addresses':
         return <Addresses />
       case 'bonus':
         return <Bonuses />
       default:
-        // Временная заглушка для страниц профиля
+        // Тимчасова заглушка для сторінок профілю
         return (
           <div className="text-center py-12 bg-white rounded-[30px] shadow-sm border border-[#E3D6BF]">
             <h3 className="text-xl font-montserrat font-bold text-choco-dark mb-2">

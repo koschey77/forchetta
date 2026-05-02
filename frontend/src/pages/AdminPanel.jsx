@@ -11,11 +11,11 @@ const AdminPanel = () => {
   const currentPage = searchParams.get('page') || 'dashboard'
   
   const [adminState, setAdminState] = useState({
-    editingId: null,         // ID редактируемого элемента (универсально для всех типов)
+    editingId: null,         // ID редагованого елемента (універсально для всіх типів)
     mode: 'list'            // list | edit | create
   })
   
-  // Маппинг страниц для dropdown меню
+  // Мапінг сторінок для dropdown меню
   const pageMapping = {
     dashboard: { name: 'Dashboard', icon: DashboardIcon },
     categories: { name: 'Категорії', icon: DotsIcon },
@@ -26,14 +26,14 @@ const AdminPanel = () => {
     journal: { name: 'Журнал', icon: BookIcon }
   }
 
-  // Опции для MenuDropdown
+  // Опції для MenuDropdown
   const pageOptions = Object.entries(pageMapping).map(([key, page]) => ({
     value: key,
     label: page.name,
     icon: page.icon
   }))
 
-  // Проверка прав админа
+  // Перевірка прав адміна
   if (!user || user.role !== 'admin') {
     return <Navigate to='/login' replace />
   }
@@ -42,7 +42,7 @@ const AdminPanel = () => {
     setSearchParams({ page: pageType })
     setAdminState({
       editingId: id,
-      mode: id === null ? 'create' : 'edit' // Если id === null, то создание новой записи
+      mode: id === null ? 'create' : 'edit' // Якщо id === null, то створення нового запису
     })
   }
 
@@ -51,24 +51,24 @@ const AdminPanel = () => {
       ...prev,
       editingId: null,
       mode: 'list'
-      // currentPage сохраняется без изменений
+      // currentPage зберігається без змін
     }))
   }
 
   const handleSuccessEdit = () => {
-    // После успешного создания/редактирования остаемся на той же странице в режиме списка
+    // Після успішного створення/редагування залишаємось на тій же сторінці у режимі списку
     setAdminState(prev => ({
       ...prev,
       editingId: null,
       mode: 'list'
-      // currentPage сохраняется без изменений
+      // currentPage зберігається без змін
     }))
   }
   
   const handlePageSelect = (pageKey) => {
     setSearchParams({ page: pageKey })
     setAdminState({
-      editingId: null,  // Сбрасываем редактирование при смене страницы
+      editingId: null,  // Скидаємо редагування при зміні сторінки
       mode: 'list'
     })
   }
@@ -76,7 +76,7 @@ const AdminPanel = () => {
   const renderContent = () => {
     const { editingId, mode } = adminState
     
-    // Только для страниц с реальной функциональностью
+    // Тільки для сторінок з реальною функціональністю
     if (currentPage === 'categories') {
       if (mode === 'edit' && editingId) {
         return <CategoryEditor categoryId={editingId} onCancel={handleCancelEdit} onSuccess={handleSuccessEdit} />
@@ -98,11 +98,11 @@ const AdminPanel = () => {
     }
     
     if (currentPage === 'users') {
-      // Пока что редактора нет, просто выводим список (таблицу)
+      // Поки що редактора немає, просто виводимо список (таблицю)
       return <UserList onEditUser={(id) => handleEdit('users', id)} />
     }
     
-    // Заглушка для остальных страниц
+    // Заглушка для інших сторінок
     return (
       <div className="text-center py-12">
         <h3 className="text-xl text-choco-dark mb-2">{pageMapping[currentPage]?.name || 'Dashboard'}</h3>

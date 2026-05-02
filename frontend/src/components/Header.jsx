@@ -15,11 +15,11 @@ const NAV_ITEMS = [
   { value: "blog", label: "Журнал" }
 ]
 
-// Переиспользуемые компоненты
+// Перевикористовувані компоненти
 const UserAvatar = ({ userAvatar, onClick, className = "", strokeWidth = 3 }) => {
   const [imageError, setImageError] = useState(false)
   
-  // Сбрасываем ошибку при изменении аватара
+  // Скидаємо помилку при зміні аватара
   useEffect(() => {
     setImageError(false)
   }, [userAvatar])
@@ -113,17 +113,17 @@ const Header = () => {
 
   return (
     <>
-      {/* Единый адаптивный хедер */}
+      {/* Єдиний адаптивний хедер */}
       <header className="h-[87px] sm:h-[87px] w-full bg-creamy font-[Montserrat] shadow-sm relative z-50">
         <div className="mx-auto flex h-full w-full max-w-[1440px] items-center justify-between px-[15px] sm:px-[30px] lg:px-[60px]">
           
-          {/* Логотип - всегда показывается */}
+          {/* Логотип - завжди показується */}
           <button
-            aria-label="Перейти на главную"
+            aria-label="Перейти на головну"
             onClick={handleLogoClick}
             className="h-[53.75px] sm:h-[67px] w-[100px] sm:w-[125px] shrink-0 transition-transform duration-300 hover:scale-[1.02]"
           >
-            {/* Desktop: SVG Logo, остальные: img */}
+            {/* Desktop: SVG Logo, інше: img */}
             <div className="hidden xl:block">
               <Logo />
             </div>
@@ -134,10 +134,10 @@ const Header = () => {
             />
           </button>
 
-          {/* Центральная навигация - показывается по breakpoints */}
+          {/* Центральна навігація - показується за breakpoints */}
           <nav className="flex-1 flex justify-center">
             
-            {/* Навигационные ссылки - только Desktop xl: >=1280px */}
+            {/* Навігаційні посилання - тільки Desktop xl: >=1280px */}
             <div className="hidden xl:flex h-[43px] items-center gap-[30px]">
               <HeaderSearch isMobile={false} />
               
@@ -155,52 +155,52 @@ const Header = () => {
               ))}
             </div>
 
-            {/* Tablet: md-xl (768px-1279px) - поиск + каталог, без навигации */}
+            {/* Tablet: md-xl (768px-1279px) - пошук + каталог, без навігації */}
             <div className="hidden md:flex xl:hidden h-[43px] items-center gap-[30px]">
               <HeaderSearch isMobile={false} />
               <CatalogButton onClick={handleCatalogClick} />
             </div>
 
-            {/* Small screens: sm-md (640px-767px) - поиск + каталог */}
+            {/* Small screens: sm-md (640px-767px) - пошук + каталог */}
             <div className="hidden sm:flex md:hidden h-[43px] items-center gap-[30px]">
               <HeaderSearch isMobile={true} />
               <CatalogButton onClick={handleCatalogClick} />
             </div>
           </nav>
 
-          {/* Мобильная правая секция (<640px) - поиск + профиль */}
+          {/* Мобільна права секція (<640px) - пошук + профіль */}
           <div className="sm:hidden flex items-center gap-[20px] py-[5px]">
             <HeaderSearch isMobile={true} />
             <UserAvatar userAvatar={user?.avatar} onClick={handleProfileClick} strokeWidth={2} />
           </div>
 
-          {/* Правая секция действий - показывается на sm+ */}
+          {/* Права секція дій - показується на sm+ */}
           <div className="hidden sm:flex items-center gap-[30px] py-[5px]">
             
-            {/* Профиль - показывается на sm+ */}
+            {/* Профіль - показується на sm+ */}
             <div className="relative flex items-center">
               <UserAvatar userAvatar={user?.avatar} onClick={handleProfileClick} strokeWidth={2} />
             </div>
             
-            {/* Избранное - показывается на sm+ (>=640px) */}
+            {/* Обране - показується на sm+ (>=640px) */}
             <IconButton 
               icon={HeartIcon} 
-              label="Избранное" 
+              label="Обране" 
               onClick={handleFavoritesClick}
               strokeWidth={2}
               badgeCount={favoritesCount}
             />
             
-            {/* Корзина - показывается на sm+ */}
+            {/* Кошик - показується на sm+ */}
             <IconButton 
               icon={CartIcon} 
-              label="Корзина" 
+              label="Кошик" 
               onClick={handleCartClick} 
               strokeWidth={2}
               badgeCount={cartItemsCount}
             />
             
-            {/* Меню десктопа (Mega Menu Trigger) - показывается на sm+ */}
+            {/* Меню десктопа (Mega Menu Trigger) - показується на sm+ */}
             <div className="hidden sm:block">
               <button 
                 onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}

@@ -3,12 +3,12 @@ import useFilterStore from '../../../stores/useFilterStore';
 import usePriceRange from '../../../hooks/usePriceRange';
 import PriceInput from './PriceInput';
 
-// Компонент фильтра по цене с двойным слайдером и input полями
+// Компонент фільтра за ціною з подвійним слайдером та input полями
 
 const PriceFilter = () => {
   const { appliedFilters, updateFilter } = useFilterStore();
   
-  // Используем custom hook для управления состоянием ценового диапазона
+  // Використовуємо custom hook для керування станом цінового діапазону
   const {
     localRange,
     handleSliderChange,

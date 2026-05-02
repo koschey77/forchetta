@@ -9,9 +9,19 @@ import NoConnection from "../components/errors/NoConnection"
 import Error404 from "../components/errors/Error404"
 import FavoriteButton from "../components/common/FavoriteButton"
 import { useAddToCartAction } from "../hooks/useAddToCartAction"
+import { useViewedStore } from "../stores/useViewedStore"
 
 const ProductPage = () => {
   const { id } = useParams()
+
+  const { addId } = useViewedStore()
+
+  // Добавляем товар в просмотренные
+  useEffect(() => {
+    if (id) {
+      addId(id)
+    }
+  }, [id, addId])
 
   // TanStack Query для получения товара по ID
   const { data: product, isLoading, error } = useQuery({
@@ -21,7 +31,7 @@ const ProductPage = () => {
     staleTime: 5 * 60 * 1000, // 5 минут
   })
 
-  // Деструктуризация product с дефолтными значениями
+  // Деструктуризация product с дефолтними значениями
   const {
     images = [], name = "", isFeatured = false, qty = 0, summary = "", weight = 0,
     shelfLife = "", storageConditions = "", description = "", ingredients = "",
@@ -53,12 +63,12 @@ const ProductPage = () => {
     }
   }
 
-  // Форматирование цены
+  // Форматирование цени
   const formatPrice = (price) => {
     return `${price} грн`
   }
 
-  // Функция для отображения цены
+  // Функция для отображения цени
   const renderPriceSection = (sizeClasses = "text-[24px] leading-[29px]", alignment = "items-center") => {
     const hasDiscount = discountPrice && discountPrice < price
     const currentPrice = hasDiscount ? discountPrice : price
@@ -87,7 +97,7 @@ const ProductPage = () => {
   if (error) {
     const status = error.response?.status;
 
-    // Если бэкенд ответил 404 или 400 (недопустимый ID) — показываем страницу 404
+    // Если бекенд ответил 404 или 400 (недопустимий ID) — показиваем страницу 404
     if (status === 404 || status === 400) {
       return (
         <div className="min-h-[70vh] flex items-center justify-center">
@@ -96,7 +106,7 @@ const ProductPage = () => {
       )
     }
 
-    // Во всех остальных случаях (сервер выключен, нет сети, 500 ошибка)
+    // Во всех остальних случаях (сервер виключен, нет сети, 500 ошибка)
     return (
       <div className="min-h-[70vh] flex items-center justify-center">
         <NoConnection />
@@ -157,7 +167,7 @@ const ProductPage = () => {
                   )}
                 </CarouselContent>
                 
-                {/* Индикаторы (точки) поверх картинки */}
+                {/* Индикатори (точки) поверх картинки */}
                 <CarouselDots className="absolute bottom-4 left-0 right-0 z-10" />
               </Carousel>
 

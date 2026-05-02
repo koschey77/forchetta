@@ -6,19 +6,19 @@ import { EditIcon, BasketIcon } from '../../components/icons'
 const CategoryList = ({ onEditCategory }) => {
   const queryClient = useQueryClient()
   
-  // TanStack Query для загрузки категорий
+  // TanStack Query для завантаження категорій
   const { 
     data: categories = [], 
     isLoading, 
     error 
   } = useQuery({
     queryKey: ['admin-categories'],
-    queryFn: categoriesAPI.getAll, // Используем getAll для категорий (нет пагинации в backend)
-    staleTime: 0, // Всегда актуальные данные в админке
-    refetchOnWindowFocus: true, // Обновлять при фокусе окна
+    queryFn: categoriesAPI.getAll, // Використовуємо getAll для категорій (немає пагінації у backend)
+    staleTime: 0, // Завжди актуальні дані в адмінці
+    refetchOnWindowFocus: true, // Оновлювати при фокусі вікна
   })
 
-  // Mutation для удаления категории
+  // Mutation для видалення категорії
   const deleteCategory = useMutation({
     mutationFn: categoriesAPI.delete,
     onSuccess: () => {

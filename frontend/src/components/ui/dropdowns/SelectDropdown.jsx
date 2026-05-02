@@ -3,48 +3,48 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { DropdownArrowIcon, CheckIcon } from '../../icons';
 
 /**
- * Специализированный dropdown для выбора одного значения из списка
- * Более простой и компактный чем MenuDropdown, идеально для селекторов количества
+ * Спеціалізований dropdown для вибору одного значення зі списку
+ * Більш простий і компактний ніж MenuDropdown, ідеально для селекторів кількості
  * 
- * @param {Array} options - Массив опций [{value, label}] или массив примитивов [12, 24, 48]
- * @param {string|number} selected - Выбранное значение  
- * @param {Function} onChange - Callback для изменения выбора (получает value)
- * @param {string} placeholder - Текст по умолчанию когда ничего не выбрано
- * @param {boolean} showCheckmarks - Показывать галочки для выбранного элемента
- * @param {string} prefix - Префикс перед значением (например, "Показати")
- * @param {string} suffix - Суффикс после значения (например, "товарів")
- * @param {boolean} disabled - Отключить dropdown
+ * @param {Array} options - Масив опцій [{value, label}] або масив примітивів [12, 24, 48]
+ * @param {string|number} selected - Обране значення  
+ * @param {Function} onChange - Callback для зміни вибору (отримує value)
+ * @param {string} placeholder - Текст за замовчуванням коли нічого не вибрано
+ * @param {boolean} showCheckmarks - Показувати галочки для обраного елемента
+ * @param {string} prefix - Префікс перед значенням (наприклад, "Показати")
+ * @param {string} suffix - Суфікс після значення (наприклад, "товарів")
+ * @param {boolean} disabled - Вимкнути dropdown
  */
 const SelectDropdown = ({
   options = [],
   selected,
   onChange,
-  placeholder = 'Выберите...',
+  placeholder = 'Виберіть...',
   showCheckmarks = false,
   prefix = '',
   suffix = '',
   disabled = false
 }) => {
-  // Нормализуем опции в единый формат {value, label}
+  // Нормалізуємо опції в єдиний формат {value, label}
   const normalizedOptions = options.map(option => {
     if (typeof option === 'object') {
-      return option; // Уже в правильном формате
+      return option; // Вже в правильному форматі
     }
     return { value: option, label: option.toString() };
   });
 
-  // Находим выбранную опцию для отображения в trigger
+  // Знаходимо обрану опцію для відображення в trigger
   const selectedOption = normalizedOptions.find(option => option.value === selected);
   const displayText = selectedOption ? selectedOption.label : placeholder;
 
-  // Обработчик выбора опции
+  // Обробник вибору опції
   const handleSelect = (optionValue) => {
     if (onChange && !disabled) {
       onChange(optionValue);
     }
   };
 
-  // Формируем текст для trigger
+  // Формуємо текст для trigger
   const triggerText = `${prefix}${prefix ? ' ' : ''}${displayText}${suffix ? ' ' : ''}${suffix}`;
 
   return (

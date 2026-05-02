@@ -59,49 +59,49 @@ const SignUpPage = () => {
   }
 
   const handleInputChange = (field, value) => {
-    // Обновляем данные формы с новым значением
+    // Оновлюємо дані форми з новим значенням
     setFormData({ ...formData, [field]: value })
     
-    // Показываем ошибку валидации только если пользователь уже взаимодействовал с полем
-    // Это предотвращает показ ошибок до того, как пользователь начал вводить данные
+    // Показуємо помилку валідації тільки якщо користувач вже взаємодіяв з полем
+    // Це запобігає показу помилок до того, як користувач почав вводити дані
     if (touched[field]) {
       setErrors({ ...errors, [field]: validateField(field, value) })
     }
   }
 
-  // Обработчик события потери фокуса (blur) для input полей
-  // Помечает поле как "затронутое" и запускает валидацию
+  // Обробник події втрати фокусу (blur) для input полів
+  // Позначає поле як "зачеплене" і запускає валідацію
   const handleBlur = (field) => {
-    // Помечаем поле как затронутое пользователем
+    // Позначаємо поле як зачеплене користувачем
     setTouched({ ...touched, [field]: true })
-    // Запускаем валидацию и показываем ошибку если она есть
+    // Запускаємо валідацію і показуємо помилку якщо вона є
     setErrors({ ...errors, [field]: validateField(field, formData[field]) })
   }
 
-  // Проверяет что все обязательные поля заполнены и валидны (name, email, password)
+  // Перевіряє що всі обов'язкові поля заповнені та валідні (name, email, password)
   const isSubmitEnabled = isFormValid(formData.email, formData.password, formData.name)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    // Проверяем валидность всех полей перед отправкой данных на сервер
+    // Перевіряємо валідність всіх полів перед відправкою даних на сервер
     if (!isSubmitEnabled) return
     
     try {
-      // Отправляем данные регистрации на backend через useUserStore
-      // formData содержит: { name, email, password }
+      // Відправляємо дані реєстрації на backend через useUserStore
+      // formData містить: { name, email, password }
       const result = await signup(formData)
       
-      // Проверяем ответ от сервера - нужна ли верификация email
+      // Перевіряємо відповідь від сервера - чи потрібна верифікація email
       if (result?.needsVerification) {
-        // Перенаправляем на страницу верификации, передавая email
+        // Перенаправляємо на сторінку верифікації, передаючи email
         const params = new URLSearchParams({
           email: formData.email
         })
         navigate(`/verify-email?${params.toString()}`)
       }
     } catch {
-      // Все ошибки (network, validation, server errors) уже обработаны в useUserStore
-      // Toast уведомления показываются автоматически, здесь только перехватываем исключение
+      // Всі помилки (network, validation, server errors) вже оброблені в useUserStore
+      // Toast повідомлення показуються автоматично, тут тільки перехоплюємо виключення
     }
   }
 

@@ -35,7 +35,7 @@ const ForgotPasswordPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    // Проверяем валидность формы перед отправкой
+    // Проверяем валидность форми перед отправкой
     if (!isSubmitEnabled) return
     
     try {

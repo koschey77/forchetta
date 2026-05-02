@@ -1,20 +1,20 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 /**
- * Базовый компонент выпадающего меню на основе Radix UI
- * Служит основой для всех специализированных dropdown компонентов
+ * Базовий компонент випадного меню на основі Radix UI
+ * Слугує основою для всіх спеціалізованих dropdown компонентів
  * 
- * @param {ReactNode} trigger - Элемент который открывает dropdown  
- * @param {ReactNode} children - Содержимое dropdown меню
- * @param {string} variant - Вариант стилей: 'default' | 'filter' | 'compact' | 'admin' | 'navigation'
- * @param {string} size - Размер: 'small' | 'medium' | 'large' | 'auto'
- * @param {string} side - Позиция относительно trigger: 'top' | 'right' | 'bottom' | 'left'
- * @param {string} align - Выравнивание: 'start' | 'center' | 'end'
- * @param {number} sideOffset - Отступ от trigger в пикселях
- * @param {boolean} modal - Модальное поведение (блокирует взаимодействие с остальной страницей)
- * @param {boolean} disabled - Отключить dropdown
- * @param {Function} onOpenChange - Callback при изменении состояния открытия
- * @param {string} className - Дополнительные CSS классы для контента
+ * @param {ReactNode} trigger - Елемент який відкриває dropdown  
+ * @param {ReactNode} children - Вміст dropdown меню
+ * @param {string} variant - Варіант стилів: 'default' | 'filter' | 'compact' | 'admin' | 'navigation'
+ * @param {string} size - Розмір: 'small' | 'medium' | 'large' | 'auto'
+ * @param {string} side - Позиція відносно trigger: 'top' | 'right' | 'bottom' | 'left'
+ * @param {string} align - Вирівнювання: 'start' | 'center' | 'end'
+ * @param {number} sideOffset - Відступ від trigger в пікселях
+ * @param {boolean} modal - Модальна поведінка (блокує взаємодію з іншою сторінкою)
+ * @param {boolean} disabled - Вимкнути dropdown
+ * @param {Function} onOpenChange - Callback при зміні стану відкриття
+ * @param {string} className - Додаткові CSS класи для контенту
  */
 const BaseDropdown = ({
   // Core props
@@ -38,7 +38,7 @@ const BaseDropdown = ({
   onOpenChange,
   className = ''
 }) => {
-  // Получаем стили в зависимости от варианта
+  // Отримуємо стилі залежно від варіанту
   const getVariantStyles = () => {
     const variants = {
       default: {
@@ -66,19 +66,19 @@ const BaseDropdown = ({
     return variants[variant] || variants.default;
   };
 
-  // Получаем размеры в зависимости от size
+  // Отримуємо розміри залежно від size
   const getSizeStyles = () => {
     const sizes = {
       small: 'py-1 min-w-[80px]',
       medium: 'py-2 min-w-[120px]',
       large: 'py-3 min-w-[200px]',
-      auto: 'py-1' // Размер определяется содержимым
+      auto: 'py-1' // Розмір визначається вмістом
     };
     
     return sizes[size] || sizes.medium;
   };
 
-  // Специальные размеры для определенных вариантов
+  // Спеціальні розміри для певних варіантів
   const getVariantSizeOverride = () => {
     if (variant === 'filter') {
       return 'pt-[6px] px-[15px] pb-[15px] min-w-[300px] min-h-[180px] gap-[10px]';

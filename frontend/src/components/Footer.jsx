@@ -5,19 +5,19 @@ import { FacebookIcon, TelegramIcon, InstagramIcon } from './icons';
 const Footer = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Добавить логику отправки email подписки
+    // TODO: Додати логіку відправки email підписки
     console.log('Newsletter subscription');
   };
 
   return (
     <footer className="bg-choco-dark text-creamy font-montserrat w-full relative z-60">
-      {/* Единый адаптивный контейнер */}
+      {/* Єдиний адаптивний контейнер */}
       <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] py-8 sm:pt-[60px] sm:pb-[20px] pt-[170px] pb-[120px] 
                       min-h-[730px] sm:min-h-[400px] xl:min-h-[554px]">
         
         <div className="w-full max-w-[1320px] mx-auto flex flex-col gap-8">
           
-          {/* Newsletter секция - только Desktop и Tablet */}
+          {/* Newsletter секція - тільки Desktop та Tablet */}
           <div className="hidden sm:flex flex-row justify-between items-start xl:items-center gap-8 xl:gap-12">
             <div className="flex-1 xl:max-w-xl">
               <h2 className="font-bold text-[32px] xl:text-[40px] leading-[48px] xl:leading-[60px] mb-4 text-dark-creamy 
@@ -31,7 +31,7 @@ const Footer = () => {
 
             {/* Desktop: форма справа, Tablet: логотип справа */}
             <div className="w-full sm:w-auto xl:w-auto mt-4 xl:mt-0 flex-none">
-              {/* Форма подписки - только Desktop */}
+              {/* Форма підписки - тільки Desktop */}
               <form className="hidden xl:flex flex-row gap-4 w-[538px] h-[46px]" onSubmit={handleSubmit}>
                 <input
                   type="email"
@@ -50,20 +50,20 @@ const Footer = () => {
                 </button>
               </form>
               
-              {/* Логотип - Tablet: справа от текста */}
+              {/* Логотип - Tablet: справа від тексту */}
               <div className="hidden sm:block xl:hidden">
                 <LogoFooterMobile idPrefix="tablet" className="w-[180px] h-24" />
               </div>
             </div>
           </div>
 
-          {/* Разделитель - только Desktop и Tablet */}
+          {/* Розділювач - тільки Desktop та Tablet */}
           <div className="hidden sm:block border-t border-creamy w-full"></div>
 
-          {/* Основной контент: Desktop и Tablet навигация, Mobile логотип */}
+          {/* Основний контент: Desktop та Tablet навігація, Mobile логотип */}
           <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-3 w-full gap-8 sm:gap-0">
             
-            {/* Desktop: Логотип слева */}
+            {/* Desktop: Логотип зліва */}
             <div className="hidden xl:block flex-none">
               <LogoFooter className="w-[227px] h-[120.93px]" />
             </div>
@@ -73,7 +73,7 @@ const Footer = () => {
               <LogoFooterMobile idPrefix="mobile" className="w-[180px] h-24" />
             </div>
 
-            {/* Навигация - только Desktop и Tablet */}
+            {/* Навігація - тільки Desktop та Tablet */}
             <nav className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-[75px] 
                           w-full lg:w-[980px] lg:h-[182px] lg:flex lg:flex-row lg:items-start lg:p-0">
               
@@ -115,7 +115,7 @@ const Footer = () => {
                   Tel: +38(099) 987 62 40
                 </a>
 
-                {/* Социальные иконки в Desktop версии */}
+                {/* Соціальні іконки в Desktop версії */}
                 <div className="hidden xl:flex flex-row items-start gap-[15px] w-[105px] h-[25px]">
                   <button aria-label="Instagram" className="hover:scale-110 transition-transform">
                     <InstagramIcon width={25} height={25} />
@@ -131,9 +131,9 @@ const Footer = () => {
             </nav>
           </div>
 
-          {/* Mobile: Контакты и социальные иконки */}
+          {/* Mobile: Контакти та соціальні іконки */}
           <div className="sm:hidden flex flex-col items-center gap-[40px] w-full">
-            {/* Контакты */}
+            {/* Контакти */}
             <div className="flex flex-col items-center gap-5 w-full max-w-[315px]">
               <p className="text-creamy font-light text-lg leading-[22px] text-center">м. Київ, вул. Хрещатик 10А</p>
               <a href="mailto:forchetta@gmail.com" className="text-creamy font-light text-lg leading-[22px] text-center hover:opacity-80 transition-opacity">
@@ -144,7 +144,7 @@ const Footer = () => {
               </a>
             </div>
 
-            {/* Социальные иконки для Mobile */}
+            {/* Соціальні іконки для Mobile */}
             <div className="flex items-start gap-[40px] w-[176px] h-[30px]">
               <button aria-label="Instagram" className="flex-none hover:scale-110 transition-transform">
                 <InstagramIcon width={30} height={30} />

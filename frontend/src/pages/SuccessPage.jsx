@@ -14,14 +14,14 @@ const SuccessPage = () => {
     const completeOrder = async () => {
       try {
         if (orderId) {
-          // Получаем детали оформленного заказа
+          // Отримуємо деталі оформленого замовлення
           const order = await orderAPI.getById(orderId);
-          // Достаем ID товаров, которые реально были куплены
+          // Дістаємо ID товарів, які реально були куплені
           const purchasedItemIds = order.items.map(i => i.product._id || i.product);
-          // Удаляем только их из корзины
+          // Видаляємо тільки їх з кошика
           await cartAPI.removeMany(purchasedItemIds);
         } else {
-          // Фолбэк: если orderId нет, просто чистим все
+          // Фолбек: якщо orderId немає, просто очищуємо все
           await cartAPI.clear();
         }
         

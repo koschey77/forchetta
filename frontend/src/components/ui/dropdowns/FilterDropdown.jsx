@@ -2,14 +2,14 @@ import BaseDropdown from './BaseDropdown';
 import { CatalogFilterIcon, CheckIcon } from '../../icons';
 
 /**
- * Специализированный dropdown для фильтров каталога
- * Построен на базе BaseDropdown с предустановленным поведением для фильтров
+ * Спеціалізований dropdown для фільтрів каталогу
+ * Побудований на базі BaseDropdown з попередньо встановленою поведінкою для фільтрів
  * 
- * @param {string} title - Заголовок фильтра
- * @param {Array} options - Массив опций [{value, label}]
- * @param {Array} selected - Массив выбранных значений
- * @param {Function} onChange - Callback для изменения выбора (получает value!)
- * @param {boolean} isLoading - Состояние загрузки
+ * @param {string} title - Заголовок фільтра
+ * @param {Array} options - Масив опцій [{value, label}]
+ * @param {Array} selected - Масив обраних значень
+ * @param {Function} onChange - Callback для зміни вибору (отримує value!)
+ * @param {boolean} isLoading - Стан завантаження
  */
 const FilterDropdown = ({ 
   title, 
@@ -18,17 +18,17 @@ const FilterDropdown = ({
   onChange, 
   isLoading = false 
 }) => {
-  // Обработчик выбора опции - совместимость с существующим API
+  // Обробник вибору опції - сумісність з існуючим API
   const handleToggleOption = (option) => {
     if (onChange) {
-      onChange(option.value); // Передаем именно value, как в старой версии
+      onChange(option.value); // Передаємо саме value, як у старій версії
     }
   };
 
-  // Количество выбранных элементов для бейджа
+  // Кількість обраних елементів для бейджа
   const selectedCount = selected.length;
 
-  // Trigger button с такими же стилями как в оригинале + бейдж
+  // Trigger button з такими ж стилями як в оригіналі + бейдж
   const trigger = (
     <button className="flex flex-row justify-between items-center px-[15px] py-[8px] gap-[10px] w-full h-[40px] bg-creamy border border-choco-light rounded-[10px] transition-all duration-200 hover:opacity-90">
       <span className="text-figma-base font-montserrat font-light text-choco-light">
@@ -61,7 +61,7 @@ const FilterDropdown = ({
               key={option.value}
               className="flex flex-row justify-between items-center gap-[7px] w-full h-[26px] cursor-pointer hover:bg-dark-creamy outline-none rounded px-2"
               onClick={(e) => {
-                e.preventDefault(); // Предотвращаем закрытие dropdown
+                e.preventDefault(); // Запобігаємо закриттю dropdown
                 handleToggleOption(option);
               }}
             >

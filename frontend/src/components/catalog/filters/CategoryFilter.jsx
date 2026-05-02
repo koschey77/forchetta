@@ -7,14 +7,14 @@ const CategoryFilter = () => {
   const { appliedFilters, updateFilter } = useFilterStore();
   const selectedCategories = appliedFilters.categories;
 
-  // Загружаем категории через TanStack Query
+  // Завантажуємо категорії через TanStack Query
   const { data: categories = [], isLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: categoriesAPI.getAll,
-    staleTime: 10 * 60 * 1000, // 10 минут кэш категорий
+    staleTime: 10 * 60 * 1000, // 10 хвилин кеш категорій
   });
 
-  // Преобразуем категории из backend формата в frontend формат
+  // Перетворюємо категорії з backend формату в frontend формат
   const categoryOptions = categories.map(category => ({
     value: category._id,
     label: category.name

@@ -5,7 +5,7 @@ const IngredientsFilter = () => {
   const { appliedFilters, updateFilter } = useFilterStore();
   const selectedIngredients = appliedFilters.ingredients;
 
-  // Список доступных ингредиентов
+  // Список доступних інгредієнтів
   const ingredients = [
     'З горіхами',
     'Без горіхів', 
@@ -15,7 +15,7 @@ const IngredientsFilter = () => {
   ];
 
   const handleIngredientChange = (ingredient) => {
-    // Специальная логика для орехов - если выбирается противоположный, убираем текущий
+    // Спеціальна логіка для горіхів - якщо вибирається протилежний, прибираємо поточний
     if (ingredient === 'З горіхами' && selectedIngredients.includes('Без горіхів')) {
       const newIngredients = selectedIngredients.filter(item => item !== 'Без горіхів');
       newIngredients.push(ingredient);
@@ -30,7 +30,7 @@ const IngredientsFilter = () => {
       return;
     }
 
-    // Стандартная логика для всех остальных ингредиентов
+    // Стандартна логіка для всіх інших інгредієнтів
     const newIngredients = selectedIngredients.includes(ingredient)
       ? selectedIngredients.filter(item => item !== ingredient)
       : [...selectedIngredients, ingredient];

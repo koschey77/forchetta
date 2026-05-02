@@ -8,7 +8,7 @@ const CategoryEditor = ({ categoryId = null, onCancel, onSuccess }) => {
   const queryClient = useQueryClient()
   const isEdit = categoryId !== null
   
-  // Состояние формы
+  // Стан форми
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -18,7 +18,7 @@ const CategoryEditor = ({ categoryId = null, onCancel, onSuccess }) => {
   // Состояние для drag & drop
   const [isDragging, setIsDragging] = useState(false)
 
-  // Загрузка данных для редактирования
+  // Завантаження даних для редагування
   const { data: category, isLoading } = useQuery({
     queryKey: ['category', categoryId],
     queryFn: () => categoriesAPI.getById(categoryId),
@@ -62,7 +62,7 @@ const CategoryEditor = ({ categoryId = null, onCancel, onSuccess }) => {
         description: formData.description
       }
       
-      // Отправляем изображение только если это новый файл
+      // Відправляємо зображення тільки якщо це новий файл
       if (formData.image instanceof File) {
         try {
           const base64 = await imageService.fileToBase64(formData.image)
@@ -73,7 +73,7 @@ const CategoryEditor = ({ categoryId = null, onCancel, onSuccess }) => {
           return
         }
       }
-      // Если formData.image это объект с URL (существующее изображение) - не отправляем его
+      // Якщо formData.image це об'єкт з URL (існуюче зображення) - не відправляємо його
       // Backend сохранит существующее изображение автоматически
 
       saveMutation.mutate(submitData)
@@ -101,13 +101,13 @@ const CategoryEditor = ({ categoryId = null, onCancel, onSuccess }) => {
       }
     },
     1, // Максимум 1 изображение для категории
-    0  // Для категории всегда 0 - мы заменяем изображение, а не добавляем к существующему
+    0  // Для категорії завжди 0 - ми замінюємо зображення, а не додаємо до існуючого
   )
 
   // Управление формой при смене категории или режима  
   useEffect(() => {
     if (category && isEdit) {
-      // Заполняем форму данными категории
+      // Заповнюємо форму даними категорії
       setFormData({
         name: category.name || '',
         description: category.description || '',

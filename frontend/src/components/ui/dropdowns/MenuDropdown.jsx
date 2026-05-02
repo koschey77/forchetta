@@ -3,44 +3,44 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { CatalogFilterIcon, CheckIcon } from '../../icons';
 
 /**
- * Специализированный dropdown для меню и single-select опций
- * Подходит для сортировки, навигации, выбора одного значения из списка
+ * Спеціалізований dropdown для меню і single-select опцій
+ * Підходить для сортування, навігації, вибору одного значення зі списку
  * 
- * @param {Array} options - Массив опций [{value, label, icon}] (icon опционально)
- * @param {string|number} selected - Выбранное значение  
- * @param {Function} onChange - Callback для изменения выбора (получает value)
- * @param {string} placeholder - Текст по умолчанию когда ничего не выбрано
- * @param {boolean} showCheckmarks - Показывать галочки для выбранного элемента
+ * @param {Array} options - Масив опцій [{value, label, icon}] (icon опціонально)
+ * @param {string|number} selected - Обране значення  
+ * @param {Function} onChange - Callback для зміни вибору (отримує value)
+ * @param {string} placeholder - Текст за замовчуванням коли нічого не вибрано
+ * @param {boolean} showCheckmarks - Показувати галочки для обраного елемента
  * @param {string} variant - Стиль: 'catalog' | 'navigation' | 'admin' | 'default'
- * @param {Component} triggerIcon - Иконка в trigger
- * @param {string} triggerClassName - Дополнительные классы для trigger
- * @param {string} contentClassName - Дополнительные классы для content
- * @param {React.ReactNode} customTrigger - Кастомный trigger элемент (опционально)
+ * @param {Component} triggerIcon - Іконка в trigger
+ * @param {string} triggerClassName - Додаткові класи для trigger
+ * @param {string} contentClassName - Додаткові класи для content
+ * @param {React.ReactNode} customTrigger - Кастомний trigger елемент (опціонально)
  */
 const MenuDropdown = ({
   options = [],
   selected,
   onChange,
-  placeholder = 'Выберите...',
+  placeholder = 'Виберіть...',
   showCheckmarks = true,
   variant = 'default',
   triggerIcon: TriggerIcon = CatalogFilterIcon,
   triggerClassName = '',
   contentClassName = '',
-  customTrigger // Новый проп для кастомного trigger
+  customTrigger // Новий проп для кастомного trigger
 }) => {
-  // Находим выбранную опцию для отображения в trigger
+  // Знаходимо обрану опцію для відображення в trigger
   const selectedOption = options.find(option => option.value === selected);
   const displayText = selectedOption ? selectedOption.label : placeholder;
 
-  // Обработчик выбора опции - single select
+  // Обробник вибору опції - single select
   const handleSelect = (optionValue) => {
     if (onChange) {
       onChange(optionValue);
     }
   };
 
-  // Получаем стили в зависимости от варианта
+  // Отримуємо стилі залежно від варіанту
   const getVariantStyles = () => {
     switch (variant) {
       case 'catalog':
@@ -80,7 +80,7 @@ const MenuDropdown = ({
 
   const styles = getVariantStyles();
 
-  // Trigger button - используем кастомный если передан, иначе стандартный
+  // Trigger button - використовуємо кастомний якщо передано, інакше стандартний
   const triggerElement = customTrigger || (
     <button className={styles.trigger}>
       <TriggerIcon 
@@ -116,7 +116,7 @@ const MenuDropdown = ({
             }`}
             onSelect={() => handleSelect(option.value)}
           >
-            {/* Иконка для admin варианта */}
+            {/* Іконка для admin варіанту */}
             {variant === 'admin' && option.icon && (
               <option.icon className="w-[24px] h-[24px] text-[#705A5A]" strokeWidth={2} />
             )}
@@ -127,7 +127,7 @@ const MenuDropdown = ({
               {option.label}
             </span>
             
-            {/* Галочки для обычных вариантов */}
+            {/* Галочки для звичайних варіантів */}
             {showCheckmarks && isSelected && variant !== 'admin' && (
               <CheckIcon 
                 width={variant === 'catalog' ? 24 : 20} 

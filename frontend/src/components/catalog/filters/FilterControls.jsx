@@ -1,7 +1,7 @@
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import useFilterStore from '../../../stores/useFilterStore';
 
-// Компонент контроля фильтров (кнопка очистки с подтверждением)
+// Компонент контролю фільтрів (кнопка очищення з підтвердженням)
 
 const FilterControls = () => {
   const { resetAll, hasAppliedFilters, sortOption } = useFilterStore();
@@ -10,10 +10,10 @@ const FilterControls = () => {
     resetAll();
   };
 
-  // Проверяем, есть ли примененные фильтры или сортировка
+  // Перевіряємо, чи є застосовані фільтри або сортування
   const hasAnyFilters = hasAppliedFilters() || sortOption !== '';
 
-  // Если нет фильтров и сортировки, отключаем кнопку
+  // Якщо немає фільтрів і сортування, вимикаємо кнопку
   if (!hasAnyFilters) {
     return (
       <div className="flex flex-row items-center justify-center w-full h-[41px]">
@@ -27,7 +27,7 @@ const FilterControls = () => {
     );
   }
 
-  // Если есть фильтры или сортировка, показываем диалог подтверждения
+  // Якщо є фільтри або сортування, показуємо діалог підтвердження
 
   return (
     <div className="flex flex-row items-center justify-center w-full h-[41px]">

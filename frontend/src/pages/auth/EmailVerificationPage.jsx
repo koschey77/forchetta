@@ -34,7 +34,7 @@ const EmailVerificationPage = () => {
     }
   }, [email, navigate])
 
-  // Обработка отправки формы
+  // Обработка отправки форми
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (verificationCode.length !== 6 || isExpired) {
@@ -55,10 +55,10 @@ const EmailVerificationPage = () => {
       }
       
       if (errorData?.attemptsLeft !== undefined && errorData.attemptsLeft > 0) {
-        // Если еще есть попытки, сбрасываем таи́мер на полные 2 минуты
+        // Если еще есть попитки, сбрасиваем таи́мер на полние 2 минути
         setTimeLeft(120)
       } else {
-        // Если попытки закончились, отмечаем это отдельно
+        // Если попитки закончились, отмечаем ето отдельно
         setAttemptsExceeded(true)
         setTimeLeft(0)
       }
@@ -69,7 +69,7 @@ const EmailVerificationPage = () => {
   const handleResend = async () => {
     try {
       await resendVerificationCode(email)
-      // Сбрасываем состояния после успешной отправки
+      // Сбрасиваем состояния после успешной отправки
       setTimeLeft(120)
       setAttemptsExceeded(false)
       setErrorMessage("")
@@ -125,14 +125,14 @@ const EmailVerificationPage = () => {
                 </div>
               )}
               
-              {/* Показываем сообщение об ошибке если есть */}
+              {/* Показиваем сообщение об ошибке если есть */}
               {errorMessage && !isExpired && (
                 <p className="text-[#DC2626] text-[11px] font-medium mt-2">
                   {errorMessage}
                 </p>
               )}
               
-              {/* Сообщение об истечении времени или попыток */}
+              {/* Сообщение об истечении времени или попиток */}
               {isExpired && (
                 <div className="mt-3">
                   <p className="text-[#DC2626] text-[12px] font-semibold">
@@ -182,7 +182,7 @@ const EmailVerificationPage = () => {
             <div className="text-center mb-6">
               {isExpired ? (
                 <div className="space-y-4">
-                  {/* Показываем кнопку resend только если она доступна */}
+                  {/* Показиваем кнопку resend только если она доступна */}
                   {canResend ? (
                     <button
                       onClick={handleResend}

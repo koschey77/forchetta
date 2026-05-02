@@ -51,7 +51,7 @@ const ProductCard = ({ product }) => {
       <div className="flex flex-col flex-grow px-4">
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-0.5 flex-grow pr-2">
-            <h3 className="text-[12px] font-figma-light leading-[12px] text-choco-light sm:text-[17px] sm:font-semibold sm:leading-snug sm:text-text-primary mb-2.5 w-[114px] sm:w-auto h-6 sm:h-auto">
+            <h3 className="line-clamp-4 text-[12px] font-figma-light leading-[12px] text-choco-light sm:text-[17px] sm:font-semibold sm:leading-snug sm:text-text-primary mb-2.5 w-[114px] sm:w-auto h-auto min-h-[48px] sm:min-h-0">
               {product.name || product.title}
             </h3>
             <div className="flex flex-col gap-0.5">

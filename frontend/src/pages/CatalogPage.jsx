@@ -46,16 +46,16 @@ const CatalogPage = () => {
         sortOrder
       });
     },
-    staleTime: 2 * 60 * 1000, // 2 минуты свежие данные для каталога
+    staleTime: 2 * 60 * 1000, // 2 хвилини свіжі дані для каталогу
   });
 
-  // Извлекаем товары из ответа API с мемоизацией для стабильности ссылок
-  // Извлекаем данные из TanStack Query response
+  // Витягуємо товари з відповіді API з мемоізацією для стабільності посилань
+  // Витягуємо дані з TanStack Query response
   const products = useMemo(() => apiResponse?.products || [], [apiResponse?.products]);
   const totalItems = apiResponse?.pagination?.total || 0;
   const totalPages = apiResponse?.pagination?.totalPages || 0;
 
-  // Функция адаптации backend данных в frontend формат
+  // Функція адаптації backend даних у frontend формат
   const adaptProductData = (backendProduct) => {
     let tag = null;
     if (backendProduct.discountPrice && backendProduct.discountPrice > 0) {
@@ -71,27 +71,27 @@ const CatalogPage = () => {
       image: backendProduct.images[0].url,
       tag,
       isFeatured: backendProduct.isFeatured,
-      // Добавляем оригинальные данные для совместимости
+      // Додаємо оригінальні дані для сумісності
       originalProduct: backendProduct
     };
   };
 
-  // Обрабатываем только адаптацию данных - фильтрация и сортировка на backend
+  // Обробляємо тільки адаптацію даних - фільтрація і сортування на backend
   const displayProducts = useMemo(() => {
     if (!products || products.length === 0) return [];
     return products.map(adaptProductData);
   }, [products]);
 
-  // Получаем информацию о примененных фильтрах из стора
+  // Отримуємо інформацію про застосовані фільтри зі стору
   const hasFiltersApplied = hasAppliedFilters();
 
   return (
     <div className="min-h-screen bg-creamy py-6">
       <div className="w-full">
-        {/* Встроенный CatalogHeader */}
+        {/* Вбудований CatalogHeader */}
         <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px]">
           <div className="flex flex-col gap-3">
-            {/* На малых экранах < md: количество товаров и селектор СВЕРХУ */}
+            {/* На малих екранах < md: кількість товарів і селектор ЗВЕРХУ */}
             <div className="flex md:hidden flex-row justify-between items-center gap-2 w-full">
               {/* Количество товаров */}
               <div className="text-sm sm:text-lg font-montserrat font-semibold text-choco-light flex-1 text-left min-h-[24px] flex items-center">
@@ -111,7 +111,7 @@ const CatalogPage = () => {
               </div>
             </div>
 
-            {/* Desktop версия >= md: всё в одной строке ИЛИ мобильная версия < md: фильтры + сортировка */}
+            {/* Desktop версія >= md: все в одному рядку АБО мобільна версія < md: фільтри + сортування */}
             <div className="flex flex-row justify-between items-center w-full gap-2 md:gap-4 h-[35px]">
               {/* Левая часть: кнопка фільтрів */}
               <div className="flex flex-row items-center gap-[10px] w-[126px] sm:w-[126px] h-[35px] flex-1 sm:flex-none">
@@ -161,7 +161,7 @@ const CatalogPage = () => {
                   </div>
                 </div>
 
-                {/* Сортировка - только для мобильных */}
+                {/* Сортування - тільки для мобільних */}
                 <div className="flex md:hidden flex-row items-center gap-[10px] w-[150px] sm:w-[150px] h-[35px] flex-1 sm:flex-none">
                   <MenuDropdown
                     options={sortOptions}
@@ -178,20 +178,20 @@ const CatalogPage = () => {
           </div>
         </div>
 
-        {/* Основной контент с минимальной высотой для предотвращения перекрытия Footer */}
+        {/* Основний контент з мінімальною висотою для запобігання перекриття Footer */}
         <div className="max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] mt-6 pb-16 min-h-[600px]">
-          {/* Единый блок для всех экранов */}
+          {/* Єдиний блок для всіх екранів */}
           <div className="flex items-start gap-6">
             <Sidebar className={`${isFilterOpen ? "w-full min-w-[300px] sm:w-auto" : "hidden"}`} />
 
-            {/* Товары - скрываются на мобильных когда открыты фильтры */}
+            {/* Товари - скриваются на мобильних когда открити фильтри */}
             <div
               className={`grid gap-x-4 gap-y-8 sm:gap-x-6 flex-grow transition-all duration-300 ease-in-out ${
                 isFilterOpen ? "hidden sm:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
               }`}
             >
               {productsLoading ? (
-                // Рендерим набор скелетонов, чтобы заполнить сетку (по количеству itemsPerPage)
+                // Рендерим набор скелетонов, чтоби заполнить сетку (по количеству itemsPerPage)
                 Array.from({ length: itemsPerPage || 12 }).map((_, index) => (
                   <ProductCardSkeleton key={`skeleton-${index}`} />
                 ))
@@ -207,7 +207,7 @@ const CatalogPage = () => {
             </div>
           </div>
 
-          {/* Пагинация - показывается для всех размеров экранов */}
+          {/* Пагинация - показивается для всех размеров екранов */}
           {!productsLoading && !error && (
             <BottomPaginationControls
               currentPage={currentPage}

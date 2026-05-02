@@ -10,18 +10,18 @@ const CartPage = () => {
     fetchCart();
   }, [fetchCart]);
 
-  // Заглушки для других стейтов (пакування, подарочные пакеты)
+  // Заглушки для інших стейтів (пакування, подарункові пакети)
   // ...
-  const [selectedPackagings, setSelectedPackagings] = useState({ 1: false, 2: false }); // Состояние для обоих пакетов
+  const [selectedPackagings, setSelectedPackagings] = useState({ 1: false, 2: false }); // Стан для обох пакетів
   const [packagingCounts, setPackagingCounts] = useState({ 1: 1, 2: 1 });
-  const [unselectedItems, setUnselectedItems] = useState([]); // ID товаров, с которых сняли галочку
+  const [unselectedItems, setUnselectedItems] = useState([]); // ID товарів, з яких зняли галочку
 
   const handlePackagingQuantity = (id, delta) => {
     setPackagingCounts(prev => ({
       ...prev,
       [id]: Math.max(1, prev[id] + delta)
     }));
-    // Если нажимаем +/-, автоматически выбираем этот пакет
+    // Якщо натискаємо +/-, автоматично вибираємо цей пакет
     setSelectedPackagings(prev => ({ ...prev, [id]: true }));
   };
 
@@ -53,7 +53,7 @@ const CartPage = () => {
 
   return (
     <div className="min-h-screen bg-creamy font-sans relative pb-[250px] xl:pb-[100px]">
-      {/* Верхний бар (мобилки) / Хлебные крошки (десктоп) */}
+      {/* Верхній бар (мобілки) / Хлібні крихти (десктоп) */}
       <div className="pt-[26px] xl:pt-[40px] px-[16px] xl:px-[60px] flex items-center gap-[12px] text-figma-xs xl:text-figma-sm text-choco-dark mb-[20px] xl:mb-[40px]">
         <Link to="/" className="hover:opacity-80">Головна</Link>
         <span className="text-choco-light">/</span>
@@ -67,7 +67,7 @@ const CartPage = () => {
 
         <div className="flex flex-col lg:flex-row justify-between gap-[40px] lg:gap-[20px] xl:gap-[133px]">
           
-          {/* ЛЕВАЯ КОЛОНКА: ТОВАРЫ */}
+          {/* ЛІВА КОЛОНКА: ТОВАРИ */}
           <div className="flex flex-col w-full lg:w-[595px] xl:w-[760px] gap-[20px] lg:gap-[50px] xl:gap-[46px]">
             
             {cartItems.map((item, index) => {
@@ -82,7 +82,7 @@ const CartPage = () => {
               return (
               <div key={pid} className={`box-border flex flex-row lg:flex-col justify-start lg:justify-center items-center lg:items-start p-[12px_16px_20px_14px] lg:p-[12px_16px_20px_14px] xl:p-[20px] gap-[25px] lg:gap-[10px] xl:gap-[14px] w-full lg:w-[595px] lg:h-[233.27px] xl:w-[758px] xl:h-[291.85px] border border-choco-light rounded-[15px] xl:rounded-[20px] relative transition-colors ${isSelected ? 'bg-[#F5EEE0] lg:bg-[#F5EEE0] xl:bg-transparent' : 'opacity-60 bg-transparent'} hover:border-choco-light/50`}>
                 
-                {/* Чекбокс МОБИЛЬНЫЙ */}
+                {/* Чекбокс МОБІЛЬНИЙ */}
                 <button 
                   onClick={() => toggleItemSelection(pid)}
                   className={`flex lg:hidden flex-shrink-0 items-center justify-center p-[5px] w-[30px] h-[30px] rounded-[15px] transition-colors ${isSelected ? 'bg-[#893E3E] text-[#F5F7F8] border-none' : 'border-[0.5px] border-[rgba(59,59,59,0.85)] text-black bg-transparent hover:bg-black/5'}`}
@@ -96,13 +96,13 @@ const CartPage = () => {
                   )}
                 </button>
 
-                {/* Основной контейнер контента (Мобилка: справа от чекбокса, Планшет/Десктоп: во всю ширину) */}
+                {/* Основний контейнер контенту (Мобілка: справа від чекбокса, Планшет/Десктоп: на всю ширину) */}
                 <div className="flex flex-col items-start gap-[10px] lg:gap-0 xl:gap-0 w-[258px] lg:w-full lg:h-full">
 
                   {/* ТОП-БАР (Знижка + дата + кнопка видалення) */}
                   <div className="flex flex-row justify-between items-center w-[258px] lg:w-[510px] xl:pl-[53px] xl:w-[718px] lg:mx-auto xl:mx-0 mb-[10px]">
                     
-                    {/* Левая часть: скидка + дата */}
+                    {/* Ліва частина: знижка + дата */}
                     <div className="flex flex-row justify-between items-center w-[133px] h-[21px] gap-[52px]">
                       {discountPercent > 0 ? (
                         <div className="flex flex-row justify-center items-center p-[2px_10px] gap-[10px] mx-auto lg:mx-0 w-[59px] h-[21px] bg-[#893E3E] rounded-[10.5px]">
@@ -129,20 +129,20 @@ const CartPage = () => {
                       onClick={() => removeFromCart(pid)}
                       className="flex justify-center items-center w-[20.4px] h-[20.4px] text-[#705A5A] hover:text-[#893E3E] transition-colors relative"
                     >
-                      {/* Крестик из линий для 1-в-1 совпадения */}
+                      {/* Хрестик з ліній для 1-в-1 збігу */}
                       <div className="absolute w-[18.4px] h-[0px] border-2 border-current -rotate-45 transition-colors"></div>
                       <div className="absolute w-[18.4px] h-[0px] border-2 border-current -rotate-[135deg] transition-colors"></div>
                       <CartRemoveIcon className="w-[16px] h-[16px] xl:w-[20.4px] xl:h-[20.4px] absolute opacity-0" />
                     </button>
                   </div>
 
-                  {/* ОСНОВНОЙ КОНТЕНТ ТОВАРА */}
+                  {/* ОСНОВНИЙ КОНТЕНТ ТОВАРУ */}
                   <div className="flex flex-col lg:flex-row items-start lg:items-center xl:items-center gap-[0] lg:gap-[20px] xl:gap-[20px] w-[258px] lg:w-[510px] lg:h-[162.42px] xl:w-[718px] xl:h-[209px] lg:mx-auto xl:mx-0">
                     
-                    {/* Мобильная Строка Фото+Инфо / Планшетно-Десктопная Левая Колонка */}
+                    {/* Мобільний Рядок Фото+Інфо / Планшетно-Десктопна Ліва Колонка */}
                     <div className="flex flex-col lg:flex-col xl:flex-col justify-between lg:justify-center items-start lg:items-center xl:items-end w-[258px] lg:w-[157px] lg:h-[162.42px] xl:w-[204px] xl:h-[209px] gap-[10px] lg:gap-[15px] xl:gap-[10px]">
                       
-                      {/* Контейнер Картинки (и чекбокса на десктопе/планшете) */}
+                      {/* Контейнер Картинки (і чекбокса на десктопі/планшеті) */}
                       <div className="flex flex-row items-center gap-[23px] w-full xl:w-[204px] lg:justify-center xl:justify-center">
                         {/* Чекбокс ДЕСКТОП/ПЛАНШЕТ */}
                         <button 
@@ -158,14 +158,14 @@ const CartPage = () => {
                           )}
                         </button>
 
-                        {/* Мобильная Строка: Название + Вес (слева от картинки) */}
+                        {/* Мобільний Рядок: Назва + Вага (зліва від картинки) */}
                         <div className="flex flex-row lg:hidden justify-between items-start w-[258px] h-[89px] gap-[33px]">
-                          {/* Изображение */}
+                          {/* Зображення */}
                           <div className="w-[119px] h-[89px] bg-white rounded-[10px] flex-shrink-0 overflow-hidden mx-auto lg:mx-0">
                             <img src={product.images?.[0]?.url || product.img || '/placeholder.png'} alt={product.name} className="w-full h-full object-cover" />
                           </div>
 
-                          {/* МОБИЛЬНАЯ ИНФО (Название + Вес) */}
+                          {/* МОБІЛЬНА ІНФО (Назва + Вага) */}
                           <div className="flex flex-col items-start w-[123px] h-[59px] gap-[10px] mx-auto">
                             <h3 className="font-sans font-medium text-[14px] leading-[17px] text-[#705A5A] w-[123px] h-[34px] line-clamp-2">
                               {product.name}
@@ -177,13 +177,13 @@ const CartPage = () => {
                           </div>
                         </div>
 
-                        {/* Изображение ДЛЯ ПЛАНШЕТА/ДЕСКТОПА */}
+                        {/* Зображення ДЛЯ ПЛАНШЕТА/ДЕСКТОПА */}
                         <div className="hidden lg:block w-[157px] h-[117.42px] xl:w-[151px] xl:h-[136px] bg-white rounded-[10px] flex-shrink-0 overflow-hidden mx-auto lg:mx-0">
                           <img src={product.images?.[0]?.url || product.img || '/placeholder.png'} alt={product.name} className="w-full h-full object-cover" />
                         </div>
                       </div>
 
-                      {/* Управление количеством (Десктоп/Планшет) */}
+                      {/* Керування кількістю (Десктоп/Планшет) */}
                       <div className="hidden lg:flex lg:flex-row xl:flex-col justify-center items-center lg:gap-[18px] xl:gap-[11px] lg:w-[157px] lg:h-[30px] xl:w-[157px] xl:h-[63px] lg:ml-[53px] xl:ml-0">
                         <div className="flex flex-row justify-center items-center gap-[18px] w-[157px] h-[30px]">
                           <button 
@@ -209,10 +209,10 @@ const CartPage = () => {
 
                     </div>
 
-                    {/* Мобильная Строка Цены+Контролов / Планшетно-Десктопная Правая Колонка */}
+                    {/* Мобільний Рядок Ціни+Контролів / Планшетно-Десктопна Права Колонка */}
                     <div className="flex flex-col items-end lg:items-start lg:justify-between xl:justify-center w-[258px] h-[47px] lg:w-[333px] lg:h-[162px] xl:w-[243px] xl:h-[163px] gap-[0] lg:gap-[40px] xl:gap-[34px] self-stretch xl:self-auto">
                       
-                      {/* Lg/Xl ИНФО (Название + Вес) - Скрыто на мобилке */}
+                      {/* Lg/Xl ІНФО (Назва + Вага) - Приховано на мобілці */}
                       <div className="hidden lg:flex flex-col justify-center items-start lg:gap-[10px] xl:gap-[14px] lg:w-[226px] lg:h-[69px] xl:w-[243px] xl:h-[75px] lg:mx-auto xl:mx-0">
                         <div className="flex flex-col items-start gap-[6px] lg:w-[226px] xl:w-[243px] lg:h-[44px] xl:h-[44px]">
                           <h3 className="font-sans font-light lg:text-[18px] xl:text-[18px] lg:leading-[22px] xl:leading-[22px] text-[#705A5A] w-full line-clamp-2">
@@ -240,7 +240,7 @@ const CartPage = () => {
                         
                         <div className="flex flex-row justify-between lg:justify-start items-center lg:items-center w-[258px] h-[30px] lg:w-full mt-[10px] lg:mt-[5px] xl:mt-[5px]">
                           
-                          {/* МОБИЛЬНОЕ Управление счетчиком */}
+                          {/* МОБІЛЬНЕ Керування лічильником */}
                           <div className="flex flex-row lg:hidden justify-center items-center h-[30px] gap-[8px] w-[119px]">
                             <button 
                               onClick={() => updateQuantity(pid, Math.max(1, item.quantity - 1))}
@@ -259,7 +259,7 @@ const CartPage = () => {
                             </button>
                           </div>
 
-                          {/* Итоговая цена */}
+                          {/* Підсумкова ціна */}
                           <span className="font-sans font-semibold text-[18px] lg:text-[18px] xl:text-[24px] leading-[22px] lg:leading-[22px] xl:leading-[29px] text-[#705A5A] w-[68px] lg:w-[73px] lg:h-[22px] text-center lg:text-left whitespace-nowrap">
                             {currentItemPrice * item.quantity} грн
                           </span>
@@ -274,7 +274,7 @@ const CartPage = () => {
             );
             })}
 
-            {/* Плашка бесплатной доставки */}
+            {/* Плашка безкоштовної доставки */}
             <div className="box-border flex flex-col lg:flex-row justify-center items-center px-[20px] py-[25px] lg:px-[20px] lg:gap-[25px] w-full lg:w-[595px] lg:h-[99px] xl:w-full border border-choco-light rounded-[20px]">
               <div className="flex flex-row lg:justify-between items-center gap-[20px] lg:gap-[20px] xl:gap-[283px] w-full lg:w-[555px] xl:w-full text-choco-light">
                 <div className="flex flex-row items-center gap-[20px] mx-auto lg:mx-0 w-full lg:w-[317px] lg:h-[44px]">
@@ -294,10 +294,10 @@ const CartPage = () => {
             
           </div>
 
-          {/* ПРАВАЯ КОЛОНКА / МОБИЛЬНЫЙ НИЗ */}
+          {/* ПРАВА КОЛОНКА / МОБІЛЬНИЙ НИЗ */}
           <div className="flex flex-col w-full lg:w-[349px] xl:w-[425px] lg:h-[721px] xl:h-[774.7px] gap-[40px] lg:gap-[60px] xl:gap-[115px] lg:justify-start xl:justify-center mx-auto lg:mx-0">
             
-            {/* Дополнительные упаковки */}
+            {/* Додаткові упаковки */}
             <div className="flex flex-col gap-[20px] lg:gap-[40px] xl:gap-[40px] w-full lg:w-[349px] xl:w-[425px] lg:h-[483px] xl:h-[483px]">
               
               {/* Заголовки */}
@@ -315,7 +315,7 @@ const CartPage = () => {
                 
                 {/* Пакет 1 */}
                 <div className="flex flex-row justify-center items-center gap-[15px] lg:gap-[16px] xl:gap-[16px] w-full lg:w-[349px] xl:w-[341px] lg:h-[166px] xl:h-[166px]">
-                  {/* Кнопка выбора */}
+                  {/* Кнопка вибору */}
                   <button 
                     onClick={() => togglePackaging(1)}
                     className={`flex-shrink-0 box-border flex justify-center items-center w-[30px] h-[30px] lg:w-[30px] lg:h-[30px] xl:w-[39px] xl:h-[39px] rounded-[56px] transition-colors relative pointer-events-auto ${selectedPackagings[1] ? 'bg-wine-red text-[#F5F7F8] border-none hover:opacity-90' : 'border-[0.5px] border-[rgba(59,59,59,0.85)] text-black hover:bg-black/5'}`}
@@ -331,7 +331,7 @@ const CartPage = () => {
                     )}
                   </button>
                   
-                  {/* Правая часть пакета */}
+                  {/* Права частина пакета */}
                   <div className="flex flex-col justify-center items-start gap-[10px] w-full lg:w-[284px] xl:w-[284px] lg:h-[166px] xl:h-[166px]">
                     <div className="flex flex-row items-start gap-[10px] w-full lg:w-[264px] xl:w-[283px] lg:h-[125px] xl:h-[125px]">
                       <div className="flex flex-col justify-center items-center w-[80px] h-[80px] lg:w-[140px] lg:h-[125px] xl:w-[160px] xl:h-[142px] mt-[-10px] lg:mt-0 xl:mt-0 xl:gap-[10px] bg-transparent flex-shrink-0">
@@ -369,7 +369,7 @@ const CartPage = () => {
 
                 {/* Пакет 2 */}
                 <div className="flex flex-row justify-center items-center gap-[15px] lg:gap-[16px] xl:gap-[16px] w-full lg:w-[349px] xl:w-[341px] lg:h-[166px] xl:h-[166px]">
-                  {/* Кнопка выбора */}
+                  {/* Кнопка вибору */}
                   <button 
                     onClick={() => togglePackaging(2)}
                     className={`flex-shrink-0 flex justify-center items-center w-[30px] h-[30px] lg:w-[30px] lg:h-[30px] xl:w-[39px] xl:h-[39px] rounded-[56px] transition-colors relative pointer-events-auto ${selectedPackagings[2] ? 'bg-wine-red text-[#F5F7F8] border-none hover:opacity-90' : 'border-[0.5px] border-[rgba(59,59,59,0.85)] text-black hover:bg-black/5'}`}
@@ -385,7 +385,7 @@ const CartPage = () => {
                     )}
                   </button>
                   
-                  {/* Правая часть пакета */}
+                  {/* Права частина пакета */}
                   <div className="flex flex-col justify-center items-start gap-[10px] lg:gap-[10px] w-full lg:w-[284px] xl:w-[284px] lg:h-[166px] xl:h-[166px]">
                     <div className="flex flex-row items-start gap-[10px] lg:gap-[10px] w-full lg:w-[264px] xl:w-[284px] lg:h-[125px] xl:h-[125px]">
                       <div className="flex flex-col justify-center items-center w-[80px] h-[80px] lg:w-[140px] lg:h-[125px] xl:w-[160px] xl:h-[142px] mt-[-10px] lg:mt-0 xl:mt-0 xl:gap-[10px] bg-transparent flex-shrink-0">
@@ -424,8 +424,8 @@ const CartPage = () => {
               </div>
             </div>
 
-            {/* Карточка оформления заказа */}
-            {/* На мобильных она фиксируется над нижним меню, на десктопе - статично */}
+            {/* Картка оформлення замовлення */}
+            {/* На мобільних вона фіксується над нижнім меню, на десктопі - статично */}
             <div className="fixed bottom-[107px] sm:bottom-0 left-0 w-full z-40 bg-gradient-to-t from-[rgba(245,238,224,1)] via-[#F5EEE0] to-transparent pt-[40px] pb-[20px] px-[16px] lg:static lg:bg-none lg:p-0 xl:static xl:bg-none xl:p-0">
               <div className="bg-dark-creamy lg:bg-transparent xl:bg-transparent rounded-[10px] lg:rounded-none xl:rounded-none p-[25px_15px_20px] lg:p-[0px_42px] xl:p-[0px_42px] flex flex-col gap-[20px] lg:gap-[16px] xl:gap-[25px] mx-auto shadow-lg lg:shadow-none xl:shadow-none w-full lg:w-[349px] lg:h-[151px] xl:w-[425px] xl:h-[164px] lg:items-center xl:items-center">
                 

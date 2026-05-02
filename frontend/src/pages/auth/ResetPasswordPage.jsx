@@ -64,10 +64,10 @@ const ResetPasswordPage = () => {
     setErrors({ ...errors, [field]: validateField(field, value) })
   }
 
-  // Проверка готовности формы
+  // Проверка готовности форми
   const isSubmitEnabled = resetCode.length === 6 && newPassword && !errors.newPassword
 
-  // Обработка отправки формы
+  // Обработка отправки форми
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!isSubmitEnabled) return
@@ -84,7 +84,7 @@ const ResetPasswordPage = () => {
   const handleResendCode = async () => {
     try {
       await forgotPassword(email)
-      setTimeLeft(60) // 1 минута до следующей попытки (защита от спама)
+      setTimeLeft(60) // 1 минута до следующей попитки (защита от спама)
       setResetCode('') // Очищаем поле ввода
     } catch {
       // Ошибка обработана в store

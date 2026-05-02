@@ -3,21 +3,21 @@ import { SearchIcon } from '../../icons';
 import useFilterStore from '../../../stores/useFilterStore';
 import useFilterDebounce from '../../../hooks/useFilterDebounce';
 
-// Компонент поиска товаров с debouncing
+// Компонент пошуку товарів з debouncing
 
 const SearchFilter = () => {
   const { appliedFilters, setSearchFilter } = useFilterStore();
   const [searchQuery, setSearchQuery] = useState(appliedFilters.search || '');
   
-  // Используем debounce hook: 500мс задержка, минимум 4 символа (или 0 для сброса)
+  // Використовуємо debounce hook: 500мс затримка, мінімум 4 символи (або 0 для скидання)
   const debouncedQuery = useFilterDebounce(searchQuery, 500, 4);
 
-  // Синхронизируем локальное состояние с глобальным
+  // Синхронізуємо локальний стан з глобальним
   useEffect(() => {
     setSearchQuery(appliedFilters.search || '');
   }, [appliedFilters.search]);
 
-  // Применяем debounced поисковый запрос
+  // Застосовуємо debounced пошуковий запит
   useEffect(() => {
     setSearchFilter(debouncedQuery);
   }, [debouncedQuery, setSearchFilter]);

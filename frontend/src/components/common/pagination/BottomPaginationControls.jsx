@@ -1,14 +1,14 @@
 import { PaginationLeftArrow, PaginationRightArrow } from '../../icons';
 
 /**
- * Нижний контейнер пагинации - кнопки навигации по страницам
- * Переиспользуемый компонент для разных типов сущностей
+ * Нижній контейнер пагінації - кнопки навігації по сторінках
+ * Перевикористовуваний компонент для різних типів сутностей
  * 
- * @param {number} currentPage - Текущая страница
- * @param {number} totalPages - Общее количество страниц
- * @param {Function} onPageChange - Callback для изменения страницы
- * @param {string} className - Дополнительные CSS классы
- * @param {boolean} scrollToTop - Прокручивать ли к началу при смене страницы
+ * @param {number} currentPage - Поточна сторінка
+ * @param {number} totalPages - Загальна кількість сторінок
+ * @param {Function} onPageChange - Callback для зміни сторінки
+ * @param {string} className - Додаткові CSS класи
+ * @param {boolean} scrollToTop - Чи прокручувати до початку при зміні сторінки
  */
 const BottomPaginationControls = ({
   currentPage,
@@ -17,21 +17,21 @@ const BottomPaginationControls = ({
   className = '',
   scrollToTop = true
 }) => {
-  // Не показываем, если только одна страница или меньше
+  // Не показуємо, якщо тільки одна сторінка або менше
   if (totalPages <= 1) return null;
 
-  // Генерируем номера страниц для отображения
+  // Генеруємо номери сторінок для відображення
   const getPageNumbers = () => {
     const pages = [];
-    const maxVisiblePages = 3; // Максимум показываем 3 номера страниц для компактности
+    const maxVisiblePages = 3; // Максимум показуємо 3 номери сторінок для компактності
     
     if (totalPages <= maxVisiblePages) {
-      // Если общее количество страниц меньше максимума, показываем все
+      // Якщо загальна кількість сторінок менша за максимум, показуємо всі
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Показываем текущую и соседние страницы
+      // Показуємо поточну і сусідні сторінки
       const startPage = Math.max(1, currentPage - 1);
       const endPage = Math.min(totalPages, currentPage + 1);
       
@@ -39,7 +39,7 @@ const BottomPaginationControls = ({
         pages.push(i);
       }
       
-      // Добавляем многоточие если нужно
+      // Додаємо три крапки якщо потрібно
       if (startPage > 1) {
         pages.unshift('...');
         pages.unshift(1);
@@ -57,7 +57,7 @@ const BottomPaginationControls = ({
     if (typeof page === 'number' && page !== currentPage) {
       onPageChange(page);
       
-      // Прокручиваем к началу каталога если включено
+      // Прокручуємо до початку каталогу якщо увімкнено
       if (scrollToTop) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -80,7 +80,7 @@ const BottomPaginationControls = ({
           <PaginationLeftArrow />
         </button>
 
-        {/* Номера страниц */}
+        {/* Номери сторінок */}
         <div className="flex items-center gap-[12px]">
           {getPageNumbers().map((page, index) => (
             <button

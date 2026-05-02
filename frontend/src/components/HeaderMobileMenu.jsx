@@ -11,13 +11,13 @@ const HeaderMobileMenu = ({
 }) => {
   return (
     <>
-      {/* Нижнее мобильное меню - показывается только на <640px */}
+      {/* Нижнє мобільне меню - показується тільки на <640px */}
       <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 h-[77px] bg-creamy px-[15px] py-[18px] shadow-[0_-2px_10px_rgba(0,0,0,0.05)] border-t border-choco-light/10">
         <div className="flex items-center justify-between">
           
-          {/* Домой */}
+          {/* Головна */}
           <button
-            aria-label="Главная"
+            aria-label="Головна"
             onClick={onHomeClick}
             className="flex w-[48px] flex-col items-center gap-[2px] transition duration-300 hover:opacity-80"
           >
@@ -25,9 +25,9 @@ const HeaderMobileMenu = ({
             <span className="text-center text-[10px] font-light leading-[12px] text-choco-light">Головна</span>
           </button>
 
-          {/* Избранное */}
+          {/* Обране */}
           <button
-            aria-label="Избранное"
+            aria-label="Обране"
             onClick={onFavoritesClick}
             className="flex w-[41px] flex-col items-center gap-[1px] transition duration-300 hover:opacity-80 relative"
           >
@@ -54,9 +54,9 @@ const HeaderMobileMenu = ({
             <span>Каталог</span>
           </button>
 
-          {/* Корзина */}
+          {/* Кошик */}
           <button
-            aria-label="Корзина"
+            aria-label="Кошик"
             onClick={onCartClick}
             className="flex w-[36px] flex-col items-center gap-[3px] transition duration-300 hover:opacity-80 relative"
           >
@@ -73,7 +73,7 @@ const HeaderMobileMenu = ({
             <span className="text-center text-[10px] font-light leading-[12px] text-choco-light mt-[1px]">Кошик</span>
           </button>
 
-          {/* Меню (больше) */}
+          {/* Меню (більше) */}
           <div className="sm:hidden">
             <button 
               onClick={onMoreClick}

@@ -6,11 +6,11 @@ const FavoriteButton = ({ productId, className = "" }) => {
   const { user, openAuthModal } = useUserStore();
   const { mutate: toggleFavorite } = useToggleFavorite();
   
-  // Проверяем, есть ли товар в избранном (user.favorites может быть массивом объектов или строк ID)
+  // Перевіряємо, чи є товар в обраному (user.favorites може бути масивом об'єктів або рядків ID)
   const isFavorite = user?.favorites?.some((fav) => (fav._id || fav) === productId);
 
   const handleToggle = (e) => {
-    e.preventDefault(); // Если кнопка внутри <Link src="...">, предотвращаем переход
+    e.preventDefault(); // Якщо кнопка всередині <Link src="...">, запобігаємо переходу
     e.stopPropagation();
     
     if (!user) {

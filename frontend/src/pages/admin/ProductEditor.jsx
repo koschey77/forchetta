@@ -10,7 +10,7 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
   const queryClient = useQueryClient()
   const isEdit = productId !== null
   
-  // Состояние формы
+  // Стан форми
   const [formData, setFormData] = useState({
     name: '',
     summary: '',
@@ -34,7 +34,7 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
   })
 
   // Состояния для изображений
-  const [selectedImages, setSelectedImages] = useState([]) // Новые файлы
+  const [selectedImages, setSelectedImages] = useState([]) // Нові файли
   const [existingImages, setExistingImages] = useState([]) // Существующие изображения (при редактировании)
   const [isDragging, setIsDragging] = useState(false)
 
@@ -43,7 +43,7 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
     queryKey: ['product', productId],
     queryFn: () => productsAPI.getById(productId),
     enabled: isEdit && !!productId,
-    staleTime: 0, // Всегда загружаем свежие данные для редактирования
+    staleTime: 0, // Завжди завантажуємо свіжі дані для редагування
     refetchOnMount: true, // Перезагружаем при каждом монтировании
   })
 
@@ -62,7 +62,7 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
         : productsAPI.create(data)
     },
     onSuccess: () => {
-      // Инвалидируем кэши: общий список + конкретный товар
+      // Інвалідуємо кеші: загальний список + конкретний товар
       queryClient.invalidateQueries({ queryKey: ['products'] })
       queryClient.invalidateQueries({ queryKey: ['admin-products'] })
       if (isEdit) {
@@ -76,7 +76,7 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
     }
   })
 
-  // Заполнение формы при загрузке
+  // Заповнення форми при завантаженні
   useEffect(() => {
     if (product && isEdit) {
       setFormData({
@@ -101,9 +101,9 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
         images: product.images || []
       })
       
-      // Загружаем существующие изображения и очищаем новые
+      // Загружаем существующие изображения и очищаем новие
       setExistingImages(product.images || [])
-      setSelectedImages([]) // Очищаем выбранные файлы при загрузке
+      setSelectedImages([]) // Очищаем вибранние файли при загрузке
     } else if (!isEdit) {
       // Очищаем состояние при переходе в режим создания
       setExistingImages([])
@@ -138,19 +138,19 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
     }
 
     try {
-      // Конвертируем новые изображения в base64
+      // Конвертируем новие изображения в base64
       const base64Images = await imageService.filesToBase64(selectedImages)
       
-      // Подготавливаем данные правильно для backend updateProduct
+      // Подготавливаем данние правильно для backend updateProduct
       const dataToSave = {
         ...formData,
         price: Number(formData.price),
         discountPrice: formData.discountPrice ? Number(formData.discountPrice) : 0,
         weight: formData.weight ? Number(formData.weight) : 0,
         qty: Number(formData.qty),
-        // Для редактирования разделяем существующие и новые изображения
+        // Для редактирования разделяем существующие и новие изображения
         ...(isEdit ? {
-          existingImages: existingImages, // Объекты {url, public_id, version}
+          existingImages: existingImages, // Обекти {url, public_id, version}
           images: base64Images            // Base64 строки
         } : {
           images: base64Images            // Для создания только base64
@@ -247,7 +247,7 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
             />
           </div>
           
-          {/* Превью существующих и новых изображений */}
+          {/* Превью существующих и нових изображений */}
           <div className="grid grid-cols-4 lg:flex lg:flex-wrap lg:justify-center lg:items-center lg:content-center gap-[11px] lg:gap-x-[20px] lg:gap-y-[11px] lg:w-[226px] lg:h-[284px]">
             
             {/* Существующие изображения */}
@@ -268,7 +268,7 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
               </div>
             ))}
             
-            {/* Новые изображения */}
+            {/* Новие изображения */}
             {selectedImages.map((file, index) => (
               <div key={`new-${index}`} className="relative w-full lg:w-[103px] h-[80px] lg:h-[135px] rounded-[5px] lg:rounded-[24px] overflow-hidden group">
                 <img 
@@ -286,7 +286,7 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
               </div>
             ))}
             
-            {/* Пустые слоты */}
+            {/* Пустие слоти */}
             {Array.from({ length: Math.max(0, 4 - totalImages) }).map((_, i) => (
               <div key={`empty-${i}`} className="w-full lg:w-[103px] h-[80px] lg:h-[135px] border-2 border-dashed border-choco-light/50 rounded-[5px] lg:rounded-[24px] bg-light-creamy flex flex-col items-center justify-center lg:gap-[28px] lg:p-[20px] lg:px-[30px]">
                 <div className="w-[50px] h-[50px] lg:w-[40px] lg:h-[40px] rounded-full border border-choco-light/50 flex items-center justify-center">
@@ -468,7 +468,7 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
               </div>
             </section>
 
-            {/* Секция: Дополнительные свойства */}
+            {/* Секция: Дополнительние свойства */}
             <section className="space-y-[24px]">
               <h2 className="hidden lg:block font-cormorant text-[30px] leading-[36px] text-choco-dark">Умови зберігання та інші варіанти</h2>
               
@@ -498,7 +498,7 @@ const ProductEditor = ({ productId = null, onCancel, onSuccess }) => {
                   </div>
                 </div>
 
-                {/* Аллергены */}
+                {/* Аллергени */}
                 <div className="w-full lg:w-[183px] space-y-[15px]">
                   <label className="block text-[16px] text-choco-light font-light">Містить алергени</label>
                   <div className="space-y-[15px]">

@@ -15,11 +15,17 @@ export const getAllProducts = async (req, res) => {
       sortOrder = 'asc',
       page = 1, 
       limit = 12,
-      search  // Новый параметр поиска
+      search,  // Новый параметр поиска
+      ids      // Новый параметр для просмотра
     } = req.query;
 
     // Строим объект фильтрации
     let filter = {};
+
+    // Фильтр по ID
+    if (ids) {
+      filter._id = { $in: ids.split(',') };
+    }
 
     // Фильтр по категориям
     if (categories) {

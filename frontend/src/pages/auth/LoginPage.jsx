@@ -21,7 +21,7 @@ const LoginPage = () => {
    * Обработка результатов Google OAuth аутентификации
    * 
    * После OAuth Google перенаправляет пользователя обратно на frontend
-   * с URL параметрами, указывающими на результат аутентификации:
+   * с URL параметрами, указивающими на результат аутентификации:
    * - ?auth=success - успешная аутентификация
    * - ?auth=error&message=... - ошибка аутентификации  
    * - ?auth=cancelled - пользователь отменил OAuth
@@ -83,7 +83,7 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // Проверяем валидность формы перед отправкой
+    // Проверяем валидность форми перед отправкой
     if (!isSubmitEnabled) return
     login(email, password)
   }

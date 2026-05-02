@@ -1,7 +1,7 @@
 import { videoService } from '../services/videoService'
 
 export default function HomePage() {
-  // Исходная ссылка (Cloudinary)
+  // Початкове посилання (Cloudinary)
   const heroVideoUrl = "https://res.cloudinary.com/dmdlogqqf/video/upload/v1775980887/video_2026-04-12_08-59-41_wojipw.mp4"
 
   return (

@@ -8,18 +8,18 @@ class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    // Обновляем состояние с тем, чтобы следующий рендер показал запасной UI.
+    // Оновлюємо стан для того, щоб наступний рендер показав запасний UI.
     return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
-    // Можно также сохранить информацию об ошибке в службу логирования
+    // Можна також зберегти інформацію про помилку у службу логування
     console.error("ErrorBoundary спіймав помилку:", error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
-      // Вы можете отрендерить любой запасной UI
+      // Ви можете відрендерити будь-який запасний UI
       return <Error500 />;
     }
 

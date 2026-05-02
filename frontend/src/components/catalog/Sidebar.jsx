@@ -1,4 +1,4 @@
-// Импорты только для новой композиционной архитектуры
+// Імпорти тільки для нової композиційної архітектури
 import FilterControls from './filters/FilterControls';
 import SearchFilter from './filters/SearchFilter';
 import CategoryFilter from './filters/CategoryFilter';

@@ -12,7 +12,7 @@ import { TopPaginationControls, BottomPaginationControls } from '../../component
 const ProductList = ({ onEditProduct }) => {
   const queryClient = useQueryClient()
   
-  // Фильтры для админки
+  // Фільтри для адмінки
   const { appliedFilters, currentPage, itemsPerPage, setItemsPerPage, hasAppliedFilters } = useFilterStore()
   
   // TanStack Query для загрузки товаров
@@ -27,11 +27,11 @@ const ProductList = ({ onEditProduct }) => {
       page: currentPage,
       limit: itemsPerPage
     }),
-    staleTime: 0, // Всегда актуальные данные в админке
+    staleTime: 0, // Завжди актуальні дані в адмінці
     refetchOnWindowFocus: true, // Обновлять при фокусе окна
   })
   
-  // Извлекаем данные из ответа API
+  // Витягуємо дані з відповіді API
   const products = productsResponse?.products || []
   const totalItems = productsResponse?.pagination?.total || 0
   const totalPages = productsResponse?.pagination?.totalPages || 0
@@ -146,7 +146,7 @@ const ProductList = ({ onEditProduct }) => {
 
         {/* Row 3: Счетчик товаров + Пагинация (соответствует структуре каталога) */}
         <div className="flex flex-col gap-4 md:gap-0 md:flex-row md:items-center md:justify-between mb-6">
-          {/* Mobile: элементы в одной строке */}
+          {/* Mobile: елементи в одному рядку */}
           <div className="flex flex-row justify-between items-center gap-2 md:hidden">
             {/* Счетчик товаров */}
             <div className="text-base font-montserrat font-semibold text-choco-light flex-1">

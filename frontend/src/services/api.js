@@ -19,6 +19,8 @@ export const productsAPI = {
         priceMax: params.priceRange?.[1],
         // Поиск
         search: params.search?.trim(),
+        // Выборка по ID (например для просмотренных товаров)
+        ids: params.ids?.join(','),
       }
     });
     return response.data;
