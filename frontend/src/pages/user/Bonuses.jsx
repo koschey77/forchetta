@@ -1,10 +1,57 @@
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { useUserStore } from '../../stores/useUserStore';
+import { orderAPI } from '../../services/api';
 
 const Bonuses = () => {
   const { user } = useUserStore();
   // Отримуємо кількість бонусів користувача, або 0
   const bonusPoints = user?.bonusPoints || 0;
+
+  const { data: myOrders, isLoading } = useQuery({
+    queryKey: ['my-orders'],
+    queryFn: orderAPI.getMyOrders,
+    staleTime: 60 * 1000,
+  });
+
+  const formatDate = (dateString) => new Date(dateString).toLocaleDateString('uk-UA', { 
+    day: '2-digit', 
+    month: '2-digit', 
+    year: 'numeric' 
+  });
+
+  const bonusHistory = myOrders?.reduce((acc, order) => {
+    const date = formatDate(order.createdAt);
+    
+    // Створення об'єкта для списаних бонусів
+    if (order.appliedBonuses && order.appliedBonuses > 0) {
+      acc.push({
+        id: `${order._id}-applied`,
+        date,
+        action: 'Списання (оплата замовлення)',
+        orderStr: `№${order.orderNumber || order._id.slice(-6)}`,
+        amount: `- ${order.appliedBonuses} балів`,
+        type: 'minus',
+        timestamp: new Date(order.createdAt).getTime()
+      });
+    }
+    
+    // Створення об'єкта для нарахованих бонусів (кешбек)
+    if (order.earnedBonuses && order.earnedBonuses > 0) {
+      acc.push({
+        id: `${order._id}-earned`,
+        date,
+        action: 'Кешбек за замовлення',
+        orderStr: `№${order.orderNumber || order._id.slice(-6)}`,
+        amount: `+ ${order.earnedBonuses} балів`,
+        type: 'plus',
+        // Додаємо 1мс, щоб нарахування показувалось вище (пізніше) за списання в межах одного замовлення
+        timestamp: new Date(order.createdAt).getTime() + 1 
+      });
+    }
+    
+    return acc;
+  }, []).sort((a, b) => b.timestamp - a.timestamp) || [];
 
   return (
     <div className="flex flex-col items-center px-[15px] sm:px-[30px] pt-[20px] pb-[60px] w-full gap-[30px] sm:gap-[45px] max-w-[1440px] mx-auto">
@@ -93,6 +140,53 @@ const Bonuses = () => {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Історія бонусів */}
+      <div className="flex flex-col items-center py-[20px] px-[15px] md:px-[6px] gap-[20px] w-full max-w-[375px] md:max-w-[964px] min-h-[510px] md:min-h-[545px] rounded-[10px] mt-[10px] md:mt-[20px]">
+        {isLoading ? (
+           <div className="flex justify-center py-10 font-montserrat text-choco-light">Завантаження історії...</div>
+        ) : bonusHistory.length > 0 ? (
+          bonusHistory.map((item) => (
+            <div 
+              key={item.id} 
+              className="flex flex-row justify-between items-start px-[12px] py-[10px] gap-[5px] md:gap-[52px] w-full max-w-[345px] md:max-w-[644px] min-h-[85px] border border-choco-light/50 rounded-[15px] box-border"
+            >
+              {/* Дата */}
+              <div className="flex flex-col items-start gap-[5px] flex-shrink-0 w-[49px] md:w-[83px]">
+                <span className="font-montserrat font-medium md:font-normal text-[12px] md:text-[16px] leading-[15px] md:leading-[20px] text-choco-light h-[15px] md:h-[20px]">Дата</span>
+                <span className="font-montserrat font-light md:font-semibold text-[10px] md:text-[16px] leading-[12px] md:leading-[20px] text-choco-light flex items-center h-auto md:h-[40px] mt-[2px] md:mt-0">
+                  {item.date}
+                </span>
+              </div>
+
+              {/* Опис */}
+              <div className="flex flex-col items-start gap-[5px] flex-shrink-0 w-[100px] md:w-[293px]">
+                <span className="font-montserrat font-medium md:font-normal text-[12px] md:text-[16px] leading-[15px] md:leading-[20px] text-choco-light h-[15px] md:h-[20px]">Опис</span>
+                <div className="font-montserrat font-light md:font-semibold text-[12px] md:text-[16px] leading-[15px] md:leading-[20px] text-choco-light flex flex-col justify-center h-auto md:h-[40px] mt-[2px] md:mt-0">
+                  <span>{item.action}</span>
+                  <span className="opacity-80 text-[10px] md:text-[14px] leading-tight">{item.orderStr}</span>
+                </div>
+              </div>
+
+              {/* Сума */}
+              <div className="flex flex-col items-start md:items-center gap-[5px] flex-shrink-0 w-[115px] md:w-[144px]">
+                <div className="flex flex-row items-center md:pl-[10px] h-[15px] md:h-[20px]">
+                  <span className="font-montserrat font-medium md:font-normal text-[12px] md:text-[16px] leading-[15px] md:leading-[20px] text-choco-light">Сума</span>
+                </div>
+                <div className={`flex flex-row justify-center items-center px-[10px] md:px-[30px] w-[115px] md:w-[144px] h-[40px] rounded-[31px] ${item.type === 'minus' ? 'bg-[#767676]' : 'bg-wine-red'}`}>
+                  <span className="font-montserrat font-medium md:font-semibold text-[14px] md:text-[16px] leading-[17px] md:leading-[20px] text-creamy whitespace-nowrap truncate text-center">
+                    {item.amount}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="flex justify-center py-10 font-montserrat text-choco-light text-center">
+            Історія бонусів порожня. Робіть замовлення та отримуйте кешбек!
+          </div>
+        )}
       </div>
 
       {/* Кнопка "До каталогу" */}

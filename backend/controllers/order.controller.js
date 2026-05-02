@@ -74,8 +74,21 @@ export const createOrder = async (req, res) => {
       return res.status(400).json({ message: "Недостатньо бонусів" });
     }
 
-    // Mock policy: Даємо бонуси відразу за купівлю (5% від загальної суми) 
-    const earnedBonuses = Math.floor(subtotal * 0.05);
+    // Динамічна система кешбеку:
+    // від 1500 грн - 15%
+    // від 1000 грн - 10%
+    // від 500 грн - 5%
+    // менше 500 грн - 0%
+    let cashbackPercent = 0;
+    if (subtotal >= 1500) {
+      cashbackPercent = 0.15;
+    } else if (subtotal >= 1000) {
+      cashbackPercent = 0.10;
+    } else if (subtotal >= 500) {
+      cashbackPercent = 0.05;
+    }
+    
+    const earnedBonuses = Math.floor(subtotal * cashbackPercent);
 
     // Створюємо заказ (поки що зі статусом pending / несплачено)
     const order = new Order({

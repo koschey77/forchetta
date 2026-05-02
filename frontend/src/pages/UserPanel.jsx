@@ -1,14 +1,14 @@
 import React from "react"
 import { useUserStore } from '../stores/useUserStore'
 import { Navigate, useSearchParams } from 'react-router-dom'
-import { ExitIcon, DropdownArrowIcon, CartIcon, HeartIcon, SearchIcon, DataIcon, AddressIcon, SupportIcon, FaqIcon, CoinIcon } from '../components/icons'
+import { ExitIcon, DropdownArrowIcon, CartIcon, HeartIcon, SearchIcon, DataIcon, AddressIcon, FaqIcon, CoinIcon } from '../components/icons'
 import { MenuDropdown } from '../components/ui/dropdowns'
 import { GeneralData, Favorites, Addresses, Orders, Bonuses, ViewedProducts } from './user'
 
 const UserPanel = () => {
   const { user, logout } = useUserStore()
   const [searchParams, setSearchParams] = useSearchParams()
-  const currentPage = searchParams.get('page') || 'general'
+  const rawPage = searchParams.get('page') || 'general'
   
   // Мапінг сторінок для dropdown меню
   const pageMapping = {
@@ -18,9 +18,11 @@ const UserPanel = () => {
     viewed: { name: "Переглянуті товари", icon: SearchIcon },
     addresses: { name: "Адреси доставки", icon: AddressIcon },
     bonus: { name: "Бонуси", icon: CoinIcon },
-    support: { name: "Допомога", icon: SupportIcon },
     faq: { name: "FAQs", icon: FaqIcon },
   }
+
+  // Перевіряємо чи існує сторінка, інакше скидаємо на general
+  const currentPage = pageMapping[rawPage] ? rawPage : 'general'
 
   // Опції для MenuDropdown
   const pageOptions = Object.entries(pageMapping).map(([key, page]) => ({
