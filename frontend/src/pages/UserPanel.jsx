@@ -3,7 +3,7 @@ import { useUserStore } from '../stores/useUserStore'
 import { Navigate, useSearchParams } from 'react-router-dom'
 import { ExitIcon, DropdownArrowIcon, CartIcon, HeartIcon, SearchIcon, DataIcon, AddressIcon, FaqIcon, CoinIcon } from '../components/icons'
 import { MenuDropdown } from '../components/ui/dropdowns'
-import { GeneralData, Favorites, Addresses, Orders, Bonuses, ViewedProducts } from './user'
+import { GeneralData, Favorites, Addresses, Orders, Bonuses, ViewedProducts, Faqs } from './user'
 
 const UserPanel = () => {
   const { user, logout } = useUserStore()
@@ -54,6 +54,8 @@ const UserPanel = () => {
         return <Addresses />
       case 'bonus':
         return <Bonuses />
+      case 'faq':
+        return <Faqs />
       default:
         // Тимчасова заглушка для сторінок профілю
         return (
