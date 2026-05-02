@@ -45,10 +45,6 @@ const HeaderSearch = ({ isMobile }) => {
     }
   }, [isOpen]);
 
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
-
   const handleClose = () => {
     setIsOpen(false);
     setSearchTerm('');
@@ -81,19 +77,24 @@ const HeaderSearch = ({ isMobile }) => {
   );
 
   return (
-    <div ref={containerRef} className={`relative flex items-center ${isOpen ? 'z-50' : 'z-auto'}`}>
-      {!isOpen ? (
-        <IconButton icon={SearchIcon} onClick={handleOpen} strokeWidth={isMobile ? 2 : 2.5} />
-      ) : (
-        <>
-          {/* Для мобильных: полноэкранный overlay на высоту хедера, для десктопа: расширяющийся инпут */}
-          <div className={`
-            ${isMobile 
-              ? 'fixed inset-y-0 left-0 right-0 h-[87px] bg-creamy px-[15px] flex items-center justify-between shadow-md' 
-              : 'absolute right-0 flex items-center bg-light-creamy border border-choco-light/30 rounded-full w-[300px] shadow-lg transition-all duration-300'
-            }
-          `}>
-            <form onSubmit={handleSubmit} className="flex-1 flex items-center w-full h-[40px] px-3 relative">
+    <div ref={containerRef} className="relative flex items-center">
+      <IconButton 
+        icon={SearchIcon} 
+        onClick={() => setIsOpen(!isOpen)} 
+        strokeWidth={isMobile ? 2 : 2.5} 
+      />
+
+      {isOpen && (
+        <div className={`
+          bg-creamy border border-choco-light/10 shadow-xl flex flex-col z-[100]
+          ${isMobile 
+            ? 'fixed top-[87px] left-0 w-full rounded-b-2xl border-x-0 border-t-0' 
+            : 'absolute top-[50px] right-0 w-[380px] rounded-2xl'
+          }
+        `}>
+          {/* Блок ввода текста */}
+          <div className="p-3 border-b border-choco-light/10">
+            <form onSubmit={handleSubmit} className="flex items-center w-full h-[45px] px-3 bg-light-creamy border border-choco-light/20 rounded-full relative">
               <SearchIcon className="text-choco-light/50 shrink-0 mr-2 w-5 h-5" strokeWidth={2} />
               
               <input
@@ -111,98 +112,86 @@ const HeaderSearch = ({ isMobile }) => {
                   type="button" 
                   onClick={() => setSearchTerm('')} 
                   className="p-1 hover:bg-dark-creamy/40 rounded-full transition-colors"
+                  aria-label="Очистити"
                 >
                   <CrossIcon className="w-4 h-4 text-choco-light shrink-0" strokeWidth={2} />
                 </button>
               )}
             </form>
-            
-            {isMobile && (
-              <button 
-                type="button" 
-                onClick={handleClose}
-                className="ml-3 text-choco-light text-figma-sm font-medium whitespace-nowrap"
-              >
-                Скасувати
-              </button>
-            )}
           </div>
 
-          {/* Выпадающий список (Dropdown) с результатами */}
-          {isOpen && searchTerm.length >= 2 && (
-            <div className={`
-              bg-creamy border border-choco-light/10 shadow-xl overflow-hidden flex flex-col z-[100]
-              ${isMobile 
-                ? 'fixed top-[87px] left-0 w-full rounded-b-2xl border-x-0 border-t-0' 
-                : 'absolute rounded-2xl top-[48px] right-0 w-[350px]'
-              }
-            `}>
-              {/* Показываем скелетон или результаты */}
-              {isLoading ? (
-                <div className="p-4 flex justify-center text-choco-light/70 text-figma-sm">
-                  Шукаємо...
-                </div>
-              ) : searchResults.length > 0 ? (
-                <div>
-                  <div className="max-h-[450px] overflow-y-auto overflow-x-hidden scrollbar-none">
-                    {searchResults.map((product) => (
-                      <button
-                        key={product._id}
-                        onClick={() => handleProductClick(product._id)}
-                        className="w-full flex items-center gap-3 p-3 border-b border-choco-light/10 hover:bg-light-creamy transition-colors text-left"
-                      >
-                        {/* Миниатюра */}
-                        <div className="w-[40px] h-[40px] rounded-lg overflow-hidden shrink-0 bg-dark-creamy">
-                          {product.images && product.images[0] ? (
-                            <img 
-                              src={product.images[0].url} 
-                              alt={product.name} 
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-choco-light text-[10px]">
-                              Без фото
-                            </div>
-                          )}
-                        </div>
-                        
-                        {/* Инфо */}
-                        <div className="flex-1 overflow-hidden">
-                          <h4 className="text-figma-sm font-medium text-choco-dark truncate">{product.name}</h4>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            {product.discountPrice > 0 ? (
-                              <>
-                                <span className="text-figma-xs font-bold text-wine-red">{product.discountPrice} ₴</span>
-                                <span className="text-[10px] line-through text-choco-light/60">{product.price} ₴</span>
-                              </>
-                            ) : (
-                              <span className="text-figma-xs font-bold text-choco-dark">{product.price} ₴</span>
-                            )}
-                            <span className="text-[10px] text-choco-light/70">• {product.weight} г</span>
-                          </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Кнопка "Смотреть все" */}
-                  <button 
-                    onClick={handleSubmit}
-                    className="w-full p-3 text-center text-figma-sm font-semibold text-choco-light bg-creamy border-t border-choco-light/10 hover:bg-dark-creamy/50 transition-colors"
+          {/* Блок результатов */}
+          <div className="min-h-[120px] max-h-[450px] overflow-y-auto overflow-x-hidden scrollbar-none">
+            {searchTerm.length < 2 ? (
+              <div className="p-8 text-center flex flex-col items-center justify-center opacity-60">
+                <SearchIcon className="w-8 h-8 text-choco-light mb-2" strokeWidth={1.5} />
+                <p className="text-figma-sm text-choco-light">
+                  Введіть назву, опис або<br/>інгредієнт для пошуку
+                </p>
+              </div>
+            ) : isLoading ? (
+              <div className="p-8 flex justify-center text-choco-light/70 text-figma-sm">
+                Шукаємо...
+              </div>
+            ) : searchResults.length > 0 ? (
+              <div>
+                {searchResults.map((product) => (
+                  <button
+                    key={product._id}
+                    onClick={() => handleProductClick(product._id)}
+                    className="w-full flex items-center gap-3 p-3 border-b border-choco-light/5 hover:bg-light-creamy transition-colors text-left"
                   >
-                    Всі результати ({data?.pagination?.total || 0})
+                    {/* Миниатюра */}
+                    <div className="w-[45px] h-[45px] rounded-lg overflow-hidden shrink-0 bg-dark-creamy">
+                      {product.images && product.images[0] ? (
+                        <img 
+                          src={product.images[0].url} 
+                          alt={product.name} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-choco-light text-[10px]">
+                          Без фото
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Инфо */}
+                    <div className="flex-1 overflow-hidden">
+                      <h4 className="text-figma-sm font-medium text-choco-dark truncate">{product.name}</h4>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        {product.discountPrice > 0 ? (
+                          <>
+                            <span className="text-figma-xs font-bold text-wine-red">{product.discountPrice} ₴</span>
+                            <span className="text-[10px] line-through text-choco-light/60">{product.price} ₴</span>
+                          </>
+                        ) : (
+                          <span className="text-figma-xs font-bold text-choco-dark">{product.price} ₴</span>
+                        )}
+                        <span className="text-[10px] text-choco-light/70">• {product.weight} г</span>
+                      </div>
+                    </div>
                   </button>
-                </div>
-              ) : (
-                <div className="p-6 text-center">
-                  <p className="text-figma-sm text-choco-light/70">
-                    За вашим запитом «{searchTerm}» нічого не знайдено.
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-        </>
+                ))}
+
+                {/* Кнопка "Смотреть все" */}
+                <button 
+                  onClick={handleSubmit}
+                  className="w-full p-3 text-center text-figma-sm font-semibold text-choco-light bg-creamy border-t border-choco-light/20 hover:bg-dark-creamy/50 transition-colors"
+                >
+                  Всі результати ({data?.pagination?.total || 0})
+                </button>
+              </div>
+            ) : (
+              <div className="p-8 text-center flex flex-col items-center justify-center">
+                <CrossIcon className="w-8 h-8 text-choco-light/40 mb-2" strokeWidth={1} />
+                <p className="text-figma-sm text-choco-light/70">
+                  За запитом «{searchTerm}»<br/>нічого не знайдено.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

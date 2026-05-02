@@ -6,7 +6,7 @@ import { Logo } from "./Logos/Logo.jsx"
 import { ProfileIcon, HeartIcon, CartIcon, DotsIcon, MenuIcon } from "./icons/index.jsx"
 import HeaderSearch from "./common/HeaderSearch.jsx"
 import HeaderMobileMenu from "./HeaderMobileMenu.jsx"
-import { MenuDropdown } from "./ui/dropdowns"
+import HeaderMenu from "./HeaderMenu.jsx"
 
 const NAV_ITEMS = [
   { value: "new", label: "Новинки" },
@@ -81,27 +81,11 @@ const CatalogButton = ({ onClick, className = "" }) => (
   </button>
 )
 
-const HeaderMenuDropdown = () => (
-  <div className="hidden sm:block">
-    <MenuDropdown
-      variant="navigation"
-      options={NAV_ITEMS}
-      selected={""}
-      onChange={(value) => console.log(value)}
-      showCheckmarks={false}
-      customTrigger={
-        <button className="h-[40px] w-[45px] flex items-center justify-center rounded-xl transition duration-300 hover:bg-dark-creamy/60">
-          <MenuIcon className="shrink-0" />
-        </button>
-      }
-    />
-  </div>
-)
-
 const Header = () => {
   const navigate = useNavigate()
   const { user, openAuthModal } = useUserStore()
   const cartItems = useCartStore((state) => state.cartItems)
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false)
 
   const cartItemsCount = cartItems.reduce((acc, item) => acc + (item.quantity || 1), 0)
   const favoritesCount = user?.favorites?.length || 0
@@ -216,11 +200,24 @@ const Header = () => {
               badgeCount={cartItemsCount}
             />
             
-            {/* Меню кнопка - показывается на sm+ (>=640px) */}
-            <HeaderMenuDropdown />
+            {/* Меню десктопа (Mega Menu Trigger) - показывается на sm+ */}
+            <div className="hidden sm:block">
+              <button 
+                onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
+                className={`h-[40px] w-[45px] flex items-center justify-center rounded-xl transition duration-300 hover:bg-dark-creamy/60 ${isMegaMenuOpen ? 'bg-dark-creamy/60' : ''}`}
+              >
+                <MenuIcon className="shrink-0 text-choco-light" />
+              </button>
+            </div>
             
           </div>
         </div>
+
+        {/* Выпадающее Mega Menu */}
+        <HeaderMenu 
+          isOpen={isMegaMenuOpen} 
+          onClose={() => setIsMegaMenuOpen(false)} 
+        />
       </header>
 
       {/* Мобильное нижнее меню - только <640px */}
@@ -231,6 +228,7 @@ const Header = () => {
         onHomeClick={handleLogoClick}
         favoritesCount={favoritesCount}
         cartItemsCount={cartItemsCount}
+        onMoreClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
       />
     </>
   )

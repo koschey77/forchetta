@@ -1,12 +1,4 @@
 import { DotsIcon, HeartIcon, CartIcon, MenuIcon, HomeIcon } from "./icons/index.jsx"
-import { MenuDropdown } from "./ui/dropdowns"
-
-const NAV_ITEMS = [
-  { value: "new", label: "Новинки" },
-  { value: "sets", label: "Набори" },
-  { value: "sales", label: "Акції" },
-  { value: "blog", label: "Журнал" }
-]
 
 const HeaderMobileMenu = ({ 
   onCatalogClick, 
@@ -14,12 +6,13 @@ const HeaderMobileMenu = ({
   onCartClick,
   onHomeClick,
   favoritesCount = 0,
-  cartItemsCount = 0
+  cartItemsCount = 0,
+  onMoreClick
 }) => {
   return (
     <>
       {/* Нижнее мобильное меню - показывается только на <640px */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 h-[67px] bg-creamy px-[15px] py-[12px] shadow-[0_-2px_10px_rgba(0,0,0,0.05)] border-t border-choco-light/10">
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 h-[77px] bg-creamy px-[15px] py-[18px] shadow-[0_-2px_10px_rgba(0,0,0,0.05)] border-t border-choco-light/10">
         <div className="flex items-center justify-between">
           
           {/* Домой */}
@@ -80,23 +73,17 @@ const HeaderMobileMenu = ({
             <span className="text-center text-[10px] font-light leading-[12px] text-choco-light mt-[1px]">Кошик</span>
           </button>
 
-          {/* Меню (больше) с MenuDropdown */}
+          {/* Меню (больше) */}
           <div className="sm:hidden">
-            <MenuDropdown
-              variant="navigation"
-              options={NAV_ITEMS}
-              selected={""}
-              onChange={(value) => console.log(value)}
-              showCheckmarks={false}
-              customTrigger={
-                <button className="flex w-[37px] flex-col items-center gap-[3px] transition duration-300 hover:opacity-80">
-                  <div className="flex h-[30px] items-center justify-center">
-                    <MenuIcon className="shrink-0 w-[37px] h-[30px]" />
-                  </div>
-                  <span className="text-center text-[10px] font-light leading-[12px] text-choco-light">Більше</span>
-                </button>
-              }
-            />
+            <button 
+              onClick={onMoreClick}
+              className="flex w-[37px] flex-col items-center gap-[3px] transition duration-300 hover:opacity-80"
+            >
+              <div className="flex h-[30px] items-center justify-center">
+                <MenuIcon className="shrink-0 w-[37px] h-[30px]" />
+              </div>
+              <span className="text-center text-[10px] font-light leading-[12px] text-choco-light">Більше</span>
+            </button>
           </div>
         </div>
       </nav>
