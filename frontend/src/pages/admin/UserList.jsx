@@ -1,7 +1,51 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState, useMemo } from 'react';
 import { adminUserAPI } from '../../services/api';
-import LoadingSpinner from '../../components/LoadingSpinner';
+import NoConnection from '../../components/errors/NoConnection';
+
+const AdminUserSkeleton = () => (
+  <div className="grid grid-cols-[250px_1fr_1fr_1fr_1fr_1fr_60px] gap-4 w-full px-6 py-4 items-center bg-transparent border-b border-dark-creamy/30 last:border-b-0 animate-pulse">
+    {/* Покупець */}
+    <div className="flex flex-col gap-2">
+      <div className="h-4 bg-choco-light/10 rounded w-32"></div>
+      <div className="h-4 bg-choco-light/10 rounded w-40"></div>
+      <div className="h-3 bg-choco-light/10 rounded w-24 mt-1"></div>
+      <div className="h-3 bg-choco-light/10 rounded w-20 mt-1"></div>
+    </div>
+    
+    {/* Замовлень */}
+    <div className="flex flex-col items-center gap-2">
+      <div className="h-4 bg-choco-light/10 rounded w-8"></div>
+      <div className="h-3 bg-choco-light/10 rounded w-12"></div>
+    </div>
+    
+    {/* Обіг */}
+    <div className="flex flex-col items-center gap-2">
+      <div className="h-4 bg-choco-light/10 rounded w-16"></div>
+      <div className="h-3 bg-choco-light/10 rounded w-12"></div>
+    </div>
+    
+    {/* Бонуси */}
+    <div className="flex justify-center">
+      <div className="h-4 bg-choco-light/10 rounded w-12"></div>
+    </div>
+
+    {/* Статус */}
+    <div className="flex justify-center">
+      <div className="h-6 bg-choco-light/10 rounded-full w-20"></div>
+    </div>
+
+    {/* Роль */}
+    <div className="flex justify-center">
+      <div className="h-8 bg-choco-light/10 rounded w-24"></div>
+    </div>
+
+    {/* Дії */}
+    <div className="flex justify-center">
+      <div className="h-6 w-6 bg-choco-light/10 rounded-md mt-6"></div>
+    </div>
+  </div>
+);
 
 const UserList = () => {
   const queryClient = useQueryClient();
@@ -70,8 +114,6 @@ const UserList = () => {
     setSortConfig({ key, direction });
   };
 
-  if (isLoading) return <LoadingSpinner />;
-  
   if (isError) {
     return (
       <div className="p-4 bg-red-50 text-red-500 rounded-md">
@@ -127,8 +169,11 @@ const UserList = () => {
 
         {/* Тіло Таблиці */}
         <div className="flex flex-col gap-2 w-full">
-        {sortedUsers.map((user) => (
-          <div key={user._id} className="grid grid-cols-[250px_1fr_1fr_1fr_1fr_1fr_60px] gap-4 w-full px-6 py-4 items-center relative hover:bg-light-creamy/30 transition-colors rounded-xl">
+        {isLoading ? (
+          Array.from({ length: 5 }).map((_, i) => <AdminUserSkeleton key={i} />)
+        ) : sortedUsers.length > 0 ? (
+          sortedUsers.map((user) => (
+            <div key={user._id} className="grid grid-cols-[250px_1fr_1fr_1fr_1fr_1fr_60px] gap-4 w-full px-6 py-4 items-center relative hover:bg-light-creamy/30 transition-colors rounded-xl">
             
             {/* Покупець (Ім'я, Email, Телефон, Дата) */}
             <div className="flex flex-col">
@@ -213,9 +258,8 @@ const UserList = () => {
             </div>
             
           </div>
-        ))}
-
-        {(!fetchUsers || fetchUsers.length === 0) && (
+        ))
+        ) : (
           <div className="w-full text-center py-10 font-montserrat text-choco-light">
             Немає результатів
           </div>

@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useUserStore } from '../stores/useUserStore'
 import { Navigate, useSearchParams } from 'react-router-dom'
 import { ExitIcon, DropdownArrowIcon, DashboardIcon, ReviewsIcon, OrdersIcon, CartIcon, DotsIcon, ProfileIcon, BookIcon } from '../components/icons'
-import { ProductList, CategoryList, CategoryEditor, ProductEditor, UserList } from './admin'
+import { ProductList, CategoryList, CategoryEditor, ProductEditor, UserList, OrderList } from './admin'
 import { MenuDropdown } from '../components/ui/dropdowns'
 
 const AdminPanel = () => {
@@ -100,6 +100,10 @@ const AdminPanel = () => {
     if (currentPage === 'users') {
       // Поки що редактора немає, просто виводимо список (таблицю)
       return <UserList onEditUser={(id) => handleEdit('users', id)} />
+    }
+
+    if (currentPage === 'orders') {
+      return <OrderList />
     }
     
     // Заглушка для інших сторінок

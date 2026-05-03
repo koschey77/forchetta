@@ -45,19 +45,25 @@ const SelectDropdown = ({
   };
 
   // Формуємо текст для trigger
-  const triggerText = `${prefix}${prefix ? ' ' : ''}${displayText}${suffix ? ' ' : ''}${suffix}`;
+  const triggerText = (
+    <div className="flex items-center gap-1">
+      {prefix && <span>{prefix} </span>}
+      {displayText}
+      {suffix && <span> {suffix}</span>}
+    </div>
+  );
 
   return (
     <BaseDropdown
       variant="default"
       trigger={
         <button 
-          className={`flex items-center gap-2 px-3 py-2 bg-creamy border border-choco-light text-choco-light rounded text-sm transition-colors ${
+          className={`flex flex-1 items-center justify-between gap-2 px-3 py-2 bg-creamy border border-choco-light text-choco-light rounded text-[13px] font-montserrat transition-colors ${
             disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-dark-creamy'
           }`}
           disabled={disabled}
         >
-          <span>{triggerText}</span>
+          {triggerText}
           <DropdownArrowIcon className="w-4 h-4" stroke="currentColor" strokeWidth={2} />
         </button>
       }

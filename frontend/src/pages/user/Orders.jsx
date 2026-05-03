@@ -17,10 +17,11 @@ const OrderCard = ({ order }) => {
   const dateStr = new Date(order.createdAt).toLocaleDateString('uk-UA');
 
   const statusConfig = {
-    pending: { label: 'В обробці', color: 'text-warning-yellow' },
-    processing: { label: 'Готується', color: 'text-warning-yellow' },
-    completed: { label: 'Доставлено', color: 'text-correct-green' },
-    cancelled: { label: 'Скасовано', color: 'text-error-red' },
+    pending: { label: 'В обробці', color: 'text-blue-500' },
+    processing: { label: 'Готується', color: 'text-yellow-500' },
+    shipped: { label: 'Відправлено', color: 'text-green-500' },
+    delivered: { label: 'Доставлено', color: 'text-choco-dark' },
+    cancelled: { label: 'Скасовано', color: 'text-red-500' },
   };
 
   const statusObj = statusConfig[order.status] || { label: order.status, color: 'text-choco-light' };

@@ -260,11 +260,17 @@ export const getAllOrders = async (req, res) => {
     const skip = (page - 1) * limit;
     const search = req.query.search || '';
 
-    // Пошук по orderNumber для адміна
-    const filter = search ? { orderNumber: { $regex: search, $options: 'i' } } : {};
+    // Пошук по orderNumber та contactPhone
+    const filter = search ? { 
+      $or: [
+        { orderNumber: { $regex: search, $options: 'i' } },
+        { contactPhone: { $regex: search, $options: 'i' } }
+      ]
+    } : {};
 
     const orders = await Order.find(filter)
       .populate('user', 'name email phone')
+      .populate('items.product', 'images')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);

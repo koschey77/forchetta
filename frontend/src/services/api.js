@@ -94,7 +94,7 @@ export const orderAPI = {
   getById: (id) => axiosInstance.get(`/orders/${id}`).then(res => res.data),
   
   // Для админа
-  getAll: () => axiosInstance.get("/orders").then(res => res.data),
+  getAll: (params) => axiosInstance.get("/orders", { params }).then(res => res.data),
   update: (id, data) => axiosInstance.put(`/orders/${id}`, data).then(res => res.data),
   updateStatus: (id, status) => axiosInstance.put(`/orders/${id}/status`, { status }).then(res => res.data),
   delete: (id) => axiosInstance.delete(`/orders/${id}`).then(res => res.data),
