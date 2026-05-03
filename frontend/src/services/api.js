@@ -109,6 +109,10 @@ export const cartAPI = {
   clear: () => axiosInstance.delete("/cart").then(res => res.data),
 }
 
+export const statsAPI = {
+  getDashboardStats: () => axiosInstance.get("/stats/dashboard").then(res => res.data),
+}
+
 const api = {
   products: productsAPI,
   categories: categoriesAPI,
@@ -116,6 +120,7 @@ const api = {
   adminUsers: adminUserAPI,
   orders: orderAPI,
   cart: cartAPI,
+  stats: statsAPI,
 }
 
 export default api

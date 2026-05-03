@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useUserStore } from '../stores/useUserStore'
 import { Navigate, useSearchParams } from 'react-router-dom'
 import { ExitIcon, DropdownArrowIcon, DashboardIcon, ReviewsIcon, OrdersIcon, CartIcon, DotsIcon, ProfileIcon, BookIcon } from '../components/icons'
-import { ProductList, CategoryList, CategoryEditor, ProductEditor, UserList, OrderList } from './admin'
+import { ProductList, CategoryList, CategoryEditor, ProductEditor, UserList, OrderList, AdminDashboard } from './admin'
 import { MenuDropdown } from '../components/ui/dropdowns'
 
 const AdminPanel = () => {
@@ -104,6 +104,10 @@ const AdminPanel = () => {
 
     if (currentPage === 'orders') {
       return <OrderList />
+    }
+
+    if (currentPage === 'dashboard') {
+      return <AdminDashboard />
     }
     
     // Заглушка для інших сторінок

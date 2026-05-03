@@ -13,6 +13,7 @@ import productRoutes from "./routes/product.route.js"
 import categoryRoutes from "./routes/category.route.js"
 import userRoutes from "./routes/user.route.js"
 import orderRoutes from "./routes/order.route.js"
+import statsRoutes from "./routes/stats.route.js"
 import cartRoutes from "./routes/cart.route.js"
 
 import {connectDB} from './lib/db.js'
@@ -62,6 +63,7 @@ app.use("/api/products", productRoutes)
 app.use("/api/categories", categoryRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/orders", orderRoutes)
+app.use("/api/stats", statsRoutes)
 app.use("/api/cart", cartRoutes)
 
 if (process.env.NODE_ENV === "production") {

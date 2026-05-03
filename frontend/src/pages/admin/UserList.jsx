@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState, useMemo } from 'react';
 import { adminUserAPI } from '../../services/api';
-import NoConnection from '../../components/errors/NoConnection';
 
 const AdminUserSkeleton = () => (
   <div className="grid grid-cols-[250px_1fr_1fr_1fr_1fr_1fr_60px] gap-4 w-full px-6 py-4 items-center bg-transparent border-b border-dark-creamy/30 last:border-b-0 animate-pulse">

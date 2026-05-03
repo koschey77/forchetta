@@ -24,11 +24,11 @@ const statusLabels = {
 };
 
 const statusColors = {
-  pending: 'bg-blue-500',
-  processing: 'bg-yellow-400',
-  shipped: 'bg-green-500',
-  delivered: 'bg-choco-dark',
-  cancelled: 'bg-red-500'
+  pending: 'bg-[#FFD874]',
+  processing: 'bg-[#4A90E2]',
+  shipped: 'bg-[#9B51E0]',
+  delivered: 'bg-[#66BC91]',
+  cancelled: 'bg-[#FF6C6C]'
 };
 
 const StatusLabelWithDot = ({ status }) => (
