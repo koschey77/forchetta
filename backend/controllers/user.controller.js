@@ -271,7 +271,41 @@ export const toggleFavorite = async (req, res) => {
 // @access  Private/Admin
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}).select("-password -__v").sort({ createdAt: -1 });
+    const users = await User.aggregate([
+      {
+        $lookup: {
+          from: 'orders',
+          localField: '_id',
+          foreignField: 'user',
+          as: 'orderDocs'
+        }
+      },
+      {
+        $addFields: {
+          totalSpent: { $sum: '$orderDocs.totalAmount' },
+          ordersCount: { $size: '$orderDocs' },
+          totalItemsBought: {
+            $sum: {
+              $map: {
+                input: '$orderDocs',
+                as: 'order',
+                in: { $sum: '$$order.items.quantity' }
+              }
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          password: 0,
+          __v: 0,
+          orderDocs: 0 
+        }
+      },
+      {
+        $sort: { createdAt: -1 }
+      }
+    ]);
     res.json(users);
   } catch (error) {
     console.error("Помилка в getAllUsers:", error.message);

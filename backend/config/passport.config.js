@@ -55,6 +55,13 @@ async (accessToken, refreshToken, profile, done) => {
         await user.save();
         console.log('✅ Updated avatar for existing Google user:', user.email);
       }
+
+      // Проверка на блокировку аккаунта
+      if (user.isActive === false) {
+        console.log('⛔ Blocked Google user tried to login:', user.email);
+        return done(new Error("BlockedAccount"), null);
+      }
+
       console.log('✅ Existing Google user found:', user.email);
       return done(null, user);
     }
@@ -65,6 +72,12 @@ async (accessToken, refreshToken, profile, done) => {
     });
     
     if (existingEmailUser) {
+      // Проверка на блокировку аккаунта перед связыванием/возвратом
+      if (existingEmailUser.isActive === false) {
+        console.log('⛔ Blocked email user tried to login via Google:', existingEmailUser.email);
+        return done(new Error("BlockedAccount"), null);
+      }
+
       // 🔗 Связываем существующий аккаунт с Google ID и обновляем аватар
       existingEmailUser.googleId = profile.id;
       // Обновляем аватар от Google, если его нет или если это новая ссылка

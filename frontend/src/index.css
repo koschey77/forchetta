@@ -5,13 +5,27 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
+/* Разрешаем выделять текст, курсор-стрелочка по умолчанию, убираем мигающую "палочку" */
+html, body {
+  cursor: default;
+  caret-color: transparent;
+}
+
+/* Восстанавливаем "руку" для всех интерактивных элементов сайта */
+a, button, [role="button"], label, select, summary {
+  cursor: pointer;
+}
+
+/* Для инпутов возвращаем нормальный текстовый курсор и показ каретки */
+input, textarea {
+  cursor: text;
+  caret-color: auto;
+}
+
+/* Запрещаем случайное выделение текста при быстрых кликах */
+button, a, svg, [role="button"], .select-none {
   user-select: none;
   -webkit-user-select: none;
-}
-input, textarea {
-  user-select: text;
-  -webkit-user-select: text;
 }
 
 body {

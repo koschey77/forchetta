@@ -99,6 +99,11 @@ export const login = async (req, res) => {
     const user = await User.findOne({email})
 
     if (user && (await user.comparePassword(password))) {
+      // Проверка на блокировку аккаунта
+      if (user.isActive === false) {
+        return res.status(403).json({ message: "Ваш обліковий запис заблоковано адміністратором." });
+      }
+
       const {accessToken, refreshToken} = generateTokens(user._id)
       await storeRefreshToken(user._id, refreshToken)
       setCookies(res, accessToken, refreshToken)
@@ -146,7 +151,19 @@ export const refreshToken = async (req, res) => {
     if (storedToken !== refreshToken) {
       return res.status(401).json({message: 'Invalid refresh token'})
     }
-
+    // Проверка статуса пользователя перед выдачей нового токена
+    const user = await User.findById(decoded.userId)
+    if (!user) {
+      return res.status(401).json({message: "User not found"})
+    }
+    
+    if (user.isActive === false) {
+      // Удаляем старый токен и разлогиниваем его, он заблокирован
+      await redis.del(`refresh_token:${decoded.userId}`);
+      res.clearCookie('accessToken');
+      res.clearCookie('refreshToken');
+      return res.status(403).json({message: "Ваш обліковий запис заблоковано адміністратором."})
+    }
     const accessToken = jwt.sign({userId: decoded.userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15m'})
 
     res.cookie('accessToken', accessToken, {
