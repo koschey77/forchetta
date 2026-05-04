@@ -49,6 +49,7 @@ export default {
         'serif': ['Cormorant Garamond', 'serif'],       // Декоративный шрифт для заголовков
         'montserrat': ['Montserrat', 'sans-serif'],     // Явное указание Montserrat
         'cormorant': ['Cormorant Garamond', 'serif'],   // Явное указание Cormorant Garamond
+        'great-vibes': ['Great Vibes', 'cursive'],      // Рукописный шрифт для Hero баннера
       },
       // Точные размеры шрифтов из Figma
       fontSize: {
