@@ -63,27 +63,9 @@ const ViewedProducts = () => {
     );
   }
 
-  const viewedList = products.map(backendProduct => {
-    let tag = null;
-    if (backendProduct.discountPrice && backendProduct.discountPrice > 0) {
-      const discount = Math.round((1 - backendProduct.discountPrice / backendProduct.price) * 100);
-      tag = { text: `-${discount}%`, type: "red" };
-    }
-    
-    return {
-      ...backendProduct, 
-      id: backendProduct._id,
-      title: backendProduct.name,
-      price: `${backendProduct.discountPrice || backendProduct.price} грн / ${backendProduct.weight} г`,
-      oldPrice: backendProduct.discountPrice ? `${backendProduct.price} грн` : null,
-      images: backendProduct.images, 
-      tag,
-    };
-  });
-
   const handleBuyAll = async () => {
     try {
-      for (const item of viewedList) {
+      for (const item of products) {
         await addToCart(item, 1);
       }
       toast.success('Всі товари додано до кошика!');
@@ -123,7 +105,7 @@ const ViewedProducts = () => {
         </div>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-7 sm:gap-x-5 sm:gap-y-10 mt-2">
-        {viewedList.map((product) => (
+        {products.map((product) => (
           <ProductCard key={product._id || product.id} product={product} />
         ))}
       </div>

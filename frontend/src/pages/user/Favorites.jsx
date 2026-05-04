@@ -21,7 +21,7 @@ const Favorites = () => {
   const { mutate: clearAllFavorites, isPending: isClearing } = useMutation({
     mutationFn: async (itemsToClear) => {
       for (const item of itemsToClear) {
-        await userAPI.toggleFavorite(item.id);
+        await userAPI.toggleFavorite(item._id || item.id);
       }
     },
     onSuccess: () => {
@@ -78,27 +78,9 @@ const Favorites = () => {
     );
   }
 
-  const favoritesList = favorites.map(backendProduct => {
-    let tag = null;
-    if (backendProduct.discountPrice && backendProduct.discountPrice > 0) {
-      const discount = Math.round((1 - backendProduct.discountPrice / backendProduct.price) * 100);
-      tag = { text: `-${discount}%`, type: "red" };
-    }
-    
-    return {
-      ...backendProduct, 
-      id: backendProduct._id,
-      title: backendProduct.name,
-      price: `${backendProduct.discountPrice || backendProduct.price} грн / ${backendProduct.weight} г`,
-      oldPrice: backendProduct.discountPrice ? `${backendProduct.price} грн` : null,
-      images: backendProduct.images, 
-      tag,
-    };
-  });
-
   const handleBuyAll = async () => {
     try {
-      for (const item of favoritesList) {
+      for (const item of favorites) {
         await addToCart(item, 1);
       }
       toast.success('Всі товари додано до кошика!');
@@ -124,7 +106,7 @@ const Favorites = () => {
           
           <button 
             className="flex flex-1 sm:flex-none justify-center items-center sm:w-[130px] h-[40px] border border-choco-light rounded-[72px] transition-colors hover:bg-dark-creamy/30 disabled:opacity-50"
-            onClick={() => clearAllFavorites(favoritesList)}
+            onClick={() => clearAllFavorites(favorites)}
             disabled={isClearing}
           >
             <span className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light whitespace-nowrap">
@@ -134,7 +116,7 @@ const Favorites = () => {
         </div>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-7 sm:gap-x-5 sm:gap-y-10 mt-2">
-        {favoritesList.map((product) => (
+        {favorites.map((product) => (
           <ProductCard key={product._id || product.id} product={product} />
         ))}
       </div>

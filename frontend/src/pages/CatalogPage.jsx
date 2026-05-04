@@ -55,32 +55,7 @@ const CatalogPage = () => {
   const totalItems = apiResponse?.pagination?.total || 0;
   const totalPages = apiResponse?.pagination?.totalPages || 0;
 
-  // Функція адаптації backend даних у frontend формат
-  const adaptProductData = (backendProduct) => {
-    let tag = null;
-    if (backendProduct.discountPrice && backendProduct.discountPrice > 0) {
-      const discount = Math.round((1 - backendProduct.discountPrice / backendProduct.price) * 100);
-      tag = { text: `-${discount}%`, type: "red" };
-    }
-    
-    return {
-      id: backendProduct._id,
-      title: backendProduct.name,
-      price: `${backendProduct.discountPrice || backendProduct.price} грн / ${backendProduct.weight} г`,
-      oldPrice: backendProduct.discountPrice ? `${backendProduct.price} грн` : null,
-      image: backendProduct.images[0].url,
-      tag,
-      isFeatured: backendProduct.isFeatured,
-      // Додаємо оригінальні дані для сумісності
-      originalProduct: backendProduct
-    };
-  };
-
-  // Обробляємо тільки адаптацію даних - фільтрація і сортування на backend
-  const displayProducts = useMemo(() => {
-    if (!products || products.length === 0) return [];
-    return products.map(adaptProductData);
-  }, [products]);
+  const displayProducts = products || [];
 
   // Отримуємо інформацію про застосовані фільтри зі стору
   const hasFiltersApplied = hasAppliedFilters();
@@ -200,7 +175,7 @@ const CatalogPage = () => {
                   <NoConnection onRetry={() => window.location.reload()} />
                 </div>
               ) : displayProducts.length > 0 ? (
-                displayProducts.map((product) => <ProductCard key={product.id} product={product} />)
+                displayProducts.map((product) => <ProductCard key={product._id || product.id} product={product} />)
               ) : (
                 <NoResults />
               )}

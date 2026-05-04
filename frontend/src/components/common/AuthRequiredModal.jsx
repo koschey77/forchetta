@@ -10,12 +10,16 @@ const AuthRequiredModal = () => {
 
   const handleLogin = () => {
     closeAuthModal();
-    navigate('/login');
+    setTimeout(() => {
+      navigate('/login');
+    }, 0);
   };
 
   const handleSignup = () => {
     closeAuthModal();
-    navigate('/signup');
+    setTimeout(() => {
+      navigate('/signup');
+    }, 0);
   };
 
   return (

@@ -5,6 +5,22 @@ import { useAddToCartAction } from '../../hooks/useAddToCartAction';
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
+  // Визначаємо, чи переданий "сирий" об'єкт Mongoose, чи вже адаптований
+  const isRaw = typeof product.price === 'number';
+  
+  // Якщо raw - формуємо власні значення для UI, якщо ні - беремо ті, що передали
+  const displayPrice = isRaw ? `${product.discountPrice || product.price} грн / ${product.weight} г` : product.price;
+  const displayOldPrice = isRaw ? (product.discountPrice ? `${product.price} грн` : null) : product.oldPrice;
+  const displayTitle = isRaw ? product.name : (product.title || product.name);
+  
+  let computedTag = null;
+  if(isRaw && !product.tag && product.discountPrice) {
+    const discount = Math.round((1 - product.discountPrice / product.price) * 100);
+    computedTag = { text: `-${discount}%`, type: "red" };
+  } else {
+    computedTag = product.tag;
+  }
+  
   const { handleAddToCart, isAdding } = useAddToCartAction(product);
 
   const tagStyles = {
@@ -38,8 +54,8 @@ const ProductCard = ({ product }) => {
         )}
 
         {/* Запасні/старі теги для сумісності */}
-        {!product.isFeatured && product.tag && (
-          <div className={`${tagStyles[product.tag.type]} z-10`}>{product.tag.text}</div>
+        {!product.isFeatured && computedTag && (
+          <div className={`${tagStyles[computedTag.type]} z-10`}>{computedTag.text}</div>
         )}
         
         <FavoriteButton 
@@ -52,16 +68,16 @@ const ProductCard = ({ product }) => {
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-0.5 flex-grow pr-2">
             <h3 className="line-clamp-4 text-[12px] font-figma-light leading-[12px] text-choco-light sm:text-[17px] sm:font-semibold sm:leading-snug sm:text-text-primary mb-2.5 w-[114px] sm:w-auto h-auto min-h-[48px] sm:min-h-0">
-              {product.name || product.title}
+              {displayTitle}
             </h3>
             <div className="flex flex-col gap-0.5">
-              {product.oldPrice && (
+              {displayOldPrice && (
                 <span className="w-[114px] h-[15px] font-montserrat font-figma-light text-figma-xs text-choco-light line-through opacity-60 sm:text-[13px] sm:font-medium sm:text-text-secondary sm:w-auto sm:h-auto">
-                  {product.oldPrice} 
+                  {displayOldPrice} 
                 </span>
               )}
               <span className="w-[114px] h-[15px] font-montserrat font-figma-light text-figma-xs text-choco-light flex-none order-1 grow-0 whitespace-nowrap overflow-hidden sm:font-medium sm:text-[14px] sm:leading-[17px] sm:w-auto sm:h-auto">
-                {product.price} 
+                {displayPrice} 
               </span>
             </div>
           </div>

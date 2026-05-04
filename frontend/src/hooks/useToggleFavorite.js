@@ -22,7 +22,7 @@ export const useToggleFavorite = () => {
         (fav) => (fav._id || fav) === productId
       );
 
-      // 3. Создаем новый массив (мгновенно меняемUI)
+      // 3. Создаем новый массив (мгновенно меняем UI)
       const newFavorites = isFavorite
         ? previousFavorites.filter((fav) => (fav._id || fav) !== productId)
         // Для оптимистичного добавления кидаем фейковый объект с нужным ID
