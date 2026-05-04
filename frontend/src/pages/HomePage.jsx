@@ -1,4 +1,5 @@
 import HeroSlider from '../components/ui/carousel/HeroSlider'
+import HomeCategories from '../components/home/HomeCategories'
 
 export default function HomePage() {
   return (
@@ -6,7 +7,8 @@ export default function HomePage() {
       {/* Секція №1 - Hero Баннер */}
       <HeroSlider />
       
-      {/* Сюди пізніше будуть додаватись інші секції */}
+      {/* Секція №3 - Сетка Категорий */}
+      <HomeCategories />
     </div>
   )
 }

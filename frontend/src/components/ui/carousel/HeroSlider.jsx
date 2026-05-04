@@ -71,7 +71,7 @@ export default function HeroSlider() {
               </picture>
               
               {/* Overlay Content (позиционируем от нижнего края с помощью процентов или адаптивных пикселей) */}
-              <div className="absolute inset-0 flex flex-col justify-end items-center pb-[30px] sm:pb-[40px] md:pb-[75px] lg:pb-[95px]">
+              <div className="absolute inset-0 flex flex-col justify-end items-center pb-[70px] sm:pb-[90px] md:pb-[75px] lg:pb-[95px]">
                 <Link 
                   to={slide.link}
                   className="flex items-center justify-center bg-creamy rounded-[31px] w-[140px] h-[36px] sm:w-[160px] sm:h-[44px] lg:w-[192px] lg:h-[52px] text-[#4C3D3D] font-montserrat font-normal text-[12px] sm:text-[14px] lg:text-[16px] leading-[20px] transition-transform hover:scale-105 duration-200"
@@ -85,7 +85,7 @@ export default function HeroSlider() {
       </div>
 
       {/* Pagination Dots */}
-      <div className="absolute bottom-[10px] sm:bottom-[15px] md:bottom-8 left-0 right-0 flex justify-center gap-[10px] md:gap-[20px]">
+      <div className="absolute bottom-[40px] sm:bottom-[60px] md:bottom-8 left-0 right-0 flex justify-center gap-[10px] md:gap-[20px]">
         {slides.map((_, index) => (
           <button
             key={index}
