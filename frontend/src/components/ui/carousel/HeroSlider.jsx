@@ -52,29 +52,29 @@ export default function HeroSlider() {
   }, [emblaApi, onSelect])
 
   return (
-    <section className="relative w-full h-[500px] md:h-[569px] overflow-hidden bg-choco-dark">
+    <section className="relative w-full overflow-hidden bg-choco-dark">
       {/* Embla Carousel Viewport */}
-      <div className="overflow-hidden h-full" ref={emblaRef}>
-        <div className="flex h-full">
+      <div className="overflow-hidden w-full" ref={emblaRef}>
+        <div className="flex w-full">
           {slides.map((slide) => (
-            <div key={slide.id} className="relative flex-[0_0_100%] min-w-0 h-full">
+            <div key={slide.id} className="relative flex-[0_0_100%] min-w-0 w-full">
               {/* Responsive Background Images */}
-              <picture>
+              <picture className="block w-full">
                 <source media="(max-width: 639px)" srcSet={slide.imageMobile} />
                 <source media="(max-width: 1023px)" srcSet={slide.imageTablet} />
                 <img 
                   src={slide.imageDesktop} 
-                  alt={slide.title} 
-                  className="w-full h-full object-cover" 
+                  alt="Forchetta promo banner" 
+                  className="w-full h-auto block" 
                   loading="lazy"
                 />
               </picture>
               
-              {/* Overlay Content */}
-              <div className="absolute inset-0 flex flex-col justify-end items-center pb-[75px] md:pb-[95px]">
+              {/* Overlay Content (позиционируем от нижнего края с помощью процентов или адаптивных пикселей) */}
+              <div className="absolute inset-0 flex flex-col justify-end items-center pb-[30px] sm:pb-[40px] md:pb-[75px] lg:pb-[95px]">
                 <Link 
                   to={slide.link}
-                  className="flex items-center justify-center bg-creamy rounded-[31px] w-[192px] h-[52px] text-[#4C3D3D] font-montserrat font-normal text-[16px] leading-[20px] transition-transform hover:scale-105 duration-200"
+                  className="flex items-center justify-center bg-creamy rounded-[31px] w-[140px] h-[36px] sm:w-[160px] sm:h-[44px] lg:w-[192px] lg:h-[52px] text-[#4C3D3D] font-montserrat font-normal text-[12px] sm:text-[14px] lg:text-[16px] leading-[20px] transition-transform hover:scale-105 duration-200"
                 >
                   {slide.buttonText}
                 </Link>
@@ -85,7 +85,7 @@ export default function HeroSlider() {
       </div>
 
       {/* Pagination Dots */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-[20px]">
+      <div className="absolute bottom-[10px] sm:bottom-[15px] md:bottom-8 left-0 right-0 flex justify-center gap-[10px] md:gap-[20px]">
         {slides.map((_, index) => (
           <button
             key={index}
