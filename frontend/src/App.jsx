@@ -25,6 +25,7 @@ import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
 import Error404 from './components/errors/Error404'
 import AuthRequiredModal from './components/common/AuthRequiredModal'
+import Breadcrumbs from './components/common/Breadcrumbs'
 
 function App() {
   const { user, checkingAuth } = useUserStore()
@@ -32,11 +33,13 @@ function App() {
   if (checkingAuth) return <LoadingSpinner />
   
   return (
-    <div className="min-h-screen bg-orange-50 text-black flex flex-col">
+    <div className="min-h-screen bg-creamy text-black flex flex-col">
       <ScrollToTop />
       <div className="sticky top-0 z-50">
         <Header />
       </div>
+      
+      <Breadcrumbs />
       
       <div className="flex-grow">
         <Routes>

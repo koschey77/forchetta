@@ -53,15 +53,8 @@ const CartPage = () => {
 
   return (
     <div className="min-h-screen bg-creamy font-sans relative pb-[250px] xl:pb-[100px]">
-      {/* Верхній бар (мобілки) / Хлібні крихти (десктоп) */}
-      <div className="pt-[26px] xl:pt-[40px] px-[16px] xl:px-[60px] flex items-center gap-[12px] text-figma-xs xl:text-figma-sm text-choco-dark mb-[20px] xl:mb-[40px]">
-        <Link to="/" className="hover:opacity-80">Головна</Link>
-        <span className="text-choco-light">/</span>
-        <span className="text-choco-light">Мій кошик</span>
-      </div>
-
       <div className="px-[16px] lg:px-[30px] xl:px-[60px] max-w-[1440px] mx-auto">
-        <h1 className="font-serif text-[32px] lg:text-[40px] xl:text-figma-hero font-semibold text-choco-light mb-[30px] lg:mb-[40px] xl:mb-[60px] text-center lg:text-left xl:text-left">
+        <h1 className="font-serif text-[32px] lg:text-[40px] xl:text-figma-hero font-semibold text-choco-light mb-[30px] lg:mb-[40px] xl:mb-[60px] text-center lg:text-left xl:text-left mt-4 lg:mt-8">
           Мій кошик
         </h1>
 

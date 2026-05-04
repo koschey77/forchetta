@@ -122,9 +122,12 @@ const AdminPanel = () => {
   return (
     <div className="min-h-screen bg-creamy">
       {/* Header */}
-      <div className="w-full max-w-[1440px] h-[53px] flex items-center justify-between px-[15px] sm:px-[30px] lg:px-[60px] py-[12px] bg-creamy mx-auto">
+      <div className="w-full max-w-[1440px] h-[70px] sm:h-[53px] flex items-center justify-between px-[15px] sm:px-[30px] lg:px-[60px] py-[12px] bg-creamy mx-auto">
         <div className="flex items-center">
-          <h1 className="font-montserrat font-light text-lg sm:text-2xl leading-[20px] md:leading-[29px] text-choco-dark">Сторінка адміна</h1>
+          <h1 className="font-montserrat font-light text-base sm:text-2xl leading-[18px] md:leading-[29px] text-choco-dark">
+            Сторінка<br className="block sm:hidden" />
+            <span className="hidden sm:inline"> </span>адміна
+          </h1>
         </div>
         <div className="flex items-center gap-5 h-[42px]">
           <div className="flex flex-col gap-[5px] h-[42px]">
