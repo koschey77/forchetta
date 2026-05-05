@@ -1,14 +1,17 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useUserStore } from '../../stores/useUserStore'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { userAPI } from '../../services/api'
 import imageService from '../../services/imageService'
 import toast from 'react-hot-toast'
+import * as Dialog from '@radix-ui/react-dialog'
 
 const GeneralData = () => {
-  const { user } = useUserStore()
+  const { user, logout } = useUserStore()
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const [formData, setFormData] = useState({
     firstName: user?.name?.split(' ')[0] || '',
@@ -47,7 +50,19 @@ const GeneralData = () => {
       toast.error(error.response?.data?.message || 'Помилка оновлення даних')
     }
   })
-
+  const deleteProfileMutation = useMutation({
+    mutationFn: () => userAPI.deleteProfile(),
+    onSuccess: () => {
+      toast.success('Акаунт успішно видалено', { duration: 4000 })
+      setIsDeleteDialogOpen(false)
+      logout()
+      navigate('/')
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'Помилка видалення акаунта')
+      setIsDeleteDialogOpen(false)
+    }
+  })
   const handleSubmit = async () => {
     const fullName = `${formData.firstName.trim()} ${formData.lastName.trim()}`.trim()
     
@@ -223,11 +238,46 @@ const GeneralData = () => {
           </button>
         </div>
         <div className="flex flex-row justify-center items-center gap-4 w-full">
-          <button className="flex flex-row justify-center items-center py-4 px-[30px] gap-[10px] h-[51px] rounded-[31px] font-montserrat font-semibold text-[16px] leading-[120%] uppercase text-choco-light/50 transition-opacity hover:opacity-90 hover:text-wine-red">
+          <button 
+            onClick={() => setIsDeleteDialogOpen(true)}
+            className="flex flex-row justify-center items-center py-4 px-[30px] gap-[10px] h-[51px] rounded-[31px] font-montserrat font-semibold text-[16px] leading-[120%] uppercase text-choco-light/50 transition-opacity hover:opacity-90 hover:text-wine-red">
             ВИДАЛИТИ АКАУНТ
           </button>
         </div>
       </div>
+
+      <Dialog.Root open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 transition-opacity" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-creamy p-6 sm:p-8 rounded-[20px] shadow-xl w-[90vw] max-w-[400px] z-50 outline-none flex flex-col gap-4 border border-choco-light">
+            <Dialog.Title className="text-xl font-serif text-wine-red text-center font-bold">
+              Ви впевнені?
+            </Dialog.Title>
+            <Dialog.Description className="text-choco-light text-center font-sans text-sm mt-2">
+              Ця дія незворотня. Ваша історія замовлень, накопичені бонуси та особисті дані будуть втрачені. 
+              <br/><br/> Ви зможете знову зареєструватися з цією ж поштою, але все почнеться з чистого аркуша.
+            </Dialog.Description>
+            
+            <div className="flex flex-col sm:flex-row gap-4 mt-4">
+              <button 
+                onClick={() => deleteProfileMutation.mutate()}
+                disabled={deleteProfileMutation.isPending}
+                className="flex-1 py-3 px-4 bg-wine-red rounded-[30px] font-sans font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+              >
+                {deleteProfileMutation.isPending ? 'Видалення...' : 'Так, видалити'}
+              </button>
+              <button 
+                onClick={() => setIsDeleteDialogOpen(false)}
+                disabled={deleteProfileMutation.isPending}
+                className="flex-1 py-3 px-4 border border-choco-dark rounded-[30px] font-sans font-medium text-choco-dark transition-colors hover:bg-black/5 disabled:opacity-50"
+              >
+                Скасувати
+              </button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+
     </div>
   )
 }

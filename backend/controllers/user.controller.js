@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import Product from "../models/product.model.js";
 import { uploadImages, deleteImage } from "../lib/imageService.js";
+import { redis } from "../lib/redis.js";
 
 // @route   GET /api/user/profile
 // @desc    Получить профиль пользователя
@@ -60,6 +61,47 @@ export const updateProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Помилка в updateProfile:", error.message);
+    res.status(500).json({ message: "Помилка сервера", error: error.message });
+  }
+};
+
+// @route   DELETE /api/user/profile
+// @desc    Мягкое удаление профиля (анонимизация)
+// @access  Private
+export const deleteProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: "Користувача не знайдено" });
+    }
+
+    // Форматируем дату в DDMMYYYY для понятного префикса (напр. 12042026)
+    const date = new Date();
+    const formattedDate = ('0' + date.getDate()).slice(-2) + ('0' + (date.getMonth() + 1)).slice(-2) + date.getFullYear();
+
+    // Мягкое удаление и анонимизация (освобождаем email для повторной регистрации)
+    user.isActive = false;
+    user.email = `deleted_${formattedDate}_${user.email}`;
+    user.name = "Видалений користувач";
+    user.phone = "";
+    user.avatar = "";
+    user.addresses = [];
+    user.favorites = [];
+    
+    // Очищаем куки
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    
+    // Удаляем сессию (refresh token) и корзину пользователя из Redis
+    await redis.del(`refresh_token:${user._id}`);
+    await redis.del(`cart:${user._id}`);
+    
+    await user.save();
+
+    res.json({ message: "Акаунт успішно видалено" });
+  } catch (error) {
+    console.error("Помилка в deleteProfile:", error.message);
     res.status(500).json({ message: "Помилка сервера", error: error.message });
   }
 };

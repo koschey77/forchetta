@@ -62,6 +62,8 @@ export const userAPI = {
   
   updateProfile: (data) => axiosInstance.put("/users/profile", data).then(res => res.data),
   
+  deleteProfile: () => axiosInstance.delete("/users/profile").then(res => res.data),
+
   addAddress: (data) => axiosInstance.post("/users/addresses", data).then(res => res.data),
 
     updateAddress: (id, data) => axiosInstance.put(`/users/addresses/${id}`, data).then(res => res.data),

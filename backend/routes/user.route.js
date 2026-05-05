@@ -3,6 +3,7 @@ import { protectRoute, adminRoute } from "../middleware/auth.middleware.js";
 import {
   getProfile,
   updateProfile,
+  deleteProfile,
   addAddress,
   deleteAddress,
   updateAddress,
@@ -21,6 +22,7 @@ const router = express.Router();
 // --- Роуты для клиентской части (доступны авторизованным пользователям) ---
 router.get("/profile", protectRoute, getProfile);
 router.put("/profile", protectRoute, updateProfile);
+router.delete("/profile", protectRoute, deleteProfile);
 router.post("/addresses", protectRoute, addAddress);
 router.put("/addresses/:id", protectRoute, updateAddress);
 router.delete("/addresses/:id", protectRoute, deleteAddress);
