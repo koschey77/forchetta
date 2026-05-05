@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { CatalogFilterIcon, CrossIcon } from '../components/icons';
 import { MenuDropdown } from '../components/ui/dropdowns';
+import CatalogBanner from '../components/catalog/CatalogBanner';
 import Sidebar from '../components/catalog/Sidebar';
 import ProductCard from '../components/catalog/ProductCard';
 import ProductCardSkeleton from '../components/catalog/ProductCardSkeleton';
@@ -85,6 +86,10 @@ const CatalogPage = () => {
 
   return (
     <div className="min-h-screen bg-creamy py-6">
+      
+      {/* Банер спеціальних пропозицій */}
+      <CatalogBanner />
+
       <div className="w-full">
         {/* Вбудований CatalogHeader */}
         <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px]">
