@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { useQueryClient } from "@tanstack/react-query"
 import { useUserStore } from "../stores/useUserStore"
 import useCartStore from "../stores/useCartStore"
+import useFilterStore from "../stores/useFilterStore"
+import api from "../services/api"
 import { Logo } from "./Logos/Logo.jsx"
 import { ProfileIcon, HeartIcon, CartIcon, DotsIcon, MenuIcon } from "./icons/index.jsx"
 import HeaderSearch from "./common/HeaderSearch.jsx"
@@ -111,6 +114,40 @@ const Header = () => {
     }
   }
 
+  const resetFilters = useFilterStore(state => state.resetFilters)
+  const updateFilter = useFilterStore(state => state.updateFilter)
+  const setSortOption = useFilterStore(state => state.setSortOption)
+  const queryClient = useQueryClient()
+
+  const handleNavItemClick = (itemValue) => {
+    if (itemValue === 'blog') {
+      console.log('Блог еще не реализован');
+      return;
+    }
+
+    navigate('/catalog');
+    
+    // Скидаємо всі поточні фільтри
+    resetFilters();
+    
+    if (itemValue === 'new' || itemValue === 'sales') {
+      setSortOption(itemValue);
+    } else if (itemValue === 'sets') {
+      setSortOption(''); // Для наборів сортування за замовчуванням
+      const categories = queryClient.getQueryData(['categories']) || [];
+      const targetCategory = categories.find(c => c.name === 'Подарункові набори' || c.name === 'Подарункові набори ');
+      
+      if (targetCategory) {
+        updateFilter('categories', [targetCategory._id]);
+      } else {
+        api.categories.getAll().then(res => {
+          const target = res.find(c => c.name === 'Подарункові набори' || c.name === 'Подарункові набори ');
+          if (target) updateFilter('categories', [target._id]);
+        }).catch(err => console.error("Error fetching categories", err));
+      }
+    }
+  }
+
   return (
     <>
       {/* Єдиний адаптивний хедер */}
@@ -147,7 +184,7 @@ const Header = () => {
                 <button
                   key={item.value}
                   aria-label={item.label}
-                  onClick={() => console.log(item.value)}
+                  onClick={() => handleNavItemClick(item.value)}
                   className="whitespace-nowrap font-normal text-[16px] leading-[20px] text-choco-light transition duration-300 hover:text-choco-light-50"
                 >
                   {item.label}

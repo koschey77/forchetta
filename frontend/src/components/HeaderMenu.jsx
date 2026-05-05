@@ -1,7 +1,39 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import useFilterStore from '../stores/useFilterStore';
+import api from '../services/api';
 import { FacebookSvgIcon, InstagramSvgIcon, TelegramSvgIcon, PhoneIcon } from './icons/index.jsx';
 
 const HeaderMenu = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
+  const resetFilters = useFilterStore(state => state.resetFilters);
+  const updateFilter = useFilterStore(state => state.updateFilter);
+  const setSortOption = useFilterStore(state => state.setSortOption);
+  const queryClient = useQueryClient();
+
+  const handleFilterClick = (type, value) => {
+    onClose();
+    navigate('/catalog');
+    resetFilters();
+    
+    if (type === 'sort') {
+      setSortOption(value);
+    } else if (type === 'category') {
+      setSortOption('');
+      const categories = queryClient.getQueryData(['categories']) || [];
+      const targetCategory = categories.find(c => c.name === value || c.name === `${value} `);
+      
+      if (targetCategory) {
+        updateFilter('categories', [targetCategory._id]);
+      } else {
+        api.categories.getAll().then(res => {
+          const target = res.find(c => c.name === value || c.name === `${value} `);
+          if (target) updateFilter('categories', [target._id]);
+        }).catch(err => console.error("Error fetching categories", err));
+      }
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -27,7 +59,7 @@ const HeaderMenu = ({ isOpen, onClose }) => {
             <ul className="flex flex-col gap-[10px] md:gap-2.5">
               <li><Link to="/" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Головна</Link></li>
               <li><Link to="/about" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Про нас</Link></li>
-              <li><Link to="/sales" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Акції</Link></li>
+              <li><button onClick={() => handleFilterClick('sort', 'sales')} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors w-full text-left">Акції</button></li>
               <li><Link to="/public-offer" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Публічна Оферта</Link></li>
               <li><Link to="/privacy-policy" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Політика конфіденційності</Link></li>
               <li><Link to="/404" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">404</Link></li>
@@ -40,11 +72,11 @@ const HeaderMenu = ({ isOpen, onClose }) => {
               КАТАЛОГ
             </h3>
             <ul className="flex flex-col gap-[10px] md:gap-2.5">
-              <li><Link to="/catalog?category=Торти" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Торти</Link></li>
-              <li><Link to="/catalog?category=Тістечка" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Тістечка</Link></li>
-              <li><Link to="/catalog?category=Цукерки" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Цукерки</Link></li>
-              <li><Link to="/catalog?category=Шоколад" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Шоколад</Link></li>
-              <li><Link to="/catalog?category=Подарункові набори" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Подарункові набори</Link></li>
+              <li><button onClick={() => handleFilterClick('category', 'Торти')} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors w-full text-left">Торти</button></li>
+              <li><button onClick={() => handleFilterClick('category', 'Тістечка')} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors w-full text-left">Тістечка</button></li>
+              <li><button onClick={() => handleFilterClick('category', 'Цукерки')} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors w-full text-left">Цукерки</button></li>
+              <li><button onClick={() => handleFilterClick('category', 'Шоколад')} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors w-full text-left">Шоколад</button></li>
+              <li><button onClick={() => handleFilterClick('category', 'Подарункові набори')} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors w-full text-left">Подарункові набори</button></li>
             </ul>
           </div>
 
@@ -55,9 +87,9 @@ const HeaderMenu = ({ isOpen, onClose }) => {
             </h3>
             <ul className="flex flex-col gap-[10px] md:gap-2.5">
               <li><Link to="/profile" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Загальні дані</Link></li>
-              <li><Link to="/user-panel?page=orders" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Мої замовлення</Link></li>
+              <li><Link to="/user-panel?page=history" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Мої замовлення</Link></li>
               <li><Link to="/user-panel?page=addresses" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Адреси доставки</Link></li>
-              <li><Link to="/user-panel?page=bonuses" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Бонуси</Link></li>
+              <li><Link to="/user-panel?page=bonus" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Бонуси</Link></li>
             </ul>
           </div>
 
@@ -81,12 +113,12 @@ const HeaderMenu = ({ isOpen, onClose }) => {
             
             {/* Банери */}
             <div className="flex flex-col gap-[10px] md:gap-[5px] w-full md:w-[326px] max-w-[345px] lg:w-full">
-              <Link to="/catalog?category=новинки" onClick={onClose} className="relative w-full h-[126px] rounded-[15px] overflow-hidden group block shrink-0">
+              <button onClick={() => handleFilterClick('sort', 'new')} className="relative w-full h-[126px] rounded-[15px] overflow-hidden group block shrink-0">
                 <img src="/Frame 1707481962.png" alt="Новинка" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-              </Link>
-              <Link to="/catalog?featured=true" onClick={onClose} className="relative w-full h-[125px] rounded-[15px] overflow-hidden group block shrink-0">
+              </button>
+              <button onClick={() => handleFilterClick('sort', 'salesCount-desc')} className="relative w-full h-[125px] rounded-[15px] overflow-hidden group block shrink-0">
                 <img src="/Frame 1707481963.png" alt="Топ продажів" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-              </Link>
+              </button>
             </div>
 
             {/* Соц.мережі та Телефон */}

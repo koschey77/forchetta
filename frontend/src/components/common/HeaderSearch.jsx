@@ -86,10 +86,10 @@ const HeaderSearch = ({ isMobile }) => {
 
       {isOpen && (
         <div className={`
-          bg-creamy border border-choco-light/10 shadow-xl flex flex-col z-[100]
+          bg-creamy border border-choco-light/10 shadow-xl flex flex-col z-[100] overflow-hidden
           ${isMobile 
             ? 'fixed top-[87px] left-0 w-full rounded-b-2xl border-x-0 border-t-0' 
-            : 'absolute top-[50px] right-0 w-[380px] rounded-2xl'
+            : 'absolute top-[50px] left-1/2 -translate-x-1/2 w-[calc(100vw-30px)] max-w-[380px] rounded-2xl'
           }
         `}>
           {/* Блок ввода текста */}
