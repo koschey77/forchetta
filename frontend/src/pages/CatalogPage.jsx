@@ -20,6 +20,8 @@ const CatalogPage = () => {
     { value: 'price-desc', label: 'Від дорогих' },
     { value: 'new', label: 'Новинки' },
     { value: 'sales', label: 'Акції' },
+    { value: 'salesCount-desc', label: 'Топ продажів' },
+    { value: 'featured-desc', label: 'Ексклюзивні' },
   ];
 
   // TanStack Query для загрузки товаров
@@ -29,7 +31,7 @@ const CatalogPage = () => {
     error 
   } = useQuery({
     queryKey: ['products', appliedFilters, sortOption, currentPage, itemsPerPage],
-    queryFn: () => {
+    queryFn: async () => {
       // Конвертируем UI формат сортировки в backend API формат
       let sortBy = '', sortOrder = '';
       if (sortOption) {
@@ -38,12 +40,33 @@ const CatalogPage = () => {
         sortOrder = order;
       }
 
-      return productsAPI.getMany({
+      return await productsAPI.getMany({
         ...appliedFilters,
         page: currentPage,
         limit: itemsPerPage,
         sortBy,
         sortOrder
+      }).then(async (response) => {
+        try {
+          const [latestProducts, topSellers] = await Promise.all([
+            productsAPI.getMany({ limit: 6, sortBy: 'createdAt', sortOrder: 'desc' }),
+            productsAPI.getMany({ limit: 6, sortBy: 'salesCount', sortOrder: 'desc' })
+          ]);
+          
+          const latestIds = Array.isArray(latestProducts) ? latestProducts.map(p=>p._id) : (latestProducts?.products || []).map(p => p._id);
+          const topSellerIds = Array.isArray(topSellers) ? topSellers.map(p=>p._id) : (topSellers?.products || []).map(p => p._id);
+          
+          if (response && response.products) {
+            response.products = response.products.map(p => ({
+              ...p,
+              isNewProduct: latestIds.includes(p._id),
+              isTopSeller: topSellerIds.includes(p._id)
+            }));
+          }
+        } catch (e) {
+          console.error("Не вдалося завантажити бейджі статусу", e);
+        }
+        return response;
       });
     },
     staleTime: 2 * 60 * 1000, // 2 хвилини свіжі дані для каталогу

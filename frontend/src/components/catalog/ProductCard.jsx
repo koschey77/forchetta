@@ -23,16 +23,37 @@ const ProductCard = ({ product }) => {
   
   const { handleAddToCart, isAdding } = useAddToCartAction(product);
 
-  const tagStyles = {
-    'dark': 'absolute top-2 left-2 w-[90px] h-[30px] bg-choco-dark border border-choco-light text-creamy flex items-center justify-center rounded-[13.5px] font-montserrat font-medium text-[12px] leading-[15px]',
-    'light': 'absolute top-2 left-2 w-[100px] h-[30px] bg-dark-creamy text-choco-dark flex items-center justify-center rounded-[13.5px] font-montserrat font-medium text-[12px] leading-[15px]',
-    'red': 'absolute top-2 left-2 w-[60px] h-[30px] bg-wine-red text-creamy flex items-center justify-center rounded-[13.5px] font-montserrat font-medium text-[12px] leading-[15px]',
-  };
-
-
   const handleProductClick = () => {
     navigate(`/product/${product._id || product.id}`);
   };
+
+  // Логіка статусу (пріоритет: Ексклюзив -> Новинка -> Топ продажів)
+  const isExclusive = product.isFeatured === true;
+  const isNew = product.isNewProduct === true;
+  const isTopSeller = product.isTopSeller === true;
+  
+  let statusBadge = null;
+  if (isExclusive) {
+    statusBadge = { text: "Ексклюзив", bgClass: "bg-[#FDCE13]/90 text-choco-dark w-[90px]" };
+  } else if (isNew) {
+    statusBadge = { text: "Новинка", bgClass: "bg-choco-light/90 text-creamy px-3 w-auto min-w-[70px]" };
+  } else if (isTopSeller) {
+    statusBadge = { text: "Топ продажів", bgClass: "bg-dark-creamy/90 text-choco-dark px-3 w-auto min-w-[100px]" };
+  } else if (computedTag && computedTag.type !== "red") {
+    // Зворотна сумісність
+    statusBadge = { 
+      text: computedTag.text, 
+      bgClass: computedTag.type === 'dark' ? "bg-choco-dark/90 text-creamy px-3 w-auto min-w-[90px]" : "bg-dark-creamy/90 text-choco-dark px-3 w-auto min-w-[100px]" 
+    };
+  }
+
+  // Логіка знижки
+  let discountBadge = null;
+  if (computedTag && computedTag.type === "red") {
+    discountBadge = { text: computedTag.text, bgClass: "bg-wine-red/90 text-creamy w-[60px]" };
+  }
+
+  const baseBadgeStyles = "flex items-center justify-center h-[30px] rounded-[13.5px] font-montserrat font-medium text-[12px] leading-[15px] z-10 text-center";
 
   return (
     <div 
@@ -46,17 +67,19 @@ const ProductCard = ({ product }) => {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
         />
         
-        {/* Бейдж "Топ продажів" з прив'язкою до isFeatured */}
-        {product.isFeatured && (
-          <div className="absolute top-2 left-2 z-10 px-3 h-[30px] bg-dark-creamy text-choco-dark flex items-center justify-center rounded-[13.5px] font-montserrat font-medium text-[12px] leading-[15px]">
-            Топ продажів
-          </div>
-        )}
-
-        {/* Запасні/старі теги для сумісності */}
-        {!product.isFeatured && computedTag && (
-          <div className={`${tagStyles[computedTag.type]} z-10`}>{computedTag.text}</div>
-        )}
+        {/* Контейнер для бейджів */}
+        <div className="absolute top-2 left-2 flex flex-col gap-2 z-10 items-start">
+          {statusBadge && (
+            <div className={`${baseBadgeStyles} ${statusBadge.bgClass}`}>
+              {statusBadge.text}
+            </div>
+          )}
+          {discountBadge && (
+            <div className={`${baseBadgeStyles} ${discountBadge.bgClass}`}>
+              {discountBadge.text}
+            </div>
+          )}
+        </div>
         
         <FavoriteButton 
           productId={product._id || product.id}

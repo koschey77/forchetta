@@ -130,6 +130,12 @@ export const getAllProducts = async (req, res) => {
         case 'new':
           sort = { createdAt: -1 };
           break;
+        case 'salesCount':
+          sort = { salesCount: sortOrder === 'desc' ? -1 : 1 };
+          break;
+        case 'featured':
+          sort = { isFeatured: sortOrder === 'desc' ? -1 : 1, createdAt: -1 };
+          break;
         case 'sales':
           // Сортировка по акциям: сначала товары со скидкой, потом остальные
           sort = { 

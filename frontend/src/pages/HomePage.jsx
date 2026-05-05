@@ -19,8 +19,30 @@ export default function HomePage() {
   // Завантажуємо Ексклюзиви (Featured)
   const { data: featuredData, isLoading: isFeaturedLoading } = useQuery({
     queryKey: ['featuredProducts'],
-    queryFn: api.products.getFeatured
-  })
+    queryFn: async () => {
+      const response = await api.products.getFeatured();
+      const featuredArray = Array.isArray(response) ? response : (response.products || []);
+      
+      try {
+        const [latestProducts, topSellers] = await Promise.all([
+          api.products.getMany({ limit: 6, sortBy: 'createdAt', sortOrder: 'desc' }),
+          api.products.getMany({ limit: 6, sortBy: 'salesCount', sortOrder: 'desc' })
+        ]);
+        
+        const latestIds = Array.isArray(latestProducts) ? latestProducts.map(p=>p._id) : (latestProducts?.products || []).map(p => p._id);
+        const topSellerIds = Array.isArray(topSellers) ? topSellers.map(p=>p._id) : (topSellers?.products || []).map(p => p._id);
+        
+        return featuredArray.map(p => ({
+          ...p,
+          isNewProduct: latestIds.includes(p._id),
+          isTopSeller: topSellerIds.includes(p._id)
+        }));
+      } catch (e) {
+        console.error("Не вдалося завантажити бейджі статусу для новинок", e);
+        return featuredArray;
+      }
+    }
+  });
 
   // Завантажуємо Подарункові набори (з динамічним пошуком ID категорії)
   const { data: giftSetsData, isLoading: isGiftSetsLoading } = useQuery({
@@ -35,7 +57,26 @@ export default function HomePage() {
         if (!targetCategory) return [];
         
         // Передаємо _id категорії, оскільки backend очікує ObjectId, а не стрічку
-        return api.products.getMany({ limit: 6, categories: [targetCategory._id] });
+        const response = await api.products.getMany({ limit: 6, categories: [targetCategory._id] });
+        const setsArray = Array.isArray(response) ? response : (response.products || []);
+        
+        try {
+          const [latestProducts, topSellers] = await Promise.all([
+            api.products.getMany({ limit: 6, sortBy: 'createdAt', sortOrder: 'desc' }),
+            api.products.getMany({ limit: 6, sortBy: 'salesCount', sortOrder: 'desc' })
+          ]);
+          
+          const latestIds = Array.isArray(latestProducts) ? latestProducts.map(p=>p._id) : (latestProducts?.products || []).map(p => p._id);
+          const topSellerIds = Array.isArray(topSellers) ? topSellers.map(p=>p._id) : (topSellers?.products || []).map(p => p._id);
+          
+          return setsArray.map(p => ({
+            ...p,
+            isNewProduct: latestIds.includes(p._id),
+            isTopSeller: topSellerIds.includes(p._id)
+          }));
+        } catch (e) {
+          return setsArray;
+        }
       } catch (error) {
         console.error("Error fetching gift sets:", error);
         return [];
