@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useUserStore } from '../../stores/useUserStore';
-import { orderAPI } from '../../services/api';
+import { orderAPI, productsAPI } from '../../services/api';
+import ProductSectionSlider from '../../components/ui/carousel/ProductSectionSlider';
 
 const Bonuses = () => {
   const { user } = useUserStore();
@@ -12,6 +13,12 @@ const Bonuses = () => {
     queryKey: ['my-orders'],
     queryFn: orderAPI.getMyOrders,
     staleTime: 60 * 1000,
+  });
+
+  const { data: recommendedData } = useQuery({
+    queryKey: ['recommendedProducts'],
+    queryFn: () => productsAPI.getRecommendations(),
+    staleTime: 5 * 60 * 1000,
   });
 
   const formatDate = (dateString) => new Date(dateString).toLocaleDateString('uk-UA', { 
@@ -54,7 +61,7 @@ const Bonuses = () => {
   }, []).sort((a, b) => b.timestamp - a.timestamp) || [];
 
   return (
-    <div className="flex flex-col items-center px-[15px] sm:px-[30px] pt-[20px] pb-[60px] w-full gap-[30px] sm:gap-[45px] max-w-[1440px] mx-auto">
+    <div className="flex flex-col items-center px-[15px] sm:px-[30px] pt-[10px] pb-[20px] w-full gap-[30px] sm:gap-[45px] max-w-[1440px] mx-auto">
       
       {/* Кешбек за замовлення */}
       <div className="flex flex-col items-center gap-[20px] w-full max-w-[644px]">
@@ -143,7 +150,7 @@ const Bonuses = () => {
       </div>
 
       {/* Історія бонусів */}
-      <div className="flex flex-col items-center py-[20px] px-[15px] md:px-[6px] gap-[20px] w-full max-w-[375px] md:max-w-[964px] min-h-[510px] md:min-h-[545px] rounded-[10px] mt-[10px] md:mt-[20px]">
+      <div className="flex flex-col items-center py-[10px] px-[15px] md:px-[6px] gap-[20px] w-full max-w-[375px] md:max-w-[964px] min-h-[510px] md:min-h-[545px] rounded-[10px] mt-[10px] md:mt-[10px]">
         {isLoading ? (
            <div className="flex justify-center py-10 font-montserrat text-choco-light">Завантаження історії...</div>
         ) : bonusHistory.length > 0 ? (
@@ -192,13 +199,25 @@ const Bonuses = () => {
       {/* Кнопка "До каталогу" */}
       <Link 
         to="/catalog"
-        className="flex flex-row justify-center items-center px-[30px] py-[16px] gap-[10px] w-[235px] sm:w-[266px] h-[40px] bg-wine-red rounded-[31px] transition-opacity hover:opacity-90 mt-[10px]"
+        className="flex flex-row justify-center items-center px-[30px] py-[10px] gap-[10px] w-[235px] sm:w-[266px] h-[40px] bg-wine-red rounded-[31px] transition-opacity hover:opacity-90 mt-[10px]"
       >
         <span className="font-montserrat font-normal text-[14px] sm:text-[16px] leading-[17px] sm:leading-[20px] text-creamy text-center">
           До каталогу
         </span>
       </Link>
       
+      {/* Слайдер спеціальних пропозицій */}
+      {recommendedData && recommendedData.length > 0 && (
+        <div className="w-full max-w-[1000px]">
+          <ProductSectionSlider 
+            title="Спеціальні пропозиції"
+            products={recommendedData}
+            linkUrl="/catalog?sortOption=salesCount-desc"
+            className="mt-2 md:mt-4"
+            compact={true}
+          />
+        </div>
+      )}
     </div>
   );
 };

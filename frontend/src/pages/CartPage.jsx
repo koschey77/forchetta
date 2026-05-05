@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { productsAPI } from '../services/api';
+import ProductSectionSlider from '../components/ui/carousel/ProductSectionSlider';
 import { CartRemoveIcon, CartMinusIcon, CartPlusIcon } from '../components/icons';
 import useCartStore from '../stores/useCartStore';
 
 const CartPage = () => {
   const { cartItems, fetchCart, updateQuantity, removeFromCart } = useCartStore();
+
+  // TanStack Query для получения рекомендуемых товаров (Спеціальні пропозиції)
+  const { data: recommendedData } = useQuery({
+    queryKey: ['recommendedProducts'],
+    queryFn: () => productsAPI.getRecommendations(),
+    staleTime: 5 * 60 * 1000,
+  });
 
   useEffect(() => {
     fetchCart();
@@ -52,9 +62,9 @@ const CartPage = () => {
   const totalPrice = subtotal + packagingPrice;
 
   return (
-    <div className="min-h-screen bg-creamy font-sans relative pb-[250px] xl:pb-[100px]">
+    <div className="min-h-screen bg-creamy font-sans relative pb-[50px] xl:pb-[100px]">
       <div className="px-[16px] lg:px-[30px] xl:px-[60px] max-w-[1440px] mx-auto">
-        <h1 className="font-serif text-[32px] lg:text-[40px] xl:text-figma-hero font-semibold text-choco-light mb-[30px] lg:mb-[40px] xl:mb-[60px] text-center lg:text-left xl:text-left mt-4 lg:mt-8">
+        <h1 className="font-serif text-[32px] lg:text-[40px] xl:text-figma-hero font-semibold text-choco-light mb-[10px] lg:mb-[10px] xl:mb-[20px] text-center lg:text-left xl:text-left mt-2 lg:mt-4">
           Мій кошик
         </h1>
 
@@ -268,7 +278,7 @@ const CartPage = () => {
             })}
 
             {/* Плашка безкоштовної доставки */}
-            <div className="box-border flex flex-col lg:flex-row justify-center items-center px-[20px] py-[25px] lg:px-[20px] lg:gap-[25px] w-full lg:w-[595px] lg:h-[99px] xl:w-full border border-choco-light rounded-[20px]">
+            <div className="box-border flex flex-col lg:flex-row justify-center items-center px-[20px] py-[15px] lg:px-[20px] lg:gap-[25px] w-full lg:w-[595px] lg:h-[99px] xl:w-full border border-choco-light rounded-[20px]">
               <div className="flex flex-row lg:justify-between items-center gap-[20px] lg:gap-[20px] xl:gap-[283px] w-full lg:w-[555px] xl:w-full text-choco-light">
                 <div className="flex flex-row items-center gap-[20px] mx-auto lg:mx-0 w-full lg:w-[317px] lg:h-[44px]">
                   <span className="font-sans font-light text-[14px] lg:text-[18px] xl:text-[18px] leading-[17px] lg:leading-[22px] max-w-[200px] lg:max-w-none lg:w-[317px] text-center lg:text-left">
@@ -418,8 +428,7 @@ const CartPage = () => {
             </div>
 
             {/* Картка оформлення замовлення */}
-            {/* На мобільних вона фіксується над нижнім меню, на десктопі - статично */}
-            <div className="fixed bottom-[107px] sm:bottom-0 left-0 w-full z-40 bg-gradient-to-t from-[rgba(245,238,224,1)] via-[#F5EEE0] to-transparent pt-[40px] pb-[20px] px-[16px] lg:static lg:bg-none lg:p-0 xl:static xl:bg-none xl:p-0">
+            <div className="w-full mt-4 lg:mt-0">
               <div className="bg-dark-creamy lg:bg-transparent xl:bg-transparent rounded-[10px] lg:rounded-none xl:rounded-none p-[25px_15px_20px] lg:p-[0px_42px] xl:p-[0px_42px] flex flex-col gap-[20px] lg:gap-[16px] xl:gap-[25px] mx-auto shadow-lg lg:shadow-none xl:shadow-none w-full lg:w-[349px] lg:h-[151px] xl:w-[425px] xl:h-[164px] lg:items-center xl:items-center">
                 
                 <div className="flex flex-row justify-between items-center w-full lg:w-[349px] xl:w-[341px] lg:h-[39px] xl:h-[39px]">
@@ -453,6 +462,19 @@ const CartPage = () => {
           </div>
 
         </div>
+
+        {/* Рекомендовані товари (Спеціальні пропозиції) */}
+        {recommendedData && recommendedData.length > 0 && (
+          <div className="md:mb-[10px] w-full mt-2 md:mt-2 overflow-hidden">
+            <ProductSectionSlider 
+              title="Спеціальні пропозиції"
+              products={recommendedData}
+              linkUrl="/catalog?sortOption=salesCount-desc"
+              className="mt-2 md:mt-3"
+              compact={true}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

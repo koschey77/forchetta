@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUserStore } from '../../stores/useUserStore';
 import useCartStore from '../../stores/useCartStore';
 import ProductCard from '../../components/catalog/ProductCard';
-import { userAPI } from '../../services/api';
+import ProductSectionSlider from '../../components/ui/carousel/ProductSectionSlider';
+import { userAPI, productsAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 
 const Favorites = () => {
@@ -17,6 +18,15 @@ const Favorites = () => {
     queryFn: userAPI.getProfile,
     staleTime: 5 * 60 * 1000,
   });
+
+  const { data: newProducts } = useQuery({
+    queryKey: ['new-products-slider'],
+    queryFn: () => productsAPI.getMany({ sortBy: 'new', limit: 6 }),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const recommendationsArray = Array.isArray(newProducts) ? newProducts : (newProducts?.products || []);
+  console.log('FAVORITES SLIDER DATA:', recommendationsArray.length);
 
   const { mutate: clearAllFavorites, isPending: isClearing } = useMutation({
     mutationFn: async (itemsToClear) => {
@@ -50,7 +60,7 @@ const Favorites = () => {
 
   if (favorites.length === 0) {
     return (
-      <div className="flex flex-col justify-center items-center px-[15px] sm:px-5 pt-[30px] sm:pt-5 pb-16 gap-[35px] w-full min-h-[321px] sm:min-h-[580px] rounded-[10px]">
+      <div className="flex flex-col justify-center items-center px-[15px] sm:px-5 pt-[30px] sm:pt-5 pb-10 gap-[35px] w-full min-h-[321px] sm:min-h-[580px] rounded-[10px]">
         <div className="flex flex-col items-center gap-[35px] w-full max-w-[447px]">
           
           <div className="flex flex-col items-center gap-0 sm:gap-[2px] w-[205px] sm:w-full">
@@ -66,7 +76,7 @@ const Favorites = () => {
           
           <Link 
             to="/catalog"
-            className="flex flex-row justify-center items-center px-[30px] py-[16px] gap-[10px] w-[235px] sm:w-[310px] h-[40px] bg-wine-red rounded-[30px] transition-opacity hover:opacity-90"
+            className="flex flex-row justify-center items-center px-[30px] py-[16px] gap-[10px] w-[235px] sm:w-[310px] h-[40px] bg-wine-red rounded-[30px] transition-opacity hover:opacity-90 mt-[-10px]"
           >
             <span className="font-montserrat font-medium sm:font-normal text-[14px] sm:text-[16px] leading-[17px] sm:leading-[20px] text-creamy text-center">
               Перейти до каталогу
@@ -74,6 +84,19 @@ const Favorites = () => {
           </Link>
           
         </div>
+
+        {/* Рекомендації для порожнього стану */}
+        {recommendationsArray.length > 0 && (
+          <div className="w-full max-w-[1000px]">
+            <ProductSectionSlider 
+              title="Новинки"
+              products={recommendationsArray}
+              linkUrl="/catalog?sortOption=new"
+              className="mt-2 md:mt-4"
+              compact={true}
+            />
+          </div>
+        )}
       </div>
     );
   }
@@ -92,7 +115,7 @@ const Favorites = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full pb-16">
+    <div className="flex flex-col gap-6 w-full pb-2">
       <div className="flex w-full py-2">
         <div className="flex flex-row items-center gap-[10px] w-full sm:w-auto">
           <button 
@@ -120,6 +143,19 @@ const Favorites = () => {
           <ProductCard key={product._id || product.id} product={product} />
         ))}
       </div>
+
+      {/* Рекомендації під списком улюблених */}
+      {recommendationsArray.length > 0 && (
+        <div className="w-full max-w-[1000px]">
+          <ProductSectionSlider 
+            title="Новинки"
+            products={recommendationsArray}
+            linkUrl="/catalog?sortOption=new"
+            className="mt-2 md:mt-2"
+            compact={true}
+          />
+        </div>
+      )}
     </div>
   );
 };

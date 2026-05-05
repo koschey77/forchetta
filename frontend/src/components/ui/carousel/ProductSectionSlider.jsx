@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import ProductCard from '../../catalog/ProductCard';
 import ProductCardSkeleton from '../../catalog/ProductCardSkeleton';
 
-export default function ProductSectionSlider({ title, linkUrl, linkText = "Переглянути весь асортимент", products = [], isLoading = false, onLinkClick }) {
+export default function ProductSectionSlider({ title, linkUrl, linkText = "Переглянути асортимент", products = [], isLoading = false, onLinkClick, className, compact = false }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     containScroll: "trimSnaps",
@@ -38,9 +38,9 @@ export default function ProductSectionSlider({ title, linkUrl, linkText = "Пе�
   }, [emblaApi, onSelect])
 
   return (
-    <section className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] mt-[50px] md:mt-[64px] bg-creamy">
+    <section className={clsx("w-full max-w-[1440px] mx-auto bg-creamy", className || "px-[15px] sm:px-[30px] lg:px-[60px] mt-[50px] md:mt-[64px]")}>
       {/* Шапка слайдера */}
-      <div className="flex justify-center sm:justify-between items-center mb-[30px] sm:mb-[40px]">
+      <div className={clsx("flex justify-center sm:justify-between items-center", compact ? "mb-[20px] sm:mb-[25px]" : "mb-[30px] sm:mb-[40px]")}>
         <h2 className="font-cormorant font-bold text-choco-dark text-[48px] leading-[58px] text-center sm:text-left w-full max-w-[343px] sm:max-w-none mx-auto sm:mx-0">
           {title}
         </h2>
@@ -141,7 +141,7 @@ export default function ProductSectionSlider({ title, linkUrl, linkText = "Пе�
 
       {/* Кнопка "Переглянути всі" під слайдером */}
       {linkUrl && (
-        <div className="flex justify-center mt-[40px] sm:mt-[50px]">
+        <div className={clsx("flex justify-center", compact ? "mt-[20px] sm:mt-[25px]" : "mt-[40px] sm:mt-[50px]")}>
           <Link
             to={linkUrl}
             onClick={onLinkClick}

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
-import { orderAPI } from '../../services/api';
+import { orderAPI, productsAPI } from '../../services/api';
 import NoConnection from '../../components/errors/NoConnection';
+import ProductSectionSlider from '../../components/ui/carousel/ProductSectionSlider';
 
 const ChevronDownIcon = ({ className = '', strokeWidth = '2' }) => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
@@ -187,6 +188,16 @@ const Orders = () => {
     staleTime: 60 * 1000, 
   });
 
+  const { data: recommendedData } = useQuery({
+    queryKey: ['best-sellers'],
+    queryFn: () => productsAPI.getMany({ sortBy: 'salesCount', sortOrder: 'desc', limit: 6 }),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const recommendationsArray = Array.isArray(recommendedData) 
+    ? recommendedData 
+    : (recommendedData?.products || []);
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center px-[15px] lg:px-[30px] pt-[20px] sm:pt-5 pb-16 w-full min-h-[400px]">
@@ -201,7 +212,7 @@ const Orders = () => {
 
   if (!orders || orders.length === 0) {
     return (
-      <div className="flex flex-col justify-center items-center px-[15px] lg:px-[30px] pt-[20px] sm:pt-5 pb-16 gap-0 sm:gap-[10px] w-full min-h-[400px] sm:min-h-[607px] rounded-[10px]">
+      <div className="flex flex-col justify-center items-center px-[15px] lg:px-[30px] pt-[10px] sm:pt-5 pb-2 gap-0 sm:gap-[10px] w-full min-h-[400px] sm:min-h-[607px] rounded-[10px]">
         <img 
           src="/image36.png" 
           alt="Немає замовлень" 
@@ -223,15 +234,43 @@ const Orders = () => {
             </span>
           </Link>
         </div>
+        
+        {/* Рекомендації для порожнього стану */}
+        {recommendationsArray.length > 0 && (
+          <div className="w-full max-w-[1440px]">
+            <ProductSectionSlider 
+              title="Топ продажів"
+              products={recommendationsArray}
+              linkUrl="/catalog?sortOption=salesCount-desc"
+              className="mt-2 md:mt-4"
+              compact={true}
+            />
+          </div>
+        )}
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-start px-0 w-full lg:w-[619px] gap-[8px] mx-auto min-h-[600px]">
-      {orders.map(order => (
-        <OrderCard key={order._id} order={order} />
-      ))}
+    <div className="flex flex-col items-center w-full gap-[8px] mx-auto min-h-[600px] pb-2">
+      <div className="flex flex-col items-start px-0 w-full lg:w-[619px] gap-[8px] mx-auto">
+        {orders.map(order => (
+          <OrderCard key={order._id} order={order} />
+        ))}
+      </div>
+      
+      {/* Рекомендації під списком замовлень */}
+      {recommendationsArray.length > 0 && (
+        <div className="w-full max-w-[1000px]">
+          <ProductSectionSlider 
+            title="Топ продажів"
+            products={recommendationsArray}
+            linkUrl="/catalog?sortOption=salesCount-desc"
+            className="mt-2 md:mt-4"
+            compact={true}
+          />
+        </div>
+      )}
     </div>
   );
 };
