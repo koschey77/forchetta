@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function PromoBanner() {
   return (
-    <section className="relative w-full overflow-hidden flex flex-col justify-center shrink-0 min-h-[400px] sm:min-h-[480px] mb-[60px] sm:mb-[100px] lg:mb-[120px]">
+    <section className="relative w-full overflow-hidden flex flex-col justify-center shrink-0 min-h-[400px] sm:min-h-[480px] mt-[50px] md:mt-[64px]">
       {/* Фоновые изображения */}
       <div className="absolute inset-0 w-full h-full z-0 block">
         {/* Мобильная версия */}

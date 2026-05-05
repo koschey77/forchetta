@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 export default function StoreShowcaseSection() {
   return (
-    <section className="w-full bg-creamy flex justify-center py-[50px] md:py-[64px]">
+    <section className="w-full bg-creamy flex justify-center mt-[50px] md:mt-[64px]">
       <div className="w-full max-w-[1440px] px-[15px] md:px-[30px] lg:px-[60px] flex flex-col md:flex-row items-center gap-[50px] md:gap-[40px] lg:gap-[80px]">
         {/* Зображення */}
         <div className="w-full md:flex-1 lg:w-1/2 flex justify-center h-[472px] md:h-[700px] lg:h-[640px]">

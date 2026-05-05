@@ -1,6 +1,6 @@
 export default function AboutSection() {
   return (
-    <section className="relative w-full bg-dark-creamy flex justify-center mt-[-2px]">
+    <section className="relative w-full bg-dark-creamy flex justify-center mt-[50px] md:mt-[64px]">
       {/* Top Wave (Transition from creamy to dark-creamy) */}
       <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-0">
         <svg 

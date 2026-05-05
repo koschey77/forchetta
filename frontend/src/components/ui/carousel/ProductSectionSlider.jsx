@@ -38,7 +38,7 @@ export default function ProductSectionSlider({ title, linkUrl, linkText = "Пе�
   }, [emblaApi, onSelect])
 
   return (
-    <section className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] py-[30px] sm:py-[50px] bg-creamy">
+    <section className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] mt-[50px] md:mt-[64px] bg-creamy">
       {/* Шапка слайдера */}
       <div className="flex justify-center sm:justify-between items-center mb-[30px] sm:mb-[40px]">
         <h2 className="font-cormorant font-bold text-choco-dark text-[48px] leading-[58px] text-center sm:text-left w-full max-w-[343px] sm:max-w-none mx-auto sm:mx-0">

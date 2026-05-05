@@ -2,7 +2,7 @@ import { DeliveryIcon, PaymentIcon, PickupIcon } from '../icons'
 
 export default function DeliverySection() {
   return (
-    <section className="w-full flex justify-center py-[50px] lg:py-[64px]">
+    <section className="w-full flex justify-center mt-[50px] lg:mt-[64px]">
       <div className="w-full max-w-[1440px] px-[15px] lg:px-[64px] flex flex-col items-center gap-[50px] lg:gap-[64px]">
         {/* Заголовок */}
         <h2 className="text-choco-light lg:text-choco-dark font-serif text-[48px] leading-[58px] font-bold text-center lg:text-left w-full lg:max-w-[1312px]">

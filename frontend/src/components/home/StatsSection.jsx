@@ -27,7 +27,7 @@ const statsData = [
 
 export default function StatsSection() {
   return (
-    <section className="w-full bg-creamy py-[30px] md:py-[64px]">
+    <section className="w-full bg-creamy mt-[50px] md:mt-[64px]">
       <div className="mx-auto w-full max-w-[1440px] px-[15px] md:px-[30px] lg:px-[60px]">
         {/* Контейнер списка */}
         <div className="grid grid-cols-2 gap-y-[18px] gap-x-[13px] md:flex md:flex-row md:flex-nowrap md:justify-between items-start w-full max-w-[343px] md:max-w-[963px] lg:max-w-[1316px] mx-auto">

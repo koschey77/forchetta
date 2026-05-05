@@ -71,9 +71,9 @@ export default function HomeCategories() {
   };
 
   return (
-    <section className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] py-[30px] sm:py-[50px] bg-creamy">
+    <section className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] mt-[50px] md:mt-[64px] bg-creamy">
       {/* Header Секции */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6 sm:gap-0 mb-[30px] sm:mb-[50px]">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6 sm:gap-0 mb-[30px] sm:mb-[40px]">
         <h2 className="font-cormorant font-bold text-choco-dark text-[40px] sm:text-[48px] leading-[48px] sm:leading-[58px]">
           Категорії
         </h2>

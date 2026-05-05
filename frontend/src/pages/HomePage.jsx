@@ -66,7 +66,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-creamy">
+    <div className="flex flex-col min-h-screen bg-creamy pb-[50px] lg:pb-[64px]">
       {/* Секція №1 - Hero Баннер */}
       <HeroSlider />
       

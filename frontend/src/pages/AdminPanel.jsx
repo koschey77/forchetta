@@ -21,7 +21,7 @@ const AdminPanel = () => {
     categories: { name: 'Категорії', icon: DotsIcon },
     products: { name: 'Товари', icon: CartIcon },
     orders: { name: 'Замовлення', icon: OrdersIcon },
-    users: { name: 'Користувачи', icon: ProfileIcon },
+    users: { name: 'Користувачі', icon: ProfileIcon },
     reviews: { name: 'Відгуки', icon: ReviewsIcon },
     journal: { name: 'Журнал', icon: BookIcon }
   }
