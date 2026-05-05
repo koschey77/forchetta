@@ -12,16 +12,18 @@ const Footer = () => {
   return (
     <footer className="bg-choco-dark text-creamy font-montserrat w-full relative z-60">
       {/* Єдиний адаптивний контейнер */}
-      <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] py-8 sm:pt-[60px] sm:pb-[20px] pt-[170px] pb-[120px] 
-                      min-h-[730px] sm:min-h-[400px] xl:min-h-[554px]">
-        
+      <div
+        className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] py-8 sm:pt-[60px] sm:pb-[20px] pt-[170px] pb-[120px] 
+                      min-h-[730px] sm:min-h-[400px] xl:min-h-[554px]"
+      >
         <div className="w-full max-w-[1320px] mx-auto flex flex-col gap-8">
-          
           {/* Newsletter секція - тільки Desktop та Tablet */}
           <div className="hidden sm:flex flex-row justify-between items-start xl:items-center gap-8 xl:gap-12">
             <div className="flex-1 xl:max-w-xl">
-              <h2 className="font-bold text-[32px] xl:text-[40px] leading-[48px] xl:leading-[60px] mb-4 text-dark-creamy 
-                           xl:whitespace-nowrap">
+              <h2
+                className="font-bold text-[32px] xl:text-[40px] leading-[48px] xl:leading-[60px] mb-4 text-dark-creamy 
+                           xl:whitespace-nowrap"
+              >
                 Залишайся на солодкій хвилі
               </h2>
               <p className="text-base font-normal leading-relaxed text-white max-w-xl">
@@ -49,7 +51,7 @@ const Footer = () => {
                   Приєднатися
                 </button>
               </form>
-              
+
               {/* Логотип - Tablet: справа від тексту */}
               <div className="hidden sm:block xl:hidden">
                 <LogoFooterMobile idPrefix="tablet" className="w-[180px] h-24" />
@@ -62,7 +64,6 @@ const Footer = () => {
 
           {/* Основний контент: Desktop та Tablet навігація, Mobile логотип */}
           <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-3 w-full gap-8 sm:gap-0">
-            
             {/* Desktop: Логотип зліва */}
             <div className="hidden xl:block flex-none">
               <LogoFooter className="w-[227px] h-[120.93px]" />
@@ -74,34 +75,59 @@ const Footer = () => {
             </div>
 
             {/* Навігація - тільки Desktop та Tablet */}
-            <nav className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-[75px] 
-                          w-full lg:w-[980px] lg:h-[182px] lg:flex lg:flex-row lg:items-start lg:p-0">
-              
+            <nav
+              className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-[75px] 
+                          w-full lg:w-[980px] lg:h-[182px] lg:flex lg:flex-row lg:items-start lg:p-0"
+            >
               {/* Каталог */}
               <div className="flex flex-col items-start gap-4 xl:w-[188.75px] xl:h-[182px]">
                 <h3 className="font-bold text-sm leading-[17px] text-creamy">Каталог</h3>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Торти</a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Цукерки</a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Тістечка</a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Шоколад</a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Подарункові набори</a>
+                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  Торти
+                </a>
+                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  Цукерки
+                </a>
+                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  Тістечка
+                </a>
+                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  Шоколад
+                </a>
+                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  Подарункові набори
+                </a>
               </div>
 
               {/* Про компанію */}
               <div className="flex flex-col items-start gap-4 xl:w-[188.75px] xl:h-[149px]">
                 <h3 className="font-bold text-sm leading-[17px] text-creamy">Про компанію</h3>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Головна</a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Історія бренду</a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Наше виробництво</a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Сертифікати</a>
+                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  Головна
+                </a>
+                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  Про нас
+                </a>
+                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  Наше виробництво
+                </a>
+                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  Магазини
+                </a>
               </div>
 
               {/* Допомога */}
               <div className="flex flex-col items-start gap-4 xl:w-[188.75px] xl:h-[116px]">
                 <h3 className="font-bold text-sm leading-[17px] text-creamy">Допомога</h3>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">FAQ</a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Доставка та оплата</a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">Контакти</a>
+                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  FAQ
+                </a>
+                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  Доставка та оплата
+                </a>
+                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  Контакти
+                </a>
               </div>
 
               {/* Контакти і адреса */}
@@ -136,7 +162,10 @@ const Footer = () => {
             {/* Контакти */}
             <div className="flex flex-col items-center gap-5 w-full max-w-[315px]">
               <p className="text-creamy font-light text-lg leading-[22px] text-center">м. Київ, вул. Хрещатик 10А</p>
-              <a href="mailto:forchetta@gmail.com" className="text-creamy font-light text-lg leading-[22px] text-center hover:opacity-80 transition-opacity">
+              <a
+                href="mailto:forchetta@gmail.com"
+                className="text-creamy font-light text-lg leading-[22px] text-center hover:opacity-80 transition-opacity"
+              >
                 forchetta@gmail.com
               </a>
               <a href="tel:+380999876240" className="text-creamy font-light text-lg leading-[22px] text-center hover:opacity-80 transition-opacity">
@@ -165,11 +194,17 @@ const Footer = () => {
           <div className="hidden sm:flex flex-col md:flex-row justify-between items-center text-xs">
             <p className="text-creamy font-normal">© 2026 Forchetta. Усі права захищено.</p>
             <div className="flex flex-wrap justify-center gap-3">
-              <a href="#" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">Cookies</a>
+              <a href="#" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">
+                Cookies
+              </a>
               <span className="hidden md:inline text-creamy text-xs font-normal">|</span>
-              <a href="#" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">Договір оферти</a>
+              <a href="#" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">
+                Договір оферти
+              </a>
               <span className="hidden md:inline text-creamy text-xs font-normal">|</span>
-              <a href="#" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">Політика конфіденційності</a>
+              <a href="#" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">
+                Політика конфіденційності
+              </a>
             </div>
           </div>
         </div>

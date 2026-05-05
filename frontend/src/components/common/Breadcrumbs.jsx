@@ -67,7 +67,7 @@ const Breadcrumbs = () => {
   };
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto h-[40px] flex items-center px-[16px] xl:px-[60px] gap-[10px] mt-4 lg:mt-6 mb-2 font-montserrat font-light text-[12px] leading-[15px] text-choco-dark transition-all">
+    <div className="w-full max-w-[1440px] mx-auto h-[40px] flex items-center px-[16px] xl:px-[60px] gap-[10px] my-[8px] font-montserrat font-light text-[12px] leading-[15px] text-choco-dark transition-all">
       <Link to="/" className="hover:opacity-80">Головна</Link>
       
       {paths.map((path, index) => {

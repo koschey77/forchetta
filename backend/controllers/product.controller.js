@@ -404,9 +404,23 @@ export const getRecommendedProducts = async (req, res) => {
 
     // Объединяем и убираем дубликаты
     const allRecommended = [...newProducts, ...featuredProducts, ...discountedProducts]
-    const uniqueRecommended = allRecommended.filter((product, index, self) => 
+    let uniqueRecommended = allRecommended.filter((product, index, self) => 
       index === self.findIndex(p => p._id.toString() === product._id.toString())
     ).slice(0, 6) // Максимум 6 товаров
+
+    // ДОБИВКА: Если уникальных товаров меньше 6, добираем популярными
+    if (uniqueRecommended.length < 6) {
+      const neededCount = 6 - uniqueRecommended.length;
+      const existingIds = uniqueRecommended.map(p => p._id);
+
+      const extraProducts = await Product.find({ _id: { $nin: existingIds } })
+        .populate('category', 'name image')
+        .sort({ salesCount: -1 }) // самые популярные
+        .limit(neededCount)
+        .lean();
+
+      uniqueRecommended = [...uniqueRecommended, ...extraProducts];
+    }
 
     // Кешируем на 1 день
     await redis.setex("recommended_products", 86400, JSON.stringify(uniqueRecommended))

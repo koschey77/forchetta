@@ -10,6 +10,7 @@ import Error404 from "../components/errors/Error404"
 import FavoriteButton from "../components/common/FavoriteButton"
 import { useAddToCartAction } from "../hooks/useAddToCartAction"
 import { useViewedStore } from "../stores/useViewedStore"
+import ProductSectionSlider from "../components/ui/carousel/ProductSectionSlider"
 
 const ProductPage = () => {
   const { id } = useParams()
@@ -30,6 +31,13 @@ const ProductPage = () => {
     enabled: !!id,
     staleTime: 5 * 60 * 1000, // 5 минут
   })
+
+  // TanStack Query для получения рекомендуемых товаров (Спеціальні пропозиції)
+  const { data: recommendedData } = useQuery({
+    queryKey: ['recommendedProducts'],
+    queryFn: () => productsAPI.getRecommendations(),
+    staleTime: 5 * 60 * 1000,
+  });
 
   // Деструктуризация product с дефолтними значениями
   const {
@@ -307,6 +315,17 @@ const ProductPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Рекомендовані товари (Спеціальні пропозиції) */}
+        {recommendedData && recommendedData.length > 0 && (
+          <div className="mt-[20px] md:mt-[40px] mb-[40px] md:mb-[80px]">
+            <ProductSectionSlider 
+              title="Спеціальні пропозиції"
+              products={recommendedData}
+              linkUrl="/catalog?sortOption=salesCount-desc"
+            />
+          </div>
+        )}
       </div>
     </div>
   )

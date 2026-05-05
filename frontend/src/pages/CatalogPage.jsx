@@ -85,7 +85,7 @@ const CatalogPage = () => {
   const hasFiltersApplied = hasAppliedFilters();
 
   return (
-    <div className="min-h-screen bg-creamy py-6">
+    <div className="min-h-screen bg-creamy pb-6 pt-[10px]">
       
       {/* Банер спеціальних пропозицій */}
       <CatalogBanner />
