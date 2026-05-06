@@ -79,15 +79,26 @@ export const deleteProfile = async (req, res) => {
     // Форматируем дату в DDMMYYYY для понятного префикса (напр. 12042026)
     const date = new Date();
     const formattedDate = ('0' + date.getDate()).slice(-2) + ('0' + (date.getMonth() + 1)).slice(-2) + date.getFullYear();
+    const timestamp = Date.now(); // Додаємо timestamp для гарантованої унікальності
 
     // Мягкое удаление и анонимизация (освобождаем email для повторной регистрации)
     user.isActive = false;
-    user.email = `deleted_${formattedDate}_${user.email}`;
+    user.email = `deleted_${formattedDate}_${timestamp}_${user.email}`;
     user.name = "Видалений користувач";
     user.phone = "";
     user.avatar = "";
     user.addresses = [];
     user.favorites = [];
+    
+    // ВАЖЛИВО! Відв'язуємо акаунт від Google, щоб користувач міг знову зареєструватися 
+    if (user.googleId) {
+      user.googleId = undefined;
+      // Якщо це був користувач ТІЛЬКИ через Google (без пароля), треба додати фейковий пароль, 
+      // інакше Mongoose-модель видасть помилку валідації "Password is required"
+      if (!user.password) {
+        user.password = `DELETED_${timestamp}_NO_PASSWORD`;
+      }
+    }
     
     // Очищаем куки
     res.clearCookie('accessToken');

@@ -49,21 +49,36 @@ async (accessToken, refreshToken, profile, done) => {
     let user = await User.findOne({ googleId: profile.id });
     
     if (user) {
-      // ✅ Пользователь найден - обновляем аватар на случай изменения
-      if (!user.avatar || user.avatar !== profile.photos[0]?.value) {
-        user.avatar = profile.photos[0]?.value;
-        await user.save();
-        console.log('✅ Updated avatar for existing Google user:', user.email);
-      }
-
       // Проверка на блокировку аккаунта
       if (user.isActive === false) {
-        console.log('⛔ Blocked Google user tried to login:', user.email);
-        return done(new Error("BlockedAccount"), null);
+        // Если это старый "мягко удаленный" аккаунт, отвязываем googleId 
+        // (лечит баг для тех, кто удалился до внедрения нового фикса)
+        if (user.email && user.email.startsWith('deleted_')) {
+          user.googleId = undefined;
+          // Додаємо заглушку для пароля, інакше Mongoose видасть помилку валідації 
+          // бо без googleId він почне вимагати пароль.
+          if (!user.password) {
+            user.password = `DELETED_${Date.now()}_NO_PASSWORD`;
+          }
+          await user.save();
+          user = null; // Скидаємо юзера, щоб код пішов далі створювати новий акаунт
+        } else {
+          console.log('⛔ Blocked Google user tried to login:', user.email);
+          return done(new Error("BlockedAccount"), null);
+        }
       }
+      
+      if (user) {
+        // ✅ Пользователь найден - обновляем аватар на случай изменения
+        if (!user.avatar || user.avatar !== profile.photos[0]?.value) {
+          user.avatar = profile.photos[0]?.value;
+          await user.save();
+          console.log('✅ Updated avatar for existing Google user:', user.email);
+        }
 
-      console.log('✅ Existing Google user found:', user.email);
-      return done(null, user);
+        console.log('✅ Existing Google user found:', user.email);
+        return done(null, user);
+      }
     }
     
     // Проверяем, есть ли пользователь с таким же email (зарегистрированный обычным способом)

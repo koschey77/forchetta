@@ -286,13 +286,22 @@ export const getAllOrders = async (req, res) => {
     const skip = (page - 1) * limit;
     const search = req.query.search || '';
 
-    // Пошук по orderNumber та contactPhone
-    const filter = search ? { 
-      $or: [
-        { orderNumber: { $regex: search, $options: 'i' } },
-        { contactPhone: { $regex: search, $options: 'i' } }
-      ]
-    } : {};
+    let filter = {};
+    
+    // Пошук по orderNumber, contactPhone, та імені користувача
+    if (search) {
+      // Спочатку знаходимо користувачів, імена яких збігаються з пошуковим запитом
+      const matchingUsers = await User.find({ name: { $regex: search, $options: 'i' } }).select('_id');
+      const userIds = matchingUsers.map(u => u._id);
+
+      filter = { 
+        $or: [
+          { orderNumber: { $regex: search, $options: 'i' } },
+          { contactPhone: { $regex: search, $options: 'i' } },
+          { user: { $in: userIds } } // Фільтр по знайденим користувачам
+        ]
+      };
+    }
 
     const orders = await Order.find(filter)
       .populate('user', 'name email phone')

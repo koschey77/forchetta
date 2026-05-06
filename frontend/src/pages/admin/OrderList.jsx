@@ -267,6 +267,13 @@ const OrderList = () => {
       {/* Header & Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-2 border-b border-light-creamy">
          
+         {/* Сводка количества замовлень */}
+         <div className="flex items-center w-full sm:w-auto p-2">
+            <span className="font-montserrat font-bold text-[18px] text-choco-dark whitespace-nowrap">
+              Всього замовлень: <span className="text-wine-red ml-1">{data?.total || 0}</span>
+            </span>
+         </div>
+         
          {/* Search Input */}
          <div className="relative w-full sm:w-[400px]">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -274,7 +281,7 @@ const OrderList = () => {
             </div>
             <input
               type="text"
-              placeholder="Пошук (Номер замовлення або телефон)..."
+              placeholder="Пошук (Ім'я, Номер або телефон)..."
               value={searchQuery}
               onChange={handleSearchChange}
               className="w-full pl-10 pr-4 py-2 rounded-full border border-choco-light/30 focus:border-wine-red focus:outline-none bg-transparent font-montserrat text-[14px] text-choco-dark placeholder-choco-light/50 transition-colors"

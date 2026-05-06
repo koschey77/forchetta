@@ -138,7 +138,7 @@ const UserList = () => {
         {/* Заголовок Таблиці (Грід) */}
         <div className="grid grid-cols-[250px_1fr_1fr_1fr_1fr_1fr_60px] gap-4 w-full px-6 py-4 items-center">
           <div onClick={() => handleSort('name')} className="font-montserrat font-semibold text-[18px] text-choco-light flex items-center cursor-pointer hover:opacity-70 transition-opacity select-none">
-            Покупець 
+            Покупець {sortedUsers.length > 0 ? `(${sortedUsers.length})` : ''}
             <span className={`inline-block w-4 text-[16px] text-center ml-1 transition-opacity ${sortConfig.key === 'name' ? 'opacity-100' : 'opacity-30'}`}>
               {sortConfig.key === 'name' && sortConfig.direction === 'asc' ? '↑' : '↓'}
             </span>

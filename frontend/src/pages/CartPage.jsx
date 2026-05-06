@@ -263,7 +263,7 @@ const CartPage = () => {
                           </div>
 
                           {/* Підсумкова ціна */}
-                            <span className="font-sans font-semibold text-[18px] lg:text-[18px] xl:text-[24px] leading-[22px] lg:leading-[22px] xl:leading-[29px] text-[#705A5A] lg:w-[73px] lg:h-[22px] text-right lg:text-left whitespace-nowrap min-w-0 flex-shrink-0 flex-grow text-right">
+                            <span className="font-sans font-semibold text-[18px] lg:text-[18px] xl:text-[24px] leading-[22px] lg:leading-[22px] xl:leading-[29px] text-[#705A5A] lg:w-[73px] lg:h-[22px] lg:text-left whitespace-nowrap min-w-0 flex-shrink-0 flex-grow text-right">
                             {currentItemPrice * item.quantity} грн
                           </span>
                         </div>
