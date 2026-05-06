@@ -2,7 +2,7 @@ import Order from "../models/order.model.js";
 import User from "../models/user.model.js";
 import Product from "../models/product.model.js";
 import Stripe from "stripe";
-import { sendOrderConfirmationEmail } from "../lib/email.service.js";
+import { sendOrderConfirmationEmail, sendOrderStatusEmail } from "../lib/email.service.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -329,11 +329,13 @@ export const updateOrder = async (req, res) => {
       paymentMethod 
     } = req.body;
 
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id).populate('user', 'name email');
 
     if (!order) {
       return res.status(404).json({ message: "Замовлення не знайдено" });
     }
+
+    const oldStatus = order.status;
 
     // Обновляем только разрешенные поля (без перерасчета товаров, так как это сломает статистику и бонусы)
     if (shippingAddress) order.shippingAddress = shippingAddress;
@@ -344,6 +346,12 @@ export const updateOrder = async (req, res) => {
     if (paymentMethod) order.paymentMethod = paymentMethod;
 
     const updatedOrder = await order.save();
+
+    // Если статус изменился и это не pending, отправляем письмо
+    if (status && status !== oldStatus && status !== 'pending') {
+      sendOrderStatusEmail(order.user.email, order.user.name, order.orderNumber, status)
+        .catch(err => console.error('Status email error:', err));
+    }
 
     return res.json(updatedOrder);
   } catch (error) {
@@ -359,16 +367,24 @@ export const updateOrderStatus = async (req, res) => {
   try {
     const { status, paymentStatus } = req.body;
     
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id).populate('user', 'name email');
 
     if (!order) {
       return res.status(404).json({ message: "Замовлення не знайдено" });
     }
 
+    const oldStatus = order.status;
+
     if (status) order.status = status;
     if (paymentStatus) order.paymentStatus = paymentStatus;
 
     const updatedOrder = await order.save();
+
+    // Если статус изменился и это не pending, отправляем письмо
+    if (status && status !== oldStatus && status !== 'pending') {
+      sendOrderStatusEmail(order.user.email, order.user.name, order.orderNumber, status)
+        .catch(err => console.error('Status email error:', err));
+    }
 
     return res.json(updatedOrder);
   } catch (error) {

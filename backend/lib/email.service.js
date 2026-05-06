@@ -324,7 +324,7 @@ export const sendOrderConfirmationEmail = async (email, name, order) => {
             </table>
 
             <!-- Информация о доставке/оплате -->
-            <div style="background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #E5DCC9;">
+              <div style="background: #F5EEE0; padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #E5DCC9;">
               <h4 style="color: #6B4423; font-size: 16px; margin: 0 0 15px 0;">Інформація про доставку</h4>
               <p style="color: #705A5A; font-size: 14px; margin: 5px 0;"><strong>Телефон:</strong> ${order.contactPhone || ''}</p>
               <p style="color: #705A5A; font-size: 14px; margin: 5px 0;"><strong>Адреса:</strong> ${addressString}</p>
@@ -372,7 +372,6 @@ export const sendOrderConfirmationEmail = async (email, name, order) => {
   }
 }
 
-// Отправка email с кодом восстановления пароля
 // Отправка email с кодом восстановления пароля
 export const sendPasswordResetEmail = async (email, resetCode, name) => {
   try {
@@ -472,3 +471,119 @@ export const sendPasswordResetEmail = async (email, resetCode, name) => {
     }
   }
 }
+
+export const sendOrderStatusEmail = async (email, name, orderNumber, newStatus) => {
+  try {
+    let subject = '';
+    let title = '';
+    let message = '';
+    let emoji = '';
+    let colorRef = '#705A5A'; // default choco-light
+
+    switch (newStatus) {
+      case 'processing':
+        subject = `Ваше замовлення ${orderNumber} в роботі!`;
+        title = 'Замовлення готується!';
+        emoji = '🧑‍🍳';
+        message = `Ми вже прийняли ваше замовлення <b>${orderNumber}</b> в роботу. Наші кондитери починають чаклувати над вашими десертами.`;
+        break;
+      case 'shipped':
+        subject = `Замовлення ${orderNumber} вже в дорозі!`;
+        title = 'Смаколики вже в дорозі!';
+        emoji = '🚚';
+        message = `Ваше замовлення <b>${orderNumber}</b> було передано в доставку. Очікуйте на кур'єра або повідомлення від поштової служби.`;
+        break;
+      case 'delivered':
+        subject = `Замовлення ${orderNumber} успішно доставлено!`;
+        title = 'Замовлення доставлено!';
+        emoji = '🎉';
+        message = `Ваше замовлення <b>${orderNumber}</b> було успішно доставлено. Сподіваємось, вам все сподобалось. Смачного та чекаємо вас знову у Forchetta!`;
+        colorRef = '#A1926B'; // green-ish/goldish
+        break;
+      case 'cancelled':
+        subject = `Замовлення ${orderNumber} було скасовано`;
+        title = 'Замовлення скасовано';
+        emoji = '❌';
+        colorRef = '#7F1D1D'; // wine-red error color
+        message = `Ваше замовлення <b>${orderNumber}</b> було скасовано. Якщо у вас виникли запитання або це сталось помилково, будь ласка, зверніться до нашої служби підтримки.`;
+        break;
+      default:
+        subject = `Оновлення статусу замовлення ${orderNumber}`;
+        title = 'Статус замовлення змінено';
+        emoji = 'ℹ️';
+        message = `Статус вашого замовлення <b>${orderNumber}</b> був змінений на <b>${newStatus}</b>.`;
+    }
+
+    const firstName = name ? name.split(" ")[0] : "гостю";
+
+    const result = await resend.emails.send({
+      from: `Forchetta Sweet Shop <${FROM_EMAIL}>`,
+      to: [email],
+      subject: subject,
+      html: `
+        <head>
+          <style type="text/css">
+            @import url('https://fonts.googleapis.com');
+          </style>
+        </head>
+        <body>
+          <div style="font-family: 'Montserrat', Arial, sans-serif; font-style: normal; max-width: 800px; min-width: 340px; background-color: #F5EEE0; padding: 0; margin: 0 auto; letter-spacing: 0.1px;">
+            <div style="padding: 40px 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+              
+              <!-- Логотип -->
+              <div style="text-align: center; margin-bottom: 30px;">
+                <img src="${LOGO_URL}" alt="Forchetta Logo" style="width: 280px; height: auto;" />
+              </div>
+              
+              <!-- Белый блок с контентом -->
+              <div style="background-color: #F5EEE0; padding: 40px 30px; border-radius: 8px; max-width: 600px; margin: 0 auto; border: 1px solid #E3D6BF;">
+                
+                <h1 style="color: ${colorRef}; font-family: 'Cormorant Garamond', serif; font-size: 28px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; text-align: center;">
+                  ${title} <span style="font-size: 28px;">${emoji}</span>
+                </h1>
+                
+                <p style="color: #413232; font-size: 16px; line-height: 1.6; margin-bottom: 20px; text-align: center;">
+                  Вітаємо, <b>${firstName}</b>!
+                </p>
+                
+                <p style="color: #413232; font-size: 16px; line-height: 1.6; margin-bottom: 30px; padding: 15px; background-color: #F5EEE0; border-left: 4px solid ${colorRef}; border-radius: 0 8px 8px 0;">
+                  ${message}
+                </p>
+
+                <p style="color: #705A5A; font-size: 14px; line-height: 1.6; margin-bottom: 30px;">
+                  Ви можете переглянути деталі замовлення та поточний статус у своєму <a href="${process.env.CLIENT_URL}/user-panel?page=history" style="color: #A1926B; text-decoration: underline;">Особистому кабінеті</a>.
+                </p>
+                
+                <div style="text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid #E3D6BF;">
+                  <p style="color: #705A5A; font-size: 14px; line-height: 1.5; margin: 0;">
+                    З любов'ю,<br>
+                    <strong>Команда Forchetta</strong>
+                  </p>
+                </div>
+                
+              </div>
+              
+              <!-- Футер -->
+              <div style="text-align: center; margin-top: 30px;">
+                <p style="color: #A1926B; font-size: 13px; margin: 5px 0;">© ${new Date().getFullYear()} Forchetta Sweet Shop. Всі права захищені.</p>
+                <p style="color: #A1926B; font-size: 13px; margin: 5px 0;">Якщо у вас виникли запитання, дайте відповідь на цей лист.</p>
+              </div>
+              
+            </div>
+          </div>
+        </body>
+      `
+    });
+
+    if (result.error) {
+      console.error('❌ Помилка відправки status email:', result.error.message);
+      return { success: false, error: result.error.message };
+    }
+    
+    console.log('✅ Status email відправлено! ID:', result.data?.id);
+    return { success: true, messageId: result.data?.id };
+  } catch (error) {
+    console.error('❌ Помилка відправки status email:', error);
+    return { success: false, error: error.message };
+  }
+};
