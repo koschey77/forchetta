@@ -2,6 +2,7 @@ import Order from "../models/order.model.js";
 import User from "../models/user.model.js";
 import Product from "../models/product.model.js";
 import Stripe from "stripe";
+import { sendOrderConfirmationEmail } from "../lib/email.service.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -23,6 +24,7 @@ export const createOrder = async (req, res) => {
 
     let subtotal = 0;
     const validatedItems = [];
+    const emailItems = []; // Массив для красивого письма
 
     // Розраховуємо суму та знімаємо snapshot'и для товарів
     for (const item of items) {
@@ -41,6 +43,13 @@ export const createOrder = async (req, res) => {
         quantity: item.quantity,
         priceAtPurchase,
         nameAtPurchase
+      });
+
+      emailItems.push({
+        quantity: item.quantity,
+        priceAtPurchase,
+        nameAtPurchase,
+        image: product.images?.length > 0 ? product.images[0].url : null
       });
 
       // Одразу оновлюємо кількість продажів (для "найпопулярніших")
@@ -192,15 +201,32 @@ export const createOrder = async (req, res) => {
         payment_method_types: ['card'],
         line_items: safeLineItems,
         mode: 'payment',
-        success_url: `${process.env.CLIENT_URL}/success?orderId=${createdOrder._id}`,
+        success_url: `${process.env.CLIENT_URL}/success?orderId=${createdOrder._id}&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.CLIENT_URL}/cart`,
         client_reference_id: createdOrder._id.toString(),
       });
+
+      // Отправляем письмо только если оплата наличными! Для Stripe письмо будет отправлено после успеха на SuccessPage
+      // sendOrderConfirmationEmail мы убрали отсюда для карт
 
       return res.status(201).json({ order: createdOrder, url: session.url });
     }
 
     // Якщо це наличні
+    sendOrderConfirmationEmail(user.email, user.name, {
+      _id: createdOrder._id,
+      orderNumber: orderNumber,
+      items: emailItems,
+      packagingPrice: Number(packagingPrice) || 0,
+      totalPrice: subtotal,
+      bonusUsed: actualAppliedBonuses,
+      bonusEarned: earnedBonuses,
+      shippingAddress,
+      contactPhone,
+      paymentMethod,
+      paymentStatus: 'pending' // наличними завжди pending поки кур'єр не віддасть 
+    }).catch(err => console.error('Email error:', err));
+
     return res.status(201).json({ order: createdOrder });
 
   } catch (error) {
@@ -374,5 +400,73 @@ export const deleteOrder = async (req, res) => {
   } catch (error) {
     console.error("Error in deleteOrder controller:", error.message);
     return res.status(500).json({ message: "Помилка видалення замовлення" });
+  }
+};
+
+// @desc Confirm Stripe payment success
+// @route POST /api/orders/:id/confirm-payment
+// @access Private
+export const confirmOrderPayment = async (req, res) => {
+  try {
+    // В React 18 в Strict Mode useEffect может сработать дважды
+    // Чтобы письмо не отправилось два раза, мы используем findOneAndUpdate с флагом pending,
+    // это гарантирует, что только ПЕРВЫЙ запрос изменит статус и пошлет письмо.
+    const order = await Order.findOneAndUpdate(
+      { _id: req.params.id, paymentStatus: 'pending' },
+      { paymentStatus: 'paid' },
+      { new: true }
+    ).populate('items.product', 'images');
+
+    // Если заказ не найден по этому фильтру, значит он либо не существует, либо УЖЕ 'paid' (второй дубль)
+    if (!order) {
+      const existingOrder = await Order.findById(req.params.id).populate('items.product', 'images');
+      if (!existingOrder) return res.status(404).json({ message: "Замовлення не знайдено" });
+      
+      // Возвращаем просто его текущее состояние (без повторной отправки письма)
+      return res.json(existingOrder);
+    }
+
+    if (order.user.toString() !== req.user._id.toString()) {
+      // И на всякий случай откатываем, если это была попытка чужого юзера
+      order.paymentStatus = 'pending';
+      await order.save();
+      return res.status(403).json({ message: "Відмовлено в доступі" });
+    }
+
+    // Формируем email элементы с картинками
+    const emailItems = order.items.map(item => ({
+      quantity: item.quantity,
+      priceAtPurchase: item.priceAtPurchase,
+      nameAtPurchase: item.nameAtPurchase,
+      image: item.product && item.product.images?.length > 0 ? item.product.images[0].url : null
+    }));
+
+    let packagingPrice = 0;
+    // Оцениваем была ли упаковка (если нужно)
+    // В текущей схеме packagingPrice явно не хранится как поле. Мы вычисляем его из subtotal и total
+    const currentItemsTotal = order.items.reduce((acc, i) => acc + (i.priceAtPurchase * i.quantity), 0);
+    const diff = order.totalAmount - (currentItemsTotal - order.appliedBonuses);
+    if (diff > 0) {
+      packagingPrice = diff;
+    }
+
+    sendOrderConfirmationEmail(req.user.email, req.user.name, {
+      _id: order._id,
+      orderNumber: order.orderNumber,
+      items: emailItems,
+      packagingPrice: packagingPrice,
+      totalPrice: order.totalAmount + order.appliedBonuses,
+      bonusUsed: order.appliedBonuses,
+      bonusEarned: order.earnedBonuses,
+      shippingAddress: order.shippingAddress,
+      contactPhone: order.contactPhone,
+      paymentMethod: order.paymentMethod,
+      paymentStatus: 'paid'
+    }).catch(err => console.error('Email error:', err));
+
+    return res.json(order);
+  } catch (error) {
+    console.error("Error in confirmOrderPayment:", error.message);
+    return res.status(500).json({ message: "Помилка підтвердження оплати" });
   }
 };

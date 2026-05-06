@@ -14,6 +14,9 @@ const SuccessPage = () => {
     const completeOrder = async () => {
       try {
         if (orderId) {
+          if (session_id) {
+            await orderAPI.confirmPayment(orderId);
+          }
           // Отримуємо деталі оформленого замовлення
           const order = await orderAPI.getById(orderId);
           // Дістаємо ID товарів, які реально були куплені
