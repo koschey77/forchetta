@@ -100,10 +100,10 @@ const CartPage = () => {
                 </button>
 
                 {/* Основний контейнер контенту (Мобілка: справа від чекбокса, Планшет/Десктоп: на всю ширину) */}
-                <div className="flex flex-col items-start gap-[10px] lg:gap-0 xl:gap-0 w-[258px] lg:w-full lg:h-full">
+                <div className="flex flex-col items-start gap-[10px] lg:gap-0 xl:gap-0 w-full lg:w-full lg:h-full">
 
                   {/* ТОП-БАР (Знижка + дата + кнопка видалення) */}
-                  <div className="flex flex-row justify-between items-center w-[258px] lg:w-[510px] xl:pl-[53px] xl:w-[718px] lg:mx-auto xl:mx-0 mb-[10px]">
+                  <div className="flex flex-row justify-between items-center w-full lg:w-[510px] xl:pl-[53px] xl:w-[718px] lg:mx-auto xl:mx-0 mb-[10px]">
                     
                     {/* Ліва частина: знижка + дата */}
                     <div className="flex flex-row justify-between items-center w-[133px] h-[21px] gap-[52px]">
@@ -140,10 +140,10 @@ const CartPage = () => {
                   </div>
 
                   {/* ОСНОВНИЙ КОНТЕНТ ТОВАРУ */}
-                  <div className="flex flex-col lg:flex-row items-start lg:items-center xl:items-center gap-[0] lg:gap-[20px] xl:gap-[20px] w-[258px] lg:w-[510px] lg:h-[162.42px] xl:w-[718px] xl:h-[209px] lg:mx-auto xl:mx-0">
+                  <div className="flex flex-col lg:flex-row items-start lg:items-center xl:items-center gap-[0] lg:gap-[20px] xl:gap-[20px] w-full lg:w-[510px] lg:h-[162.42px] xl:w-[718px] xl:h-[209px] lg:mx-auto xl:mx-0">
                     
                     {/* Мобільний Рядок Фото+Інфо / Планшетно-Десктопна Ліва Колонка */}
-                    <div className="flex flex-col lg:flex-col xl:flex-col justify-between lg:justify-center items-start lg:items-center xl:items-end w-[258px] lg:w-[157px] lg:h-[162.42px] xl:w-[204px] xl:h-[209px] gap-[10px] lg:gap-[15px] xl:gap-[10px]">
+                    <div className="flex flex-col lg:flex-col xl:flex-col justify-between lg:justify-center items-start lg:items-center xl:items-end w-full lg:w-[157px] lg:h-[162.42px] xl:w-[204px] xl:h-[209px] gap-[10px] lg:gap-[15px] xl:gap-[10px]">
                       
                       {/* Контейнер Картинки (і чекбокса на десктопі/планшеті) */}
                       <div className="flex flex-row items-center gap-[23px] w-full xl:w-[204px] lg:justify-center xl:justify-center">
@@ -162,20 +162,20 @@ const CartPage = () => {
                         </button>
 
                         {/* Мобільний Рядок: Назва + Вага (зліва від картинки) */}
-                        <div className="flex flex-row lg:hidden justify-between items-start w-[258px] h-[89px] gap-[33px]">
+                          <div className="flex flex-row lg:hidden items-start w-full gap-[15px]">
                           {/* Зображення */}
                           <div className="w-[119px] h-[89px] bg-white rounded-[10px] flex-shrink-0 overflow-hidden mx-auto lg:mx-0">
                             <img src={product.images?.[0]?.url || product.img || '/placeholder.png'} alt={product.name} className="w-full h-full object-cover" />
                           </div>
 
                           {/* МОБІЛЬНА ІНФО (Назва + Вага) */}
-                          <div className="flex flex-col items-start w-[123px] h-[59px] gap-[10px] mx-auto">
-                            <h3 className="font-sans font-medium text-[14px] leading-[17px] text-[#705A5A] w-[123px] h-[34px] line-clamp-2">
-                              {product.name}
-                            </h3>
-                            <div className="flex flex-row justify-between items-center w-[123px] h-[15px] gap-[58px]">
-                              <span className="font-sans font-light text-[12px] leading-[15px] text-[#705A5A] w-[48px] h-[15px]">Вага:</span>
-                              <span className="font-sans font-light text-[12px] leading-[15px] text-[#705A5A] w-[20px] h-[15px] whitespace-nowrap">{product.weight} г</span>
+                            <div className="flex flex-col items-start flex-1 min-w-0 pr-1 gap-[10px]">
+                              <h3 className="font-sans font-medium text-[14px] leading-[17px] text-[#705A5A] w-full line-clamp-2">
+                                {product.name}
+                              </h3>
+                              <div className="flex flex-row items-center w-full gap-[12px]">
+                                <span className="font-sans font-light text-[12px] leading-[15px] text-[#705A5A]">Вага:</span>
+                                <span className="font-sans font-light text-[12px] leading-[15px] text-[#705A5A] whitespace-nowrap">{product.weight} г</span>
                             </div>
                           </div>
                         </div>
@@ -213,7 +213,7 @@ const CartPage = () => {
                     </div>
 
                     {/* Мобільний Рядок Ціни+Контролів / Планшетно-Десктопна Права Колонка */}
-                    <div className="flex flex-col items-end lg:items-start lg:justify-between xl:justify-center w-[258px] h-[47px] lg:w-[333px] lg:h-[162px] xl:w-[243px] xl:h-[163px] gap-[0] lg:gap-[40px] xl:gap-[34px] self-stretch xl:self-auto">
+                    <div className="flex flex-col items-end lg:items-start lg:justify-between xl:justify-center w-full h-[47px] lg:w-[333px] lg:h-[162px] xl:w-[243px] xl:h-[163px] gap-[0] lg:gap-[40px] xl:gap-[34px] self-stretch xl:self-auto">
                       
                       {/* Lg/Xl ІНФО (Назва + Вага) - Приховано на мобілці */}
                       <div className="hidden lg:flex flex-col justify-center items-start lg:gap-[10px] xl:gap-[14px] lg:w-[226px] lg:h-[69px] xl:w-[243px] xl:h-[75px] lg:mx-auto xl:mx-0">
@@ -230,18 +230,18 @@ const CartPage = () => {
                       </div>
 
                       {/* Controls & Price (Mobile: flex-row gap 109px | Lg/Xl: column) */}
-                      <div className="flex flex-col flex-shrink-0 items-end lg:items-start w-[258px] mt-[0px] h-[47px] lg:h-[57px] xl:w-[97px] xl:h-[54px] lg:mx-auto">
+                      <div className="flex flex-col flex-shrink-0 items-end lg:items-start w-full mt-[0px] h-[47px] lg:h-[57px] xl:w-[97px] xl:h-[54px] lg:mx-auto">
                         
                         {/* Old Price */}
                         {oldItemPrice ? (
-                          <span className="font-sans font-light text-[14px] lg:font-normal lg:text-[16px] xl:text-[16px] leading-[17px] lg:leading-[20px] line-through text-[#705A5A] opacity-50 lg:opacity-100 w-[258px] lg:w-[72px] lg:h-[20px] text-right lg:text-left">
+                          <span className="font-sans font-light text-[14px] lg:font-normal lg:text-[16px] xl:text-[16px] leading-[17px] lg:leading-[20px] line-through text-[#705A5A] opacity-50 lg:opacity-100 w-full lg:w-[72px] lg:h-[20px] text-right lg:text-left">
                             {oldItemPrice * item.quantity} грн
                           </span>
                         ) : (
                           <span className="hidden lg:block xl:block lg:w-[72px] lg:h-[20px] xl:w-[72px] xl:h-[20px]"></span>
                         )}
                         
-                        <div className="flex flex-row justify-between lg:justify-start items-center lg:items-center w-[258px] h-[30px] lg:w-full mt-[10px] lg:mt-[5px] xl:mt-[5px]">
+                        <div className="flex flex-row justify-between lg:justify-start items-center lg:items-center w-full h-[30px] lg:w-full mt-[10px] lg:mt-[5px] xl:mt-[5px]">
                           
                           {/* МОБІЛЬНЕ Керування лічильником */}
                           <div className="flex flex-row lg:hidden justify-center items-center h-[30px] gap-[8px] w-[119px]">
@@ -263,7 +263,7 @@ const CartPage = () => {
                           </div>
 
                           {/* Підсумкова ціна */}
-                          <span className="font-sans font-semibold text-[18px] lg:text-[18px] xl:text-[24px] leading-[22px] lg:leading-[22px] xl:leading-[29px] text-[#705A5A] w-[68px] lg:w-[73px] lg:h-[22px] text-center lg:text-left whitespace-nowrap">
+                            <span className="font-sans font-semibold text-[18px] lg:text-[18px] xl:text-[24px] leading-[22px] lg:leading-[22px] xl:leading-[29px] text-[#705A5A] lg:w-[73px] lg:h-[22px] text-right lg:text-left whitespace-nowrap min-w-0 flex-shrink-0 flex-grow text-right">
                             {currentItemPrice * item.quantity} грн
                           </span>
                         </div>

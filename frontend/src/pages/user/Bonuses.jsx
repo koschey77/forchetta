@@ -208,7 +208,7 @@ const Bonuses = () => {
       
       {/* Слайдер спеціальних пропозицій */}
       {recommendedData && recommendedData.length > 0 && (
-        <div className="w-full max-w-[1000px]">
+        <div className="w-full max-w-full">
           <ProductSectionSlider 
             title="Спеціальні пропозиції"
             products={recommendedData}

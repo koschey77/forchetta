@@ -45,12 +45,12 @@ const OrderCard = ({ order }) => {
       <div className="flex flex-row justify-between items-center p-[8px] gap-[27px] w-full min-h-[52px]">
         
         {/* Left Side */}
-        <div className="flex flex-col justify-center items-start gap-[4px] w-[202px] h-[36px]">
-          <div className="flex flex-row items-center w-full min-h-[15px]">
-            <span className="font-montserrat font-medium w-[101px] text-[12px] leading-[15px] text-choco-light">
+        <div className="flex flex-col justify-center items-start gap-[4px] flex-1 h-[36px]">
+          <div className="flex flex-row flex-wrap items-center w-full gap-x-3 gap-y-1 min-h-[15px]">
+            <span className="font-montserrat font-medium min-w-[101px] w-auto whitespace-nowrap text-[12px] leading-[15px] text-choco-light">
               № {order.orderNumber || order._id?.slice(-8).toUpperCase()}
             </span>
-            <span className="font-montserrat font-medium w-[101px] text-[12px] leading-[15px] text-choco-light">
+            <span className="font-montserrat font-medium min-w-[101px] w-auto whitespace-nowrap text-[12px] leading-[15px] text-choco-light">
               {dateStr}
             </span>
           </div>
@@ -113,13 +113,13 @@ const OrderCard = ({ order }) => {
                       </span>
                       
                       <div className="flex flex-row justify-between items-center w-full min-h-[15px]">
-                        <span className="font-montserrat font-medium text-[12px] leading-[15px] w-[101px] text-choco-light">
+                        <span className="font-montserrat font-medium text-[12px] leading-[15px] min-w-[101px] w-auto whitespace-nowrap text-choco-light">
                           х{item.quantity}
                         </span>
                         
                         <div className="flex justify-between items-center flex-grow pl-[10%]">
                           <span className="font-montserrat font-medium text-[12px] leading-[15px] text-choco-light/50 line-through"></span>
-                          <span className="font-montserrat font-medium text-[12px] leading-[15px] text-choco-light w-[101px] text-right">
+                          <span className="font-montserrat font-medium text-[12px] leading-[15px] text-choco-light min-w-[101px] w-auto whitespace-nowrap text-right">
                             {itemTotal} грн
                           </span>
                         </div>
@@ -133,7 +133,7 @@ const OrderCard = ({ order }) => {
 
           {/* Delivery & Payment Info */}
           <div className="flex flex-col items-start gap-[4px] w-full mt-2 lg:w-[162px] lg:h-[34px]">
-            <span className="font-montserrat font-semibold text-[12px] leading-[15px] text-choco-light w-[101px]">
+            <span className="font-montserrat font-semibold text-[12px] leading-[15px] text-choco-light min-w-[101px] w-auto whitespace-nowrap">
               Оплата: {paymentMethodLabel}
             </span>
             <span className="font-montserrat font-semibold text-[12px] leading-[15px] text-choco-light w-[162px]">
@@ -145,12 +145,12 @@ const OrderCard = ({ order }) => {
 
           {/* Total */}
           <div className="flex flex-row justify-between items-center w-full min-h-[22px] mt-2 mb-2 px-[40px] lg:px-[100px]">
-            <span className="font-montserrat font-semibold text-[16px] leading-[20px] text-choco-light w-[101px]">
+            <span className="font-montserrat font-semibold text-[16px] leading-[20px] text-choco-light min-w-[101px] w-auto whitespace-nowrap">
               Всього:
             </span>
             <div className="flex flex-row items-center gap-[40px]">
               <span className="font-montserrat font-medium text-[18px] leading-[22px] text-choco-light/50 line-through hidden lg:block w-[84px]"></span>
-              <span className="font-montserrat font-medium text-[18px] leading-[22px] text-choco-light w-[101px] text-right">
+              <span className="font-montserrat font-medium text-[18px] leading-[22px] text-choco-light min-w-[101px] w-auto whitespace-nowrap text-right">
                 {order.totalAmount} грн
               </span>
             </div>
@@ -237,7 +237,7 @@ const Orders = () => {
         
         {/* Рекомендації для порожнього стану */}
         {recommendationsArray.length > 0 && (
-          <div className="w-full max-w-[1440px]">
+          <div className="w-full max-w-full">
             <ProductSectionSlider 
               title="Топ продажів"
               products={recommendationsArray}
@@ -261,7 +261,7 @@ const Orders = () => {
       
       {/* Рекомендації під списком замовлень */}
       {recommendationsArray.length > 0 && (
-        <div className="w-full max-w-[1000px]">
+        <div className="w-full max-w-full">
           <ProductSectionSlider 
             title="Топ продажів"
             products={recommendationsArray}

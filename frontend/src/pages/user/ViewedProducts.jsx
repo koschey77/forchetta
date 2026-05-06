@@ -71,7 +71,7 @@ const ViewedProducts = () => {
 
         {/* Рекомендації для порожнього стану */}
         {recommendationsArray.length > 0 && (
-        <div className="w-full max-w-[1000px]">
+        <div className="w-full max-w-full">
             <ProductSectionSlider 
               title="Новинки"
               products={recommendationsArray}
@@ -134,7 +134,7 @@ const ViewedProducts = () => {
 
       {/* Рекомендації під списком переглянутих */}
       {recommendationsArray.length > 0 && (
-        <div className="w-full max-w-[1000px]">
+        <div className="w-full max-w-full">
           <ProductSectionSlider 
             title="Новинки"
             products={recommendationsArray}

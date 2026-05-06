@@ -47,7 +47,7 @@ export const sendVerificationEmail = async (email, verificationCode, name) => {
             
             <!-- Заголовок приветствия -->
             <div style="text-align: center; margin-bottom: 25px;">
-              <h2 style="color: #6B4423; font-size: 24px; margin: 0; font-family: 'Montserrat';">🎉 Вітаємо, ${name}!</h2>
+              <h2 style="color: #6B4423; font-size: 18px; margin: 0; font-family: 'Montserrat';">🎉 Вітаємо, ${name}!</h2>
             </div>
             
             <!-- Основной текст -->
@@ -148,7 +148,7 @@ export const sendWelcomeEmail = async (email, name) => {
               
               <!-- Заголовок приветствия -->
               <div style="text-align: center; margin-bottom: 25px;">
-                <h2 style="color: #6B4423; font-size: 24px; margin: 0; font-family: 'Montserrat';">🎉 Вітаємо, ${name}!</h2>
+                <h2 style="color: #6B4423; font-size: 18px; margin: 0; font-family: 'Montserrat';">🎉 Вітаємо, ${name}!</h2>
               </div>
               
               <!-- Статус подтверждения -->
@@ -288,7 +288,7 @@ export const sendOrderConfirmationEmail = async (email, name, order) => {
             
             <!-- Заголовок приветствия -->
             <div style="text-align: center; margin-bottom: 25px;">
-              <h2 style="color: #6B4423; font-size: 26px; margin: 0; font-family: 'Cormorant Garamond', serif;">${name ? name.split(" ")[0] : 'Клієнте'}, дякуємо за замовлення!</h2>
+              <h2 style="color: #6B4423; font-size: 18px; margin: 0; line-height: 1.4; font-family: 'Cormorant Garamond', serif;">${name ? name.split(" ")[0] : 'Клієнте'}, дякуємо за замовлення!</h2>
               <p style="color: #705A5A; font-size: 16px; margin-top: 10px;">Ваше замовлення успішно оформлено.</p>
             </div>
 
@@ -399,7 +399,7 @@ export const sendPasswordResetEmail = async (email, resetCode, name) => {
             
             <!-- Заголовок -->
             <div style="text-align: center; margin-bottom: 25px;">
-              <h2 style="color: #6B4423; font-size: 24px; margin: 0; font-family: 'Montserrat';">🔐 Відновлення пароля</h2>
+              <h2 style="color: #6B4423; font-size: 18px; margin: 0; font-family: 'Montserrat';">🔐 Відновлення пароля</h2>
             </div>
             
             <!-- Основной текст -->
@@ -538,8 +538,8 @@ export const sendOrderStatusEmail = async (email, name, orderNumber, newStatus) 
               <!-- Белый блок с контентом -->
               <div style="background-color: #F5EEE0; padding: 40px 30px; border-radius: 8px; max-width: 600px; margin: 0 auto; border: 1px solid #E3D6BF;">
                 
-                <h1 style="color: ${colorRef}; font-family: 'Cormorant Garamond', serif; font-size: 28px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; text-align: center;">
-                  ${title} <span style="font-size: 28px;">${emoji}</span>
+                <h1 style="color: ${colorRef}; font-family: 'Cormorant Garamond', serif; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; text-align: center; line-height: 1.4;">
+                  ${title} <span style="font-size: 18px;">${emoji}</span>
                 </h1>
                 
                 <p style="color: #413232; font-size: 16px; line-height: 1.6; margin-bottom: 20px; text-align: center;">

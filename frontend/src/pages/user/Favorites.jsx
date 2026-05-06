@@ -87,7 +87,7 @@ const Favorites = () => {
 
         {/* Рекомендації для порожнього стану */}
         {recommendationsArray.length > 0 && (
-          <div className="w-full max-w-[1000px]">
+          <div className="w-full max-w-full">
             <ProductSectionSlider 
               title="Новинки"
               products={recommendationsArray}
@@ -146,7 +146,7 @@ const Favorites = () => {
 
       {/* Рекомендації під списком улюблених */}
       {recommendationsArray.length > 0 && (
-        <div className="w-full max-w-[1000px]">
+        <div className="w-full max-w-full">
           <ProductSectionSlider 
             title="Новинки"
             products={recommendationsArray}

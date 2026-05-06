@@ -33,7 +33,7 @@ export const createOrder = async (req, res) => {
         return res.status(404).json({ message: `Товар з ID ${item.product} не знайдено` });
       }
       
-      const priceAtPurchase = product.price;
+      const priceAtPurchase = product.discountPrice ? product.discountPrice : product.price;
       const nameAtPurchase = product.name;
       const itemSubtotal = priceAtPurchase * item.quantity;
       subtotal += itemSubtotal;
@@ -471,7 +471,7 @@ export const confirmOrderPayment = async (req, res) => {
       orderNumber: order.orderNumber,
       items: emailItems,
       packagingPrice: packagingPrice,
-      totalPrice: order.totalAmount + order.appliedBonuses,
+      totalPrice: order.totalAmount,
       bonusUsed: order.appliedBonuses,
       bonusEarned: order.earnedBonuses,
       shippingAddress: order.shippingAddress,
