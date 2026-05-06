@@ -66,7 +66,7 @@ export const updateProfile = async (req, res) => {
 };
 
 // @route   DELETE /api/user/profile
-// @desc    Мягкое удаление профиля (анонимизация)
+// @desc    Мягкое удаление профиля (анонимизация) або фізичне видалення (якщо немає замовлень)
 // @access  Private
 export const deleteProfile = async (req, res) => {
   try {
@@ -76,6 +76,24 @@ export const deleteProfile = async (req, res) => {
       return res.status(404).json({ message: "Користувача не знайдено" });
     }
 
+    // Очищаем куки
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    
+    // Удаляем сессию (refresh token) и корзину пользователя из Redis
+    await redis.del(`refresh_token:${user._id}`);
+    await redis.del(`cart:${user._id}`);
+
+    // Перевіряємо, чи є у користувача замовлення
+    const hasOrders = user.orders && user.orders.length > 0;
+
+    if (!hasOrders) {
+      // Якщо замовлень немає - фізично видаляємо з бази даних
+      await User.findByIdAndDelete(user._id);
+      return res.json({ message: "Акаунт успішно видалено повністю" });
+    }
+
+    // Якщо замовлення є - робимо м'яке видалення (щоб не зламати статистику)
     // Форматируем дату в DDMMYYYY для понятного префикса (напр. 12042026)
     const date = new Date();
     const formattedDate = ('0' + date.getDate()).slice(-2) + ('0' + (date.getMonth() + 1)).slice(-2) + date.getFullYear();
@@ -100,17 +118,9 @@ export const deleteProfile = async (req, res) => {
       }
     }
     
-    // Очищаем куки
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
-    
-    // Удаляем сессию (refresh token) и корзину пользователя из Redis
-    await redis.del(`refresh_token:${user._id}`);
-    await redis.del(`cart:${user._id}`);
-    
     await user.save();
 
-    res.json({ message: "Акаунт успішно видалено" });
+    res.json({ message: "Акаунт успішно видалено (анонімізовано)" });
   } catch (error) {
     console.error("Помилка в deleteProfile:", error.message);
     res.status(500).json({ message: "Помилка сервера", error: error.message });

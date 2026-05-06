@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import LogoFooter from './Logos/LogoFooter';
 import LogoFooterMobile from './Logos/LogoFooterMobile';
 import { FacebookIcon, TelegramIcon, InstagramIcon } from './icons';
@@ -102,18 +103,18 @@ const Footer = () => {
               {/* Про компанію */}
               <div className="flex flex-col items-start gap-4 xl:w-[188.75px] xl:h-[149px]">
                 <h3 className="font-bold text-sm leading-[17px] text-creamy">Про компанію</h3>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                <Link to="/" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   Головна
-                </a>
+                </Link>
                 <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   Про нас
                 </a>
                 <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   Наше виробництво
                 </a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                <Link to="/shops" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   Магазини
-                </a>
+                </Link>
               </div>
 
               {/* Допомога */}

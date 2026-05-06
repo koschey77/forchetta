@@ -1,0 +1,2784 @@
+desktop:
+/* shop_location */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: flex-start;
+padding: 30px 60px 50px;
+gap: 10px;
+
+position: absolute;
+width: 1440px;
+height: 890px;
+left: 0px;
+top: 205px;
+
+
+
+/* Forchetta_photos (2) 1 */
+
+margin: 0 auto;
+width: 716px;
+height: 810px;
+
+background: url(image.png);
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* text */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+padding: 0px 20px 10px;
+gap: 20px;
+
+margin: 0 auto;
+width: 564px;
+height: 842px;
+
+background: #F5EEE0;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* місто магазини */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 10px 10px 10px 11px;
+gap: 5px;
+
+width: 534px;
+height: 62px;
+
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* місто */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 15px;
+
+width: 105px;
+height: 35px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* proicons:location */
+
+width: 35px;
+height: 35px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Group */
+
+position: absolute;
+left: 17%;
+right: 17.23%;
+top: 10.4%;
+bottom: 13.62%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 17%;
+right: 17.23%;
+top: 10.4%;
+bottom: 13.62%;
+
+/* Choco Light */
+border: 1.5px solid #705A5A;
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 30.67%;
+bottom: 44.33%;
+
+/* Choco Light */
+border: 1.5px solid #705A5A;
+
+
+/* Київ */
+
+width: 55px;
+height: 29px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 24px;
+line-height: 29px;
+
+/* Choco Light */
+color: #705A5A;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* Container adress shops */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 20px;
+
+width: 534px;
+height: 680px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* shop1 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: flex-start;
+padding: 10px 25px;
+gap: 10px;
+
+width: 534px;
+height: 120px;
+
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 1;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+margin: 0 auto;
+width: 273px;
+height: 100px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Вул. Старовокзальна, 21 */
+
+width: 273px;
+height: 24px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 20px;
+line-height: 24px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 243px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 243px;
+height: 20px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 20px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 243px;
+height: 40px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 20px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Rectangle 74 */
+
+margin: 0 auto;
+width: 101px;
+height: 100px;
+
+background: url(Forchetta_photos (3).png);
+border-radius: 10px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* shop1 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: flex-start;
+padding: 10px 25px;
+gap: 10px;
+
+width: 534px;
+height: 120px;
+
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+margin: 0 auto;
+width: 273px;
+height: 100px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Вул. Верхній Вал, 16/4 */
+
+width: 273px;
+height: 24px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 20px;
+line-height: 24px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 243px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 243px;
+height: 20px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 20px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 243px;
+height: 40px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 20px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Rectangle 74 */
+
+margin: 0 auto;
+width: 101px;
+height: 100px;
+
+background: url(image.png);
+border-radius: 10px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* shop1 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: flex-start;
+padding: 10px 25px;
+gap: 10px;
+
+width: 534px;
+height: 120px;
+
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 2;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+margin: 0 auto;
+width: 273px;
+height: 100px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Вул. Вадима Гетьмана, 8 */
+
+width: 273px;
+height: 24px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 20px;
+line-height: 24px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 243px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 243px;
+height: 20px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 20px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 243px;
+height: 40px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 20px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Rectangle 74 */
+
+margin: 0 auto;
+width: 101px;
+height: 100px;
+
+background: url(Forchetta_photos (1).png), url(Forchetta_photos (4).png);
+border-radius: 10px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* shop1 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: flex-start;
+padding: 10px 25px;
+gap: 10px;
+
+width: 534px;
+height: 120px;
+
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 3;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+margin: 0 auto;
+width: 273px;
+height: 100px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Вул. Гната Юри, 6г */
+
+width: 273px;
+height: 24px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 20px;
+line-height: 24px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 243px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 243px;
+height: 20px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 20px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 243px;
+height: 40px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 20px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Rectangle 74 */
+
+margin: 0 auto;
+width: 101px;
+height: 100px;
+
+background: url(image.png), url(forchetta_shop.png);
+border-radius: 10px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* shop1 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: flex-start;
+padding: 10px 25px;
+gap: 10px;
+
+width: 534px;
+height: 120px;
+
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 4;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+margin: 0 auto;
+width: 273px;
+height: 100px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Вул. Васильківська, 34 */
+
+width: 273px;
+height: 24px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 20px;
+line-height: 24px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 243px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 243px;
+height: 20px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 20px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 243px;
+height: 40px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 20px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Rectangle 74 */
+
+margin: 0 auto;
+width: 101px;
+height: 100px;
+
+background: url(image.png);
+border-radius: 10px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+tablet:
+/* Frame 1707482568 */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+padding: 20px 30px;
+gap: 20px;
+
+position: absolute;
+width: 1024px;
+height: 820px;
+left: 0px;
+top: 194px;
+
+
+
+/* Forchetta_photos (2) 1 */
+
+margin: 0 auto;
+width: 472px;
+height: 780px;
+
+background: url(image.png);
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* text */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 20px;
+
+margin: 0 auto;
+width: 472px;
+height: 780px;
+
+background: #F5EEE0;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* місто магазини */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 10px 10px 10px 11px;
+gap: 5px;
+
+width: 472px;
+height: 62px;
+
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* місто */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 15px;
+
+width: 105px;
+height: 35px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* proicons:location */
+
+width: 35px;
+height: 35px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Group */
+
+position: absolute;
+left: 17%;
+right: 17.23%;
+top: 10.4%;
+bottom: 13.62%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 17%;
+right: 17.23%;
+top: 10.4%;
+bottom: 13.62%;
+
+/* Choco Light */
+border: 1.5px solid #705A5A;
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 30.67%;
+bottom: 44.33%;
+
+/* Choco Light */
+border: 1.5px solid #705A5A;
+
+
+/* Київ */
+
+width: 55px;
+height: 29px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 24px;
+line-height: 29px;
+
+/* Choco Light */
+color: #705A5A;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* Container adress shops */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 20px;
+
+width: 472px;
+height: 680px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* shop1 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: flex-start;
+padding: 10px 25px;
+gap: 10px;
+
+width: 472px;
+height: 120px;
+
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 1;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+margin: 0 auto;
+width: 273px;
+height: 100px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Вул. Старовокзальна, 21 */
+
+width: 224px;
+height: 22px;
+
+/* Body|Content */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 22px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 163px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 163px;
+height: 20px;
+
+/* Desktop/Body Light 5 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 20px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 163px;
+height: 40px;
+
+/* Desktop/Body Light 5 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 20px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Rectangle 74 */
+
+margin: 0 auto;
+width: 101px;
+height: 100px;
+
+background: url(Forchetta_photos (3).png);
+border-radius: 10px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* shop1 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: flex-start;
+padding: 10px 25px;
+gap: 10px;
+
+width: 472px;
+height: 120px;
+
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+margin: 0 auto;
+width: 273px;
+height: 100px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Вул. Верхній Вал, 16/4 */
+
+width: 205px;
+height: 22px;
+
+/* Body|Content */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 22px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 163px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 163px;
+height: 20px;
+
+/* Desktop/Body Light 5 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 20px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 163px;
+height: 40px;
+
+/* Desktop/Body Light 5 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 20px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Rectangle 74 */
+
+margin: 0 auto;
+width: 101px;
+height: 100px;
+
+background: url(image.png);
+border-radius: 10px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* shop1 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: flex-start;
+padding: 10px 25px;
+gap: 10px;
+
+width: 472px;
+height: 120px;
+
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 2;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+margin: 0 auto;
+width: 273px;
+height: 100px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Вул. Вадима Гетьмана, 8 */
+
+width: 229px;
+height: 22px;
+
+/* Body|Content */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 22px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 163px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 154px;
+height: 20px;
+
+/* Desktop/Body Light 5 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 20px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 163px;
+height: 40px;
+
+/* Desktop/Body Light 5 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 20px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* Rectangle 74 */
+
+margin: 0 auto;
+width: 101px;
+height: 100px;
+
+background: url(Forchetta_photos (1).png), url(Forchetta_photos (4).png);
+border-radius: 10px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* shop1 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: flex-start;
+padding: 10px 25px;
+gap: 10px;
+
+width: 472px;
+height: 120px;
+
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 3;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+margin: 0 auto;
+width: 273px;
+height: 100px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Вул. Гната Юри, 6г */
+
+width: 173px;
+height: 22px;
+
+/* Body|Content */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 22px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 163px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 163px;
+height: 20px;
+
+/* Desktop/Body Light 5 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 20px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 163px;
+height: 40px;
+
+/* Desktop/Body Light 5 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 20px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* Rectangle 74 */
+
+margin: 0 auto;
+width: 101px;
+height: 100px;
+
+background: url(image.png), url(forchetta_shop.png);
+border-radius: 10px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* shop1 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: flex-start;
+padding: 10px 25px;
+gap: 10px;
+
+width: 472px;
+height: 120px;
+
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 4;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+margin: 0 auto;
+width: 273px;
+height: 100px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Вул. Васильківська, 34 */
+
+width: 213px;
+height: 22px;
+
+/* Body|Content */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 22px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 163px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 163px;
+height: 20px;
+
+/* Desktop/Body Light 5 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 20px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 163px;
+height: 40px;
+
+/* Desktop/Body Light 5 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 20px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* Rectangle 74 */
+
+margin: 0 auto;
+width: 101px;
+height: 100px;
+
+background: url(image.png);
+border-radius: 10px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+mobile:
+/* Frame 1707482735 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 20px 0px 50px;
+gap: 10px;
+
+position: absolute;
+width: 375px;
+height: 631px;
+left: 0px;
+top: 553px;
+
+/* Creamy
+
+Secondary Button
+*/
+background: #F5EEE0;
+border-radius: 20px;
+
+
+/* Frame 1707481529 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: flex-start;
+padding: 13px 15px 10px;
+gap: 10px;
+
+width: 375px;
+height: 56px;
+
+border-radius: 15px 15px 2px 0px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481526 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 87px;
+height: 30px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481516 */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 15px;
+
+width: 87px;
+height: 30px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* proicons:location */
+
+width: 30px;
+height: 30px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Group */
+
+position: absolute;
+left: 17.01%;
+right: 17.23%;
+top: 10.4%;
+bottom: 13.62%;
+
+
+
+/* Vector */
+
+position: absolute;
+left: 17.01%;
+right: 17.23%;
+top: 10.4%;
+bottom: 13.62%;
+
+/* Choco Light */
+border: 1.5px solid #705A5A;
+
+
+/* Vector */
+
+position: absolute;
+left: 37.5%;
+right: 37.5%;
+top: 30.67%;
+bottom: 44.33%;
+
+/* Choco Light */
+border: 1.5px solid #705A5A;
+
+
+/* Київ */
+
+width: 42px;
+height: 22px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 500;
+font-size: 18px;
+line-height: 22px;
+/* identical to box height */
+
+/* Choco Light */
+color: #705A5A;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* Frame 1707482734 */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 10px 15px;
+gap: 10px;
+
+width: 375px;
+height: 495px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481525 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+width: 343px;
+height: 475px;
+overflow-y: scroll;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481519 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 10px 25px 12px;
+gap: 15px;
+
+width: 343px;
+height: 87px;
+
+/* Creamy
+
+Secondary Button
+*/
+background: #F5EEE0;
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Forchetta_photos (3) 1 */
+
+width: 100px;
+height: 60px;
+
+background: url(Forchetta_photos (3).png);
+border-radius: 5px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+width: 151px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* Вул. Старовокзальна, 21 */
+
+width: 151px;
+height: 15px;
+
+/* Phone/Body Light 7 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 12px;
+line-height: 15px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 121px;
+height: 41px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 121px;
+height: 12px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 10px;
+line-height: 12px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 121px;
+height: 24px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 10px;
+line-height: 12px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481520 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 10px 25px 12px;
+gap: 15px;
+
+width: 343px;
+height: 87px;
+
+/* Creamy
+
+Secondary Button
+*/
+background: #F5EEE0;
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* image 16 */
+
+width: 100px;
+height: 60px;
+
+background: url(image.png);
+border-radius: 5px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+width: 151px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* Вул. Верхній Вал, 16/4 */
+
+width: 151px;
+height: 15px;
+
+/* Phone/Body Light 7 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 12px;
+line-height: 15px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 121px;
+height: 41px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 121px;
+height: 12px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 10px;
+line-height: 12px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 121px;
+height: 24px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 10px;
+line-height: 12px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481521 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 10px 25px 12px;
+gap: 15px;
+
+width: 343px;
+height: 87px;
+
+/* Creamy
+
+Secondary Button
+*/
+background: #F5EEE0;
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 2;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Forchetta_photos (1) 1 */
+
+width: 100px;
+height: 60px;
+
+background: url(Forchetta_photos (1).png);
+border-radius: 5px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+width: 151px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* Вул. Вадима Гетьмана, 8 */
+
+width: 150px;
+height: 15px;
+
+/* Phone/Body Light 7 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 12px;
+line-height: 15px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 121px;
+height: 41px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 121px;
+height: 12px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 10px;
+line-height: 12px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 121px;
+height: 24px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 10px;
+line-height: 12px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481522 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 10px 25px 12px;
+gap: 15px;
+
+width: 343px;
+height: 87px;
+
+/* Creamy
+
+Secondary Button
+*/
+background: #F5EEE0;
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 3;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Forchetta_photos (1) 1 */
+
+width: 100px;
+height: 60px;
+
+background: url(image.png);
+border-radius: 5px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+width: 151px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* Вул. Гната Юри, 6г */
+
+width: 151px;
+height: 15px;
+
+/* Phone/Body Light 7 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 12px;
+line-height: 15px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 121px;
+height: 41px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 121px;
+height: 12px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 10px;
+line-height: 12px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 121px;
+height: 24px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 10px;
+line-height: 12px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481523 */
+
+box-sizing: border-box;
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 10px 25px 12px;
+gap: 15px;
+
+width: 343px;
+height: 87px;
+
+/* Creamy
+
+Secondary Button
+*/
+background: #F5EEE0;
+/* Choco Light */
+border: 1px solid #705A5A;
+border-radius: 15px;
+
+/* Inside auto layout */
+flex: none;
+order: 4;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Forchetta_photos (1) 1 */
+
+width: 100px;
+height: 60px;
+
+background: url(image.png);
+border-radius: 5px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707481518 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 10px;
+
+width: 151px;
+height: 66px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* Вул. Васильківська, 34 */
+
+width: 151px;
+height: 15px;
+
+/* Phone/Body Light 7 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 12px;
+line-height: 15px;
+/* identical to box height */
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707481517 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+gap: 5px;
+
+width: 121px;
+height: 41px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+
+/* +38 (067) 422 09 30 */
+
+width: 121px;
+height: 12px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 10px;
+line-height: 12px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Пн-Пт, 08:00 - 20:00 Сб-Нд, 09:00 - 20:00 */
+
+width: 121px;
+height: 24px;
+
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 300;
+font-size: 10px;
+line-height: 12px;
+
+/* Choco Dark */
+color: #2B1A12;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;

@@ -100,7 +100,7 @@ const HeaderMenu = ({ isOpen, onClose }) => {
             </h3>
             <ul className="flex flex-col gap-[10px] md:gap-2.5">
               <li><Link to="/delivery" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Доставка та оплата</Link></li>
-              <li><Link to="/stores" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Магазини</Link></li>
+              <li><Link to="/shops" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Магазини</Link></li>
               <li><Link to="/contacts" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Контакти</Link></li>
             </ul>
           </div>

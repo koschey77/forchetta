@@ -11,6 +11,7 @@ import CatalogPage from './pages/CatalogPage'
 import ProductPage from './pages/ProductPage'
 import AdminPanel from './pages/AdminPanel'
 import UserPanel from './pages/UserPanel'
+import ShopsPage from './pages/ShopsPage'
 import {
   SignUpPage,
   LoginPage,
@@ -57,6 +58,7 @@ function App() {
           <Route path="/profile" element={user ? <Navigate to="/user-panel" replace /> : <Navigate to="/login" />} />
           <Route path="/user-panel" element={user ? <UserPanel /> : <Navigate to="/login" />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/shops" element={<ShopsPage />} />
           
           {/* Catch-all маршрут 404 */}
           <Route path="*" element={<Error404 />} />

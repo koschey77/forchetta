@@ -47,7 +47,7 @@ export default function StoreShowcaseSection() {
           
           <div className="pt-[16px] flex justify-center md:justify-start w-full">
             <Link 
-              to="/payment-and-delivery" 
+              to="/shops" 
               className="inline-flex w-[257px] justify-center items-center bg-wine-red text-light-gray rounded-[31px] border border-choco-light font-normal text-[16px] px-[30px] py-[16px] hover:bg-[#7a3737] transition-colors"
             >
               Переглянути магазини

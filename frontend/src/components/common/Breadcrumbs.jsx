@@ -42,7 +42,8 @@ const Breadcrumbs = () => {
     'checkout': 'Оформлення замовлення',
     'user-panel': 'Особистий кабінет',
     'admin': 'Панель адміністратора',
-    'faq': 'Допомога'
+    'faq': 'Допомога',
+    'shops': 'Магазини'
   };
 
   const getBreadcrumbName = (path, index) => {
