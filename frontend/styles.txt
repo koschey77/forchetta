@@ -1,17 +1,32 @@
 десктоп и планшет:
 
-/* Frame 1707482440 */
+/* Frame 1707482825 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 0px;
+
+position: absolute;
+width: 1442px;
+height: 1158px;
+left: 0px;
+top: 7887px;
+
+
+
+/* Frame 1707482434 */
 
 /* Auto layout */
 display: flex;
 flex-direction: row;
-justify-content: center;
 align-items: center;
-padding: 30px 60px;
+padding: 20px 60px;
 gap: 10px;
 
-width: 1440px;
-height: 205px;
+width: 1442px;
+height: 156px;
 
 
 /* Inside auto layout */
@@ -23,10 +38,10 @@ flex-grow: 0;
 
 /* Title name */
 
-width: 1320px;
-height: 145px;
+width: 881px;
+height: 116px;
 
-/* Desktop/Body Light 3 */
+/* Desktop/Body SemiBold 3 */
 font-family: 'Montserrat';
 font-style: normal;
 font-weight: 600;
@@ -43,21 +58,40 @@ order: 0;
 flex-grow: 0;
 
 
-мобильная версия:
+/* Frame 1707482435 */
 
-/* Frame 1707482818 */
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+padding: 30px 60px;
+gap: 10px;
+
+width: 1442px;
+height: 870px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707482358 */
 
 /* Auto layout */
 display: flex;
 flex-direction: row;
 justify-content: center;
 align-items: center;
-padding: 10px 15px;
+padding: 20px 50px;
 gap: 10px;
 
-width: 375px;
-height: 240px;
+width: 1322px;
+height: 810px;
 
+background: url(chocolate61.png);
 
 /* Inside auto layout */
 flex: none;
@@ -66,17 +100,76 @@ align-self: stretch;
 flex-grow: 0;
 
 
+/* Frame 1707482357 */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+padding: 18.7372px 18.2308px 18.2308px 18.7372px;
+gap: 5.06px;
+
+width: 79px;
+height: 79px;
+
+/* Dark Creamy */
+background: #E3D6BF;
+border-radius: 39.5px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Polygon 1 */
+
+width: 42.03px;
+height: 42.03px;
+
+/* Creamy Light */
+background: #FFFBF2;
+border-radius: 2.02564px;
+transform: rotate(90deg);
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707482436 */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 10px 60px;
+gap: 10px;
+
+width: 1442px;
+height: 132px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 2;
+align-self: stretch;
+flex-grow: 0;
+
+
 /* Title name */
 
-width: 344px;
-height: 220px;
+width: 598px;
+height: 112px;
 
-/* Desktop/Body Light 3 */
-font-family: 'Montserrat';
+font-family: 'Great Vibes';
 font-style: normal;
-font-weight: 600;
-font-size: 18px;
-line-height: 22px;
+font-weight: 400;
+font-size: 45px;
+line-height: 56px;
+text-align: center;
 
 /* Choco Light */
 color: #705A5A;
@@ -85,4 +178,126 @@ color: #705A5A;
 /* Inside auto layout */
 flex: none;
 order: 0;
+flex-grow: 0;
+
+мобильная версия:
+
+/* Frame 1707482387 */
+
+/* Auto layout */
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 40px 15px 20px;
+gap: 50px;
+
+position: absolute;
+width: 375px;
+height: 1397px;
+left: 0px;
+top: 7620px;
+
+
+
+/* Title name */
+
+width: 342px;
+height: 203px;
+
+/* Desktop/Body SemiBold 3 */
+font-family: 'Montserrat';
+font-style: normal;
+font-weight: 600;
+font-size: 24px;
+line-height: 29px;
+
+/* Choco Light */
+color: #705A5A;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Frame 1707482384 */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 20px 50px;
+gap: 10px;
+
+width: 345px;
+height: 810px;
+
+background: url(chocolate61.png);
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+/* Frame 1707482357 */
+
+/* Auto layout */
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+padding: 18.7372px 18.2308px 18.2308px 18.7372px;
+gap: 5.06px;
+
+width: 79px;
+height: 79px;
+
+/* Dark Creamy */
+background: #E3D6BF;
+border-radius: 39.5px;
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Polygon 1 */
+
+width: 42.03px;
+height: 42.03px;
+
+/* Creamy Light */
+background: #FFFBF2;
+border-radius: 2.02564px;
+transform: rotate(90deg);
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+/* Title name */
+
+width: 343px;
+height: 224px;
+
+font-family: 'Great Vibes';
+font-style: normal;
+font-weight: 400;
+font-size: 45px;
+line-height: 56px;
+text-align: center;
+
+/* Choco Light */
+color: #705A5A;
+
+
+/* Inside auto layout */
+flex: none;
+order: 2;
 flex-grow: 0;
