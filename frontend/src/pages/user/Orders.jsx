@@ -45,8 +45,8 @@ const OrderCard = ({ order }) => {
       <div className="flex flex-row justify-between items-center p-[8px] gap-[27px] w-full min-h-[52px]">
         
         {/* Left Side */}
-        <div className="flex flex-col justify-center items-start gap-[4px] flex-1 h-[36px]">
-          <div className="flex flex-row flex-wrap items-center w-full gap-x-3 gap-y-1 min-h-[15px]">
+        <div className="flex flex-col justify-center items-start gap-[4px] flex-1">
+          <div className="flex flex-col sm:flex-row sm:items-center w-full gap-x-3 gap-y-1">
             <span className="font-montserrat font-medium min-w-[101px] w-auto whitespace-nowrap text-[12px] leading-[15px] text-choco-light">
               № {order.orderNumber || order._id?.slice(-8).toUpperCase()}
             </span>
@@ -54,7 +54,7 @@ const OrderCard = ({ order }) => {
               {dateStr}
             </span>
           </div>
-          <span className={`font-montserrat w-full font-medium text-[14px] leading-[17px] ${statusObj.color}`}>
+          <span className={`font-montserrat w-full font-medium text-[14px] leading-[17px] ${statusObj.color} mt-1`}>
             {statusObj.label}
           </span>
         </div>
@@ -112,17 +112,10 @@ const OrderCard = ({ order }) => {
                         {item.nameAtPurchase}
                       </span>
                       
-                      <div className="flex flex-row justify-between items-center w-full min-h-[15px]">
-                        <span className="font-montserrat font-medium text-[12px] leading-[15px] min-w-[101px] w-auto whitespace-nowrap text-choco-light">
-                          х{item.quantity}
+                      <div className="flex flex-row items-center w-full min-h-[15px]">
+                        <span className="font-montserrat font-medium text-[12px] leading-[15px] w-auto text-choco-light">
+                          х{item.quantity} / {itemTotal} грн
                         </span>
-                        
-                        <div className="flex justify-between items-center flex-grow pl-[10%]">
-                          <span className="font-montserrat font-medium text-[12px] leading-[15px] text-choco-light/50 line-through"></span>
-                          <span className="font-montserrat font-medium text-[12px] leading-[15px] text-choco-light min-w-[101px] w-auto whitespace-nowrap text-right">
-                            {itemTotal} грн
-                          </span>
-                        </div>
                       </div>
                     </div>
                   </div>

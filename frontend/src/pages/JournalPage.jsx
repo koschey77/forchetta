@@ -57,10 +57,36 @@ const JournalPage = () => {
   if (isError) return <NoConnection />;
   if (!articles || articles.length === 0) return <NoResults message="Журнал поки що порожній. Нові публікації з'являться незабаром!" />;
 
-  // Розділяємо статті за їх логічною позицією відповідно до дизайну
-  const heroArticle = articles[0]; // Перша - велика
-  const gridArticles = articles.slice(1, 3); // 2 і 3 - в два стовпці
-  const listArticles = articles.slice(3); // Всі інші - списком
+  // Хардкод ID закріплених статей
+  const HERO_ID = '69fbb99dadbfc52c0125fa36';
+  const GRID_IDS = ['69fbdce5bcbf5a1eb0303358', '69fc40ed5b1c371516438f41'];
+
+  // Знаходимо закріплені статті
+  let heroArticle = articles.find(a => a._id === HERO_ID);
+  let gridArticles = articles.filter(a => GRID_IDS.includes(a._id));
+  
+  // Всі інші статті (не закріплені)
+  let listArticles = articles.filter(a => a._id !== HERO_ID && !GRID_IDS.includes(a._id));
+
+  // Якщо головної статті немає, беремо найновішу з "інших"
+  if (!heroArticle && listArticles.length > 0) {
+    heroArticle = listArticles.shift();
+  }
+
+  // Добиваємо сітку, якщо закріплених статей менше 2
+  while (gridArticles.length < 2 && listArticles.length > 0) {
+    gridArticles.push(listArticles.shift());
+  }
+
+  // Сортуємо сітку, щоб вони йшли в потрібному нам порядку як в масиві
+  gridArticles.sort((a, b) => {
+    const idxA = GRID_IDS.indexOf(a._id);
+    const idxB = GRID_IDS.indexOf(b._id);
+    if (idxA === -1 && idxB === -1) return 0;
+    if (idxA === -1) return 1;
+    if (idxB === -1) return -1;
+    return idxA - idxB;
+  });
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('uk-UA', { 

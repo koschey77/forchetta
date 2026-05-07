@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { articlesAPI } from '../services/api';
 import Error404 from '../components/errors/Error404';
 import NoConnection from '../components/errors/NoConnection';
+import { EyeIcon } from '../components/icons';
 
 const ArticlePageSkeleton = () => {
   return (
@@ -77,10 +78,16 @@ const ArticlePage = () => {
             dangerouslySetInnerHTML={{ __html: (article.content || '').replace(/&nbsp;/g, ' ') }}
           />
 
-          <div className="flex w-full mt-8 md:mt-12 pt-6 pb-12 md:pb-16 border-t border-choco-light/20">
+          <div className="flex justify-between items-center w-full mt-8 md:mt-12 pt-6 pb-12 md:pb-16 border-t border-choco-light/20">
             <span className="font-montserrat font-light text-[14px] text-choco-light">
               {formatDate(article.createdAt)}
             </span>
+            <div className="flex items-center gap-2 text-choco-light">
+              <EyeIcon className="w-5 h-5 opacity-70" />
+              <span className="font-montserrat font-light text-[14px]">
+                {article.viewsCount || 0}
+              </span>
+            </div>
           </div>
         </article>
       </div>
