@@ -14,6 +14,7 @@ import UserPanel from './pages/UserPanel'
 import ShopsPage from './pages/ShopsPage'
 import JournalPage from './pages/JournalPage'
 import ArticlePage from './pages/ArticlePage'
+import AboutPage from './pages/AboutPage'
 import {
   SignUpPage,
   LoginPage,
@@ -63,6 +64,7 @@ function App() {
           <Route path="/shops" element={<ShopsPage />} />
           <Route path="/journal" element={<JournalPage />} />
           <Route path="/journal/:id" element={<ArticlePage />} />
+          <Route path="/about" element={<AboutPage />} />
           
           {/* Catch-all маршрут 404 */}
           <Route path="*" element={<Error404 />} />

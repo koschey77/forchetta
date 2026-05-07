@@ -54,7 +54,8 @@ const Breadcrumbs = () => {
     'admin': 'Панель адміністратора',
     'faq': 'Допомога',
     'shops': 'Магазини',
-    'journal': 'Журнал Forchetta'
+    'journal': 'Журнал Forchetta',
+    'about': 'Про нас'
   };
 
   const getBreadcrumbName = (path, index) => {
