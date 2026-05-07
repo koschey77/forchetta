@@ -121,7 +121,7 @@ const Header = () => {
 
   const handleNavItemClick = (itemValue) => {
     if (itemValue === 'blog') {
-      console.log('Блог еще не реализован');
+      navigate('/journal');
       return;
     }
 

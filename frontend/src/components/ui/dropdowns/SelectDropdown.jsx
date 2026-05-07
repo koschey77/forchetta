@@ -18,13 +18,20 @@ import { DropdownArrowIcon, CheckIcon } from '../../icons';
 const SelectDropdown = ({
   options = [],
   selected,
+  value, // додана підтримка value як alias
   onChange,
   placeholder = 'Виберіть...',
   showCheckmarks = false,
   prefix = '',
   suffix = '',
-  disabled = false
+  disabled = false,
+  className,
+  buttonClassName,
+  width
 }) => {
+  // Підтримка обох назв пропсів (value і selected)
+  const actualSelected = selected !== undefined ? selected : value;
+
   // Нормалізуємо опції в єдиний формат {value, label}
   const normalizedOptions = options.map(option => {
     if (typeof option === 'object') {
@@ -34,7 +41,7 @@ const SelectDropdown = ({
   });
 
   // Знаходимо обрану опцію для відображення в trigger
-  const selectedOption = normalizedOptions.find(option => option.value === selected);
+  const selectedOption = normalizedOptions.find(option => option.value === actualSelected);
   const displayText = selectedOption ? selectedOption.label : placeholder;
 
   // Обробник вибору опції
@@ -58,13 +65,13 @@ const SelectDropdown = ({
       variant="default"
       trigger={
         <button 
-          className={`flex flex-1 items-center justify-between gap-2 px-3 py-2 bg-creamy border border-choco-light text-choco-light rounded text-[13px] font-montserrat transition-colors ${
+          className={`flex items-center justify-between gap-2 px-3 py-2 bg-creamy border border-choco-light text-choco-light rounded-[10px] text-[13px] font-montserrat transition-colors ${width ? width : ''} ${buttonClassName ? buttonClassName : ''} ${className ? className : ''} ${
             disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-dark-creamy'
           }`}
           disabled={disabled}
         >
           {triggerText}
-          <DropdownArrowIcon className="w-4 h-4" stroke="currentColor" strokeWidth={2} />
+          <DropdownArrowIcon className="w-4 h-4 text-choco-light" stroke="currentColor" strokeWidth={2} />
         </button>
       }
       modal={false}
@@ -72,7 +79,7 @@ const SelectDropdown = ({
       className="min-w-[80px]"
     >
       {normalizedOptions.map((option) => {
-        const isSelected = selected === option.value;
+        const isSelected = actualSelected === option.value;
         return (
           <DropdownMenu.Item
             key={option.value}

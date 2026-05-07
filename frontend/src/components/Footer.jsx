@@ -115,6 +115,9 @@ const Footer = () => {
                 <Link to="/shops" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   Магазини
                 </Link>
+                <Link to="/journal" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                  Журнал
+                </Link>
               </div>
 
               {/* Допомога */}

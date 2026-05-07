@@ -15,6 +15,7 @@ import userRoutes from "./routes/user.route.js"
 import orderRoutes from "./routes/order.route.js"
 import statsRoutes from "./routes/stats.route.js"
 import cartRoutes from "./routes/cart.route.js"
+import articleRoutes from "./routes/article.route.js"
 
 import {connectDB} from './lib/db.js'
 
@@ -65,6 +66,7 @@ app.use("/api/users", userRoutes)
 app.use("/api/orders", orderRoutes)
 app.use("/api/stats", statsRoutes)
 app.use("/api/cart", cartRoutes)
+app.use("/api/articles", articleRoutes)
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")))

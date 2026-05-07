@@ -1,14 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { productsAPI } from '../../services/api';
+import { productsAPI, articlesAPI } from '../../services/api';
 
 const Breadcrumbs = () => {
   const location = useLocation();
 
   const paths = location.pathname.split('/').filter(Boolean);
 
-  // Якщо ми на сторінці товару, одразу питаємо React Query (якщо кешу немає - він завантажить)
-  // Виклик хука має бути ДО будь-яких early returns!
+  // Для продукту
   const isProductPage = paths[0] === 'product' && paths[1];
   const productId = isProductPage ? paths[1] : null;
 
@@ -16,6 +15,17 @@ const Breadcrumbs = () => {
     queryKey: ['product', productId],
     queryFn: () => productsAPI.getById(productId),
     enabled: !!productId,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Для журналу
+  const isJournalPage = paths[0] === 'journal' && paths[1];
+  const articleId = isJournalPage ? paths[1] : null;
+
+  const { data: article } = useQuery({
+    queryKey: ['article', articleId],
+    queryFn: () => articlesAPI.getById(articleId),
+    enabled: !!articleId,
     staleTime: 5 * 60 * 1000,
   });
 
@@ -43,7 +53,8 @@ const Breadcrumbs = () => {
     'user-panel': 'Особистий кабінет',
     'admin': 'Панель адміністратора',
     'faq': 'Допомога',
-    'shops': 'Магазини'
+    'shops': 'Магазини',
+    'journal': 'Журнал Forchetta'
   };
 
   const getBreadcrumbName = (path, index) => {
@@ -56,6 +67,11 @@ const Breadcrumbs = () => {
     if (paths[index - 1] === 'product') {
       // Підставляємо ім'я з кешу/запиту
       return product?.name || 'Перегляд товару';
+    }
+
+    // 2.5. Якщо це стаття в журналі (динамічний URL типу /journal/:id)
+    if (paths[index - 1] === 'journal') {
+      return article?.title || 'Стаття';
     }
     
     // 3. Фолбек (Product як папка)

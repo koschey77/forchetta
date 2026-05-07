@@ -116,6 +116,17 @@ export const statsAPI = {
   getDashboardStats: () => axiosInstance.get("/stats/dashboard").then(res => res.data),
 }
 
+export const articlesAPI = {
+  getMany: () => axiosInstance.get("/articles").then(res => res.data),
+  getById: (id) => axiosInstance.get(`/articles/${id}`).then(res => res.data),
+  // Admin
+  getAdminAll: () => axiosInstance.get("/articles/admin/all").then(res => res.data),
+  create: (data) => axiosInstance.post("/articles", data).then(res => res.data),
+  update: (id, data) => axiosInstance.put(`/articles/${id}`, data).then(res => res.data),
+  delete: (id) => axiosInstance.delete(`/articles/${id}`).then(res => res.data),
+  uploadImage: (image) => axiosInstance.post("/articles/upload-image", { image }).then(res => res.data),
+}
+
 const api = {
   products: productsAPI,
   categories: categoriesAPI,
@@ -124,6 +135,7 @@ const api = {
   orders: orderAPI,
   cart: cartAPI,
   stats: statsAPI,
+  articles: articlesAPI,
 }
 
 export default api
