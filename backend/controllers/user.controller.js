@@ -334,7 +334,33 @@ export const toggleFavorite = async (req, res) => {
 // @access  Private/Admin
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.aggregate([
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const skip = (page - 1) * limit;
+    const search = req.query.search || '';
+    const sortBy = req.query.sortBy || 'createdAt';
+    const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
+
+    let matchStage = {};
+    if (search) {
+      matchStage = {
+        $or: [
+          { name: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } },
+          { phone: { $regex: search, $options: 'i' } }
+        ]
+      };
+    }
+
+    const sortStage = {};
+    if (sortBy === 'name') sortStage['name'] = sortOrder;
+    else if (sortBy === 'ordersCount') sortStage['ordersCount'] = sortOrder;
+    else if (sortBy === 'totalSpent') sortStage['totalSpent'] = sortOrder;
+    else if (sortBy === 'bonusPoints') sortStage['bonusPoints'] = sortOrder;
+    else sortStage['createdAt'] = sortOrder;
+
+    const pipeline = [
+      { $match: matchStage },
       {
         $lookup: {
           from: 'orders',
@@ -365,11 +391,27 @@ export const getAllUsers = async (req, res) => {
           orderDocs: 0 
         }
       },
+      { $sort: sortStage },
       {
-        $sort: { createdAt: -1 }
+        $facet: {
+          metadata: [{ $count: 'total' }, { $addFields: { page } }],
+          data: [{ $skip: skip }, { $limit: limit }]
+        }
       }
-    ]);
-    res.json(users);
+    ];
+
+    const result = await User.aggregate(pipeline);
+    
+    const users = result[0].data;
+    const total = result[0].metadata[0] ? result[0].metadata[0].total : 0;
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({
+      users,
+      total,
+      pages: totalPages,
+      currentPage: page
+    });
   } catch (error) {
     console.error("Помилка в getAllUsers:", error.message);
     res.status(500).json({ message: "Помилка сервера", error: error.message });

@@ -31,6 +31,14 @@ const statusColors = {
   cancelled: 'bg-[#FF6C6C]'
 };
 
+const statusTextColors = {
+  pending: 'text-[#B58500]',
+  processing: 'text-[#4A90E2]',
+  shipped: 'text-[#9B51E0]',
+  delivered: 'text-[#66BC91]',
+  cancelled: 'text-[#FF6C6C]'
+};
+
 const StatusLabelWithDot = ({ status }) => (
   <div className="flex items-center gap-2">
     <div className={`w-[8px] h-[8px] rounded-full ${statusColors[status]}`}></div>
@@ -69,6 +77,7 @@ const AdminOrderSkeleton = () => (
 
 const AdminOrderCard = ({ order }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [statusToConfirm, setStatusToConfirm] = useState(null);
   const queryClient = useQueryClient();
 
   const updateStatusMutation = useMutation({
@@ -80,11 +89,28 @@ const AdminOrderCard = ({ order }) => {
 
   const handleStatusChange = (newStatus) => {
     if (newStatus !== order.status) {
-      updateStatusMutation.mutate({ id: order._id, status: newStatus });
+      setStatusToConfirm(newStatus);
     }
   };
 
-  const dateStr = new Date(order.createdAt).toLocaleDateString('uk-UA');
+  const confirmStatusChange = (e) => {
+    e.stopPropagation();
+    if (statusToConfirm) {
+      updateStatusMutation.mutate({ id: order._id, status: statusToConfirm });
+      setStatusToConfirm(null);
+    }
+  };
+
+  const cancelStatusChange = (e) => {
+    e.stopPropagation();
+    setStatusToConfirm(null);
+  };
+
+  const dateObj = new Date(order.createdAt);
+  const timeStr = dateObj.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+  const dateStr = dateObj.toLocaleDateString('uk-UA');
+  const dateTimeStr = `${timeStr} ${dateStr}`;
+
   const items = order.items || [];
   
   const paymentMethodLabel = order.paymentMethod === 'card' ? 'карткою' : 'готівкою';
@@ -92,6 +118,7 @@ const AdminOrderCard = ({ order }) => {
 
   const phoneToDisplay = order.shippingAddress?.phone || order.user?.phone || order.contactPhone || 'Немає номеру';
   const nameToDisplay = order.user?.name || 'Гість';
+  const emailToDisplay = order.user?.email || order.shippingAddress?.email || 'Немає email';
 
   return (
     <div className="flex flex-col items-start py-4 w-full mx-auto transition-all duration-300 bg-transparent border-b border-dark-creamy/30 last:border-b-0 cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
@@ -109,7 +136,7 @@ const AdminOrderCard = ({ order }) => {
               </span>
             </div>
             <span className="font-montserrat font-medium text-[12px] leading-[15px] text-choco-light opacity-70">
-              {dateStr}
+              {dateTimeStr}
             </span>
           </div>
 
@@ -121,6 +148,11 @@ const AdminOrderCard = ({ order }) => {
             <span className="font-montserrat font-medium text-[12px] leading-[15px] text-choco-light opacity-80 text-right lg:text-left">
               {phoneToDisplay}
             </span>
+            {emailToDisplay !== 'Немає email' && (
+              <span className="font-montserrat font-medium text-[12px] leading-[15px] text-choco-light opacity-60 text-right lg:text-left">
+                {emailToDisplay}
+              </span>
+            )}
           </div>
 
         </div>
@@ -219,6 +251,32 @@ const AdminOrderCard = ({ order }) => {
              </div>
           </div>
           
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {statusToConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-choco-dark/40 backdrop-blur-sm px-[15px]" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-creamy rounded-[15px] border border-wine-red/20 shadow-lg p-[30px] max-w-[400px] flex flex-col gap-[20px] items-center text-center w-full">
+            <h3 className="font-cormorant font-semibold text-[24px] text-choco-dark">Зміна статусу</h3>
+            <p className="font-montserrat text-[16px] text-choco-light font-light leading-[22px]">
+              Змінюємо статус цього замовлення на <br/><span className={`font-semibold ${statusTextColors[statusToConfirm]}`}>{statusLabels[statusToConfirm]}</span>?
+            </p>
+            <div className="flex flex-row justify-between w-full h-[46px] mt-2 gap-[10px]">
+              <button 
+                onClick={cancelStatusChange}
+                className="w-1/2 rounded-[44px] bg-transparent border border-choco-light text-choco-light hover:bg-choco-light/10 transition-colors font-montserrat text-[14px]"
+              >
+                Скасувати
+              </button>
+              <button 
+                onClick={confirmStatusChange}
+                className="w-1/2 rounded-[44px] bg-wine-red text-creamy hover:bg-wine-red/90 transition-colors font-montserrat text-[14px]"
+              >
+                Підтвердити
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

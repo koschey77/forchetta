@@ -76,7 +76,7 @@ export const userAPI = {
 }
 
 export const adminUserAPI = {
-  getAll: () => axiosInstance.get("/users").then(res => res.data),
+  getAll: (params) => axiosInstance.get("/users", { params }).then(res => res.data),
   
   getById: (id) => axiosInstance.get(`/users/${id}`).then(res => res.data),
   
