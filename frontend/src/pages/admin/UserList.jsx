@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useUserStore } from '../../stores/useUserStore';
 import { adminUserAPI } from '../../services/api';
 import TopPaginationControls from '../../components/common/pagination/TopPaginationControls';
 import BottomPaginationControls from '../../components/common/pagination/BottomPaginationControls';
@@ -52,6 +53,7 @@ const AdminUserSkeleton = () => (
 
 const UserList = () => {
   const queryClient = useQueryClient();
+  const { user: currentUser } = useUserStore();
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(12);
@@ -276,17 +278,19 @@ const UserList = () => {
 
             {/* Роль */}
             <div className="font-montserrat font-medium text-[14px] text-choco-light text-center">
-              {user.role === 'admin' ? 'Адмін' : 'Клієнт'}
+              {user.isSuperadmin ? (
+                <span className="text-wine-red font-bold">Суперадмін</span>
+              ) : user.role === 'admin' ? 'Адмін' : 'Клієнт'}
             </div>
 
             {/* Дії (Блокування та Роль - дві кнопки як на макеті) */}
             <div className="flex flex-col gap-[3px] items-center justify-center">
               {/* Кнопка "Змінити Роль" (іконка щита/коронки) */}
               <button 
-                title="Змінити роль"
+                title={!currentUser?.isSuperadmin ? "Тільки для Головного адміністратора" : "Змінити роль"}
                 onClick={() => setUserToUpdateRole(user)}
-                disabled={updateRoleMutation.isPending}
-                className="w-[31px] h-[31px] rounded-[30px] bg-light-creamy flex items-center justify-center text-wine-red hover:bg-creamy transition-colors shadow-sm disabled:opacity-50"
+                disabled={updateRoleMutation.isPending || !currentUser?.isSuperadmin}
+                className={`w-[31px] h-[31px] rounded-[30px] bg-light-creamy flex items-center justify-center text-wine-red transition-colors shadow-sm disabled:opacity-50 ${!currentUser?.isSuperadmin ? 'cursor-not-allowed' : 'hover:bg-creamy'}`}
               >
                 <svg width="14" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
@@ -295,10 +299,10 @@ const UserList = () => {
 
               {/* Кнопка "Заблокувати/Розблокувати" (іконка замка) */}
               <button 
-                title={user.isActive ? "Заблокувати" : "Розблокувати"}
+                title={!currentUser?.isSuperadmin ? "Тільки для Головного адміністратора" : user.isActive ? "Заблокувати" : "Розблокувати"}
                 onClick={() => setUserToToggleStatus(user)}
-                disabled={toggleStatusMutation.isPending}
-                className="w-[31px] h-[31px] rounded-[30px] bg-light-creamy flex items-center justify-center text-wine-red hover:bg-creamy transition-colors shadow-sm disabled:opacity-50"
+                disabled={toggleStatusMutation.isPending || !currentUser?.isSuperadmin}
+                className={`w-[31px] h-[31px] rounded-[30px] bg-light-creamy flex items-center justify-center text-wine-red transition-colors shadow-sm disabled:opacity-50 ${!currentUser?.isSuperadmin ? 'cursor-not-allowed' : 'hover:bg-creamy'}`}
               >
                 {user.isActive ? (
                   <svg width="14" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

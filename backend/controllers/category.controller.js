@@ -93,6 +93,10 @@ export const updateCategory = async (req, res) => {
 
 export const deleteCategory = async (req, res) => {
   try {
+    if (!req.user.isSuperadmin) {
+      return res.status(403).json({ message: "Тільки Головний адміністратор може видаляти категорії." });
+    }
+
     const { id } = req.params
 
     const category = await Category.findById(id)

@@ -110,6 +110,10 @@ const userSchema = new mongoose.Schema(
       enum: ['customer', 'admin'],
       default: 'customer',
     },
+    isSuperadmin: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

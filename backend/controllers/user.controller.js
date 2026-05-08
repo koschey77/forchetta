@@ -526,6 +526,10 @@ export const updateUser = async (req, res) => {
 // @access  Private/Admin
 export const updateUserRole = async (req, res) => {
   try {
+    if (!req.user.isSuperadmin) {
+      return res.status(403).json({ message: "Доступ заборонено. Тільки для Головного адміністратора." });
+    }
+
     const { role } = req.body;
     
     // Захист від зняття прав з самого себе
@@ -560,6 +564,10 @@ export const updateUserRole = async (req, res) => {
 // @access  Private/Admin
 export const toggleUserStatus = async (req, res) => {
   try {
+    if (!req.user.isSuperadmin) {
+      return res.status(403).json({ message: "Доступ заборонено. Тільки для Головного адміністратора." });
+    }
+
     const user = await User.findById(req.params.id);
 
     // Захист від самоблокування

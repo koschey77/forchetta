@@ -1,10 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
+import { useUserStore } from '../../stores/useUserStore'
 import { categoriesAPI } from '../../services/api'
 import { EditIcon, BasketIcon } from '../../components/icons'
 
 const CategoryList = ({ onEditCategory }) => {
   const queryClient = useQueryClient()
+  const { user } = useUserStore();
   
   // TanStack Query для завантаження категорій
   const { 
@@ -149,8 +151,9 @@ const CategoryList = ({ onEditCategory }) => {
                       </button>
                       <button
                         onClick={() => handleDelete(category._id, category.name)}
-                        className="w-[25px] h-[25px] md:w-[31px] md:h-[31px] bg-creamy-light rounded-full flex items-center justify-center transition-colors hover:opacity-80"
-                        title="Видалити"
+                        disabled={!user?.isSuperadmin}
+                        className={`w-[25px] h-[25px] md:w-[31px] md:h-[31px] bg-creamy-light rounded-full flex items-center justify-center transition-colors ${!user?.isSuperadmin ? 'opacity-30 cursor-not-allowed' : 'hover:opacity-80'}`}
+                        title={!user?.isSuperadmin ? "Тільки для Головного адміністратора" : "Видалити"}
                       >
                         <BasketIcon className="w-[12px] h-[12px] md:w-[14px] md:h-[15.77px]" />
                       </button>
