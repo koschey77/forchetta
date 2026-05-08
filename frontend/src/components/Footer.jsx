@@ -106,12 +106,12 @@ const Footer = () => {
                 <Link to="/" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   Головна
                 </Link>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                <Link to="/about" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   Про нас
-                </a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                </Link>
+                <Link to="/production" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   Наше виробництво
-                </a>
+                </Link>
                 <Link to="/shops" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   Магазини
                 </Link>
