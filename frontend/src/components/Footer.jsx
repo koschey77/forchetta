@@ -1,9 +1,41 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import LogoFooter from './Logos/LogoFooter';
 import LogoFooterMobile from './Logos/LogoFooterMobile';
 import { FacebookIcon, TelegramIcon, InstagramIcon } from './icons';
+import useFilterStore from '../stores/useFilterStore';
+import { categoriesAPI } from '../services/api';
 
 const Footer = () => {
+  const navigate = useNavigate();
+  const resetFilters = useFilterStore(state => state.resetFilters);
+  const updateFilter = useFilterStore(state => state.updateFilter);
+  const setSortOption = useFilterStore(state => state.setSortOption);
+  const queryClient = useQueryClient();
+
+  const handleFilterClick = (type, value) => {
+    navigate('/catalog');
+    resetFilters();
+    window.scrollTo(0, 0);
+    
+    if (type === 'sort') {
+      setSortOption(value);
+    } else if (type === 'category') {
+      setSortOption('');
+      const categories = queryClient.getQueryData(['categories']) || [];
+      const targetCategory = categories.find(c => c.name === value || c.name === `${value} `);
+      
+      if (targetCategory) {
+        updateFilter('categories', [targetCategory._id]);
+      } else {
+        categoriesAPI.getAll().then(res => {
+          const target = res.find(c => c.name === value || c.name === `${value} `);
+          if (target) updateFilter('categories', [target._id]);
+        }).catch(err => console.error("Error fetching categories", err));
+      }
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // TODO: Додати логіку відправки email підписки
@@ -83,21 +115,21 @@ const Footer = () => {
               {/* Каталог */}
               <div className="flex flex-col items-start gap-4 xl:w-[188.75px] xl:h-[182px]">
                 <h3 className="font-bold text-sm leading-[17px] text-creamy">Каталог</h3>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                <button onClick={() => handleFilterClick('category', 'Торти')} className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity text-left">
                   Торти
-                </a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                </button>
+                <button onClick={() => handleFilterClick('category', 'Цукерки')} className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity text-left">
                   Цукерки
-                </a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                </button>
+                <button onClick={() => handleFilterClick('category', 'Тістечка')} className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity text-left">
                   Тістечка
-                </a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                </button>
+                <button onClick={() => handleFilterClick('category', 'Шоколад')} className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity text-left">
                   Шоколад
-                </a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                </button>
+                <button onClick={() => handleFilterClick('category', 'Подарункові набори')} className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity text-left">
                   Подарункові набори
-                </a>
+                </button>
               </div>
 
               {/* Про компанію */}
@@ -123,9 +155,10 @@ const Footer = () => {
               {/* Допомога */}
               <div className="flex flex-col items-start gap-4 xl:w-[188.75px] xl:h-[116px]">
                 <h3 className="font-bold text-sm leading-[17px] text-creamy">Допомога</h3>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                <Link to="/user-panel?page=faq" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   FAQ
-                </a>
+                </Link>
+                {/* Залишаємо заглушки за проханням */}
                 <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   Доставка та оплата
                 </a>

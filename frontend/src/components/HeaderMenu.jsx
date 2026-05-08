@@ -59,6 +59,7 @@ const HeaderMenu = ({ isOpen, onClose }) => {
             <ul className="flex flex-col gap-[10px] md:gap-2.5">
               <li><Link to="/" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Головна</Link></li>
               <li><Link to="/about" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Про нас</Link></li>
+              <li><Link to="/production" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Виробництво</Link></li>
               <li><button onClick={() => handleFilterClick('sort', 'sales')} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors w-full text-left">Акції</button></li>
               <li><Link to="/public-offer" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Публічна Оферта</Link></li>
               <li><Link to="/privacy-policy" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Політика конфіденційності</Link></li>
