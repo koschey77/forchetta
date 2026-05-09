@@ -52,7 +52,16 @@ const CheckoutPage = () => {
     setAppliedBonuses(allowedPoints);
   };
 
-  const cashback = Math.round(subtotal * 0.05); // 5% кешбеку по дефолту
+  let cashbackPercent = 0;
+  if (subtotal >= 1500) {
+    cashbackPercent = 0.15;
+  } else if (subtotal >= 1000) {
+    cashbackPercent = 0.10;
+  } else if (subtotal >= 500) {
+    cashbackPercent = 0.05;
+  }
+  
+  const cashback = Math.floor(subtotal * cashbackPercent);
   const totalPrice = subtotal - appliedBonuses;
 
   // Форма даних для бекенду (модель Order)
