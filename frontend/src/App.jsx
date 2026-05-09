@@ -16,6 +16,11 @@ import JournalPage from './pages/JournalPage'
 import ArticlePage from './pages/ArticlePage'
 import AboutPage from './pages/AboutPage'
 import ProductionPage from './pages/ProductionPage'
+import PublicOfferPage from './pages/PublicOfferPage'
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
+import DeliveryPage from './pages/DeliveryPage'
+import ContactsPage from './pages/ContactsPage'
+import CookiesPage from './pages/CookiesPage'
 import {
   SignUpPage,
   LoginPage,
@@ -30,6 +35,7 @@ import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
 import Error404 from './components/errors/Error404'
 import AuthRequiredModal from './components/common/AuthRequiredModal'
+import CookieBanner from './components/common/CookieBanner'
 import Breadcrumbs from './components/common/Breadcrumbs'
 
 function App() {
@@ -67,6 +73,11 @@ function App() {
           <Route path="/journal/:id" element={<ArticlePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/production" element={<ProductionPage />} />
+          <Route path="/public-offer" element={<PublicOfferPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/delivery" element={<DeliveryPage />} />
+          <Route path="/contacts" element={<ContactsPage />} />
+          <Route path="/cookies" element={<CookiesPage />} />
           
           {/* Catch-all маршрут 404 */}
           <Route path="*" element={<Error404 />} />
@@ -76,6 +87,7 @@ function App() {
 
       <Toaster />
       <AuthRequiredModal />
+      <CookieBanner />
     </div>
   )
 }

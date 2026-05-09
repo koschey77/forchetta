@@ -158,13 +158,12 @@ const Footer = () => {
                 <Link to="/user-panel?page=faq" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   FAQ
                 </Link>
-                {/* Залишаємо заглушки за проханням */}
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                <Link to="/delivery" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   Доставка та оплата
-                </a>
-                <a href="#" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
+                </Link>
+                <Link to="/contacts" className="font-normal text-sm leading-[17px] text-creamy hover:opacity-80 transition-opacity">
                   Контакти
-                </a>
+                </Link>
               </div>
 
               {/* Контакти і адреса */}
@@ -231,17 +230,17 @@ const Footer = () => {
           <div className="hidden sm:flex flex-col md:flex-row justify-between items-center text-xs">
             <p className="text-creamy font-normal">© 2026 Forchetta. Усі права захищено.</p>
             <div className="flex flex-wrap justify-center gap-3">
-              <a href="#" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">
+              <Link to="/cookies" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">
                 Cookies
-              </a>
+              </Link>
               <span className="hidden md:inline text-creamy text-xs font-normal">|</span>
-              <a href="#" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">
+              <Link to="/public-offer" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">
                 Договір оферти
-              </a>
+              </Link>
               <span className="hidden md:inline text-creamy text-xs font-normal">|</span>
-              <a href="#" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">
+              <Link to="/privacy-policy" className="text-creamy hover:opacity-80 transition-opacity text-xs font-normal">
                 Політика конфіденційності
-              </a>
+              </Link>
             </div>
           </div>
         </div>

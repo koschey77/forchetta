@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import ProductSectionSlider from '../components/ui/carousel/ProductSectionSlider'
 import api from '../services/api'
+import { ContactLocationIcon } from '../components/icons'
 
 export default function ShopsPage() {
 
@@ -72,10 +73,7 @@ export default function ShopsPage() {
           <div className="flex-none w-full md:w-[420px] lg:w-[450px] xl:w-[564px] flex flex-col items-stretch md:items-start bg-creamy rounded-[15px] p-0 gap-[10px] md:gap-5">
             {/* "Київ" Header */}
             <div className="flex flex-row items-center gap-[15px] w-full px-0 md:px-[11px]">
-              <svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M17.5 2C11.7 2 7 6.7 7 12.5C7 20.375 17.5 33 17.5 33C17.5 33 28 20.375 28 12.5C28 6.7 23.3 2 17.5 2Z" stroke="#705A5A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M17.5 16.5C19.7091 16.5 21.5 14.7091 21.5 12.5C21.5 10.2909 19.7091 8.5 17.5 8.5C15.2909 8.5 13.5 10.2909 13.5 12.5C13.5 14.7091 15.2909 16.5 17.5 16.5Z" stroke="#705A5A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <ContactLocationIcon className="w-[35px] h-[35px] text-choco-light" />
               <span className="font-montserrat font-medium text-[18px] lg:text-[24px] leading-[22px] lg:leading-[29px] text-choco-light">Київ</span>
             </div>
 

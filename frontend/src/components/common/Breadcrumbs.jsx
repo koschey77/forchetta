@@ -55,7 +55,13 @@ const Breadcrumbs = () => {
     'faq': 'Допомога',
     'shops': 'Магазини',
     'journal': 'Журнал Forchetta',
-    'about': 'Про нас'
+    'about': 'Про нас',
+    'production': 'Виробництво',
+    'public-offer': 'Публічна оферта',
+    'privacy-policy': 'Політика конфіденційності',
+    'delivery': 'Доставка та оплата',
+    'contacts': 'Контакти',
+    'cookies': 'Політика використання файлів cookie',
   };
 
   const getBreadcrumbName = (path, index) => {
