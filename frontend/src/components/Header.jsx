@@ -6,6 +6,7 @@ import useCartStore from "../stores/useCartStore"
 import useFilterStore from "../stores/useFilterStore"
 import api from "../services/api"
 import { Logo } from "./Logos/Logo.jsx"
+import LogoHover from "./Logos/LogoHover.jsx"
 import { ProfileIcon, HeartIcon, CartIcon, DotsIcon, MenuIcon } from "./icons/index.jsx"
 import HeaderSearch from "./common/HeaderSearch.jsx"
 import HeaderMobileMenu from "./HeaderMobileMenu.jsx"
@@ -158,11 +159,12 @@ const Header = () => {
           <button
             aria-label="Перейти на головну"
             onClick={handleLogoClick}
-            className="h-[53.75px] sm:h-[67px] w-[100px] sm:w-[125px] shrink-0 transition-transform duration-300 hover:scale-[1.02]"
+            className="group h-[53.75px] sm:h-[67px] w-[100px] sm:w-[125px] shrink-0 active:scale-95 transition-transform duration-300"
           >
             {/* Desktop: SVG Logo, інше: img */}
             <div className="hidden xl:block">
-              <Logo />
+              <Logo className="block lg:group-hover:hidden" />
+              <LogoHover className="hidden lg:group-hover:block" />
             </div>
             <img 
               src="/forchetta-logo.png" 

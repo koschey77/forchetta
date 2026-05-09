@@ -2,7 +2,7 @@ import { ContactEmailIcon, ContactPhoneIcon, ContactClockIcon, ContactLocationIc
 
 const ContactsPage = () => {
   return (
-    <div className="bg-creamy px-[15px] py-[30px] md:px-[30px] xl:px-[60px] w-full">
+    <div className="mx-auto max-w-[1440px] bg-creamy px-[15px] py-[30px] md:px-[30px] xl:px-[60px] w-full">
       <h1 className="text-3xl font-cormorant font-bold text-choco-dark mb-4 md:mb-6 xl:mb-12">Контакти</h1>
       
       <div className="flex flex-col md:flex-row justify-between gap-[30px] md:gap-5 xl:gap-5">

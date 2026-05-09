@@ -11,7 +11,7 @@ import {
 const DeliveryPage = () => {
   return (
     <div className="bg-creamy p-[15px] md:p-[30px] xl:p-[60px] w-full min-h-screen">
-      <div className="flex flex-col max-w-[1320px] mx-auto gap-[30px] md:gap-[40px] xl:gap-[60px]">
+      <div className="flex flex-col max-w-[1440px] mx-auto gap-[30px] md:gap-[40px] xl:gap-[60px]">
         
         {/* Header Section */}
         <div className="flex flex-col gap-[10px] items-start">

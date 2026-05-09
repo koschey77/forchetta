@@ -63,7 +63,8 @@ const HeaderMenu = ({ isOpen, onClose }) => {
               <li><button onClick={() => handleFilterClick('sort', 'sales')} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors w-full text-left">Акції</button></li>
               <li><Link to="/public-offer" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Публічна Оферта</Link></li>
               <li><Link to="/privacy-policy" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Політика конфіденційності</Link></li>
-              <li><Link to="/404" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">404</Link></li>
+              <li><Link to="/user-panel?page=faq" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">FAQ</Link></li>
+              <li><Link to="/cookies" onClick={onClose} className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-light hover:text-choco-dark transition-colors">Cookies</Link></li>
             </ul>
           </div>
 

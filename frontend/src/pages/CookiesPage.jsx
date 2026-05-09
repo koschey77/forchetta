@@ -2,7 +2,7 @@ import React from 'react';
 
 const CookiesPage = () => {
   return (
-    <div className="bg-creamy px-[15px] py-[30px] md:px-[30px] lg:px-[60px] w-full">
+    <div className="mx-auto max-w-[1440px] bg-creamy px-[15px] py-[30px] md:px-[30px] lg:px-[60px] w-full">
       <h1 className="text-3xl font-cormorant font-bold text-choco-dark mb-4 md:mb-6">Політика використання файлів cookie</h1>
       
       <div className="text-[16px] md:text-[18px] font-montserrat font-normal text-choco-dark mb-[30px]">

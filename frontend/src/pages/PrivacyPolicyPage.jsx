@@ -2,7 +2,7 @@ import React from 'react';
 
 const PrivacyPolicyPage = () => {
   return (
-    <div className="bg-creamy px-[15px] py-[30px] md:px-[30px] lg:px-[60px] w-full flex flex-col items-center">
+    <div className="mx-auto max-w-[1440px] bg-creamy px-[15px] py-[30px] md:px-[30px] lg:px-[60px] w-full flex flex-col items-center">
       <div className="w-full flex justify-start mb-[24px]">
         <h1 className="font-montserrat font-semibold text-[18px] leading-[22px] md:text-[24px] md:leading-[29px] text-choco-dark">
           Політика конфіденційності
