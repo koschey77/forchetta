@@ -136,6 +136,9 @@ export const getAllProducts = async (req, res) => {
         case 'featured':
           sort = { isFeatured: sortOrder === 'desc' ? -1 : 1, createdAt: -1 };
           break;
+        case 'rating':
+          sort = { averageRating: -1, reviewsCount: -1 };
+          break;
         case 'sales':
           // Сортировка по акциям: сначала товары со скидкой, потом остальные
           sort = { 

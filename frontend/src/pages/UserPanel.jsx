@@ -88,14 +88,6 @@ const UserPanel = () => {
                   {user?.email}
                 </span>
               </div>
-              <div className="flex flex-row justify-center items-center py-[10px] px-[30px] gap-[10px] w-[190px] h-[39px] bg-choco-light rounded-[27px]">
-                <div className="flex flex-row items-center gap-[10px] w-full">
-                  <CoinIcon className="w-[24px] h-[24px] shrink-0" stroke="#F5EEE0" />
-                  <span className="font-montserrat font-semibold text-[18px] leading-[22px] text-creamy whitespace-nowrap">
-                    {user?.bonusPoints || 0} балів
-                  </span>
-                </div>
-              </div>
             </div>
             <button onClick={() => logout()} className="cursor-pointer hover:opacity-75 transition-opacity mt-1" title="Вийти">
               <ExitIcon className="w-5 h-5 transform scale-x-[-1] text-choco-light" stroke="currentColor" strokeWidth={2} />
@@ -104,29 +96,43 @@ const UserPanel = () => {
         </div>
       </div>
 
-      {/* Navigation Dropdown */}
-      <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] py-4 relative z-10">
-        <MenuDropdown
-          variant="admin" // Используем стиль админки для единообразия
-          options={pageOptions}
-          selected={currentPage}
-          onChange={handlePageSelect}
-          showCheckmarks={false}
-          customTrigger={
-            <button className="flex flex-row justify-between items-center px-[15px] gap-[10px] w-full sm:w-[349px] h-[44px] bg-dark-creamy rounded-[30px] transition-colors hover:opacity-90">
-              <div className="flex flex-row items-center gap-[10px] min-w-[200px] h-[24px]">
-                {React.createElement(pageMapping[currentPage].icon, {
-                  className: "w-[24px] h-[24px] flex-shrink-0 text-[#705A5A]",
-                  strokeWidth: 2,
-                })}
-                <span className="font-montserrat font-semibold text-[18px] leading-[22px] text-choco-light whitespace-nowrap overflow-hidden text-ellipsis text-left">
-                  {pageMapping[currentPage].name}
-                </span>
-              </div>
-              <DropdownArrowIcon className="w-[19px] h-[16px] flex-shrink-0" stroke="#705A5A" strokeWidth={2} />
-            </button>
-          }
-        />
+      {/* Navigation Dropdown and Bonus */}
+      <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] py-4 relative z-10 flex flex-row justify-between items-center gap-[10px] sm:gap-[15px]">
+        <div className="flex-1 w-1/2 sm:w-[349px] sm:flex-none">
+          <MenuDropdown
+            variant="admin" // Используем стиль админки для единообразия
+            options={pageOptions}
+            selected={currentPage}
+            onChange={handlePageSelect}
+            showCheckmarks={false}
+            customTrigger={
+              <button className="flex flex-row justify-between items-center px-[15px] gap-[5px] sm:gap-[10px] w-full h-[44px] bg-dark-creamy rounded-[30px] transition-colors hover:opacity-90 min-w-0">
+                <div className="flex flex-row items-center gap-[5px] sm:gap-[10px] min-w-0 h-[24px] overflow-hidden">
+                  {React.createElement(pageMapping[currentPage].icon, {
+                    className: "w-[20px] h-[20px] sm:w-[24px] sm:h-[24px] flex-shrink-0 text-[#705A5A]",
+                    strokeWidth: 2,
+                  })}
+                  <span className="font-montserrat font-semibold text-[14px] sm:text-[18px] leading-[18px] sm:leading-[22px] text-choco-light truncate text-left">
+                    {pageMapping[currentPage].name}
+                  </span>
+                </div>
+                <DropdownArrowIcon className="w-[16px] h-[16px] sm:w-[19px] sm:h-[16px] flex-shrink-0" stroke="#705A5A" strokeWidth={2} />
+              </button>
+            }
+          />
+        </div>
+        <button 
+          onClick={() => handlePageSelect('bonus')}
+          className="flex flex-row justify-center items-center py-[10px] px-[10px] sm:px-[30px] gap-[5px] sm:gap-[10px] flex-1 w-1/2 sm:w-[190px] sm:flex-none h-[44px] bg-[#E3D6BF] rounded-[30px] hover:bg-[#d6c5a8] transition-colors cursor-pointer shrink-0 min-w-0"
+        >
+          <div className="flex flex-row items-center justify-center gap-[5px] sm:gap-[10px] w-full overflow-hidden">
+            <CoinIcon className="w-[20px] h-[20px] sm:w-[24px] sm:h-[24px] shrink-0" stroke="#705A5A" />
+            <span className="font-montserrat font-semibold text-[14px] sm:text-[18px] leading-[18px] sm:leading-[22px] text-[#705A5A] truncate">
+              {user?.bonusPoints || 0}
+              <span className="hidden sm:inline"> балів</span>
+            </span>
+          </div>
+        </button>
       </div>
 
       {/* Main Content */}

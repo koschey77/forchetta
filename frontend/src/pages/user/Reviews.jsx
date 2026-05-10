@@ -5,6 +5,7 @@ import api from '../../services/api';
 import Error404 from '../../components/errors/Error404';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import ReviewModal from '../../components/common/ReviewModal';
+import ProductSectionSlider from '../../components/ui/carousel/ProductSectionSlider';
 import { EditIcon, BasketIcon } from '../../components/icons/index.jsx';
 
 const EmptyReviewsState = () => (
@@ -145,6 +146,12 @@ const Reviews = () => {
     queryFn: api.reviews.getMyReviews,
   });
 
+  const { data: popularProducts } = useQuery({
+    queryKey: ['popular-rating-products'],
+    queryFn: () => api.products.getMany({ sortBy: 'rating', limit: 6 })
+  });
+  const popularArray = Array.isArray(popularProducts) ? popularProducts : (popularProducts?.products || []);
+
   const createReviewMutation = useMutation({
     mutationFn: api.reviews.create,
     onSuccess: () => {
@@ -211,13 +218,8 @@ const Reviews = () => {
 
   if (error) return <Error404 />;
 
-  // Якщо нічого не очікує на оцінку і немає жодного відгуку - показуємо загальний порожній стан
-  if (activeTab === 'pending' && (!pendingProducts || pendingProducts.length === 0)) {
-    return <EmptyReviewsState />;
-  }
-
   return (
-    <div className="w-full animate-fade-in">
+    <div className="w-full animate-fade-in relative pb-[80px]">
       <h2 className="font-cormorant font-medium text-[32px] lg:text-[40px] text-choco-dark leading-[1.2] mb-[20px] lg:mb-[30px]">
         Мої відгуки
       </h2>
@@ -253,12 +255,15 @@ const Reviews = () => {
       </div>
 
       {/* Content */}
-      <div className="w-full">
+      <div className="w-full mb-[50px]">
         {activeTab === 'pending' ? (
           <div className="flex flex-col gap-[20px]">
-            {pendingProducts?.map(product => (
-              <div key={product._id} className="flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center p-[20px_15px] md:p-[20px_70px_20px_40px] gap-[20px] md:gap-0 w-full h-[190px] border border-choco-light rounded-[10px] transition-all hover:shadow-md">
-                <div className="flex flex-row items-center gap-[30px] w-full md:w-auto">
+            {(!pendingProducts || pendingProducts.length === 0) ? (
+              <EmptyReviewsState />
+            ) : (
+              pendingProducts.map(product => (
+                <div key={product._id} className="flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center p-[20px_15px] md:p-[20px_70px_20px_40px] gap-[20px] md:gap-0 w-full h-[190px] border border-choco-light rounded-[10px] transition-all hover:shadow-md">
+                  <div className="flex flex-row items-center gap-[30px] w-full md:w-auto">
                   {product.images?.[0]?.url ? (
                     <img 
                       src={product.images[0].url} 
@@ -279,7 +284,7 @@ const Reviews = () => {
                   Залишити відгук
                 </button>
               </div>
-            ))}
+            )))}
           </div>
 
         ) : (
@@ -294,6 +299,18 @@ const Reviews = () => {
           </div>
         )}
       </div>
+
+      {/* Recommended Products Slider */}
+      {popularArray.length > 0 && (
+        <div className="w-full mt-[40px]">
+          <ProductSectionSlider 
+            title="Найвищі оцінки"
+            products={popularArray}
+            linkUrl="/catalog"
+            compact={true}
+          />
+        </div>
+      )}
 
       <ReviewModal 
         isOpen={isModalOpen}

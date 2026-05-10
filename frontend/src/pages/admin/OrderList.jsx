@@ -52,7 +52,7 @@ const AdminOrderSkeleton = () => (
   <div className="flex flex-col items-start py-4 w-full mx-auto transition-all duration-300 bg-transparent border-b border-dark-creamy/30 last:border-b-0 animate-pulse">
     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center w-full min-h-[52px] gap-4">
       <div className="flex flex-row justify-between lg:justify-start items-center gap-4 sm:gap-8 w-full lg:w-auto lg:flex-grow">
-        <div className="flex flex-col justify-center items-start gap-2 min-w-[120px]">
+        <div className="flex flex-col justify-center items-start gap-2 min-w-[120px] lg:min-w-[180px] lg:w-[180px] shrink-0">
           <div className="h-4 bg-choco-light/10 rounded w-24"></div>
           <div className="h-3 bg-choco-light/10 rounded w-16"></div>
         </div>
@@ -129,7 +129,7 @@ const AdminOrderCard = ({ order }) => {
         <div className="flex flex-row justify-between lg:justify-start items-center gap-4 sm:gap-8 w-full lg:w-auto lg:flex-grow">
           
           {/* Order Info */}
-          <div className="flex flex-col justify-center items-start gap-[4px] min-w-[120px]">
+          <div className="flex flex-col justify-center items-start gap-[4px] min-w-[120px] lg:min-w-[180px] lg:w-[180px] shrink-0">
             <div className="flex flex-row items-center gap-[10px]">
               <span className="font-montserrat font-bold text-[14px] leading-[17px] text-choco-light">
                 № {order.orderNumber || order._id?.slice(-8).toUpperCase()}
