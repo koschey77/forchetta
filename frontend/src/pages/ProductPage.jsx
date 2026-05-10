@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
-import { productsAPI } from "../services/api"
-import { ImagePlaceholderIcon, WeightIcon, ClockIcon, TemperatureIcon } from "../components/icons"
+import { productsAPI, reviewsAPI } from "../services/api"
+import { ImagePlaceholderIcon, WeightIcon, ClockIcon, TemperatureIcon, StarIcon } from "../components/icons"
 import { Carousel, CarouselContent, CarouselItem, CarouselDots } from "../components/ui/carousel"
 import ProductPageSkeleton from "../components/catalog/ProductPageSkeleton"
 import NoConnection from "../components/errors/NoConnection"
@@ -39,11 +39,18 @@ const ProductPage = () => {
     staleTime: 5 * 60 * 1000,
   });
 
+  // TanStack Query для получения отзывов
+  const { data: reviewsData } = useQuery({
+    queryKey: ['productReviews', id],
+    queryFn: () => reviewsAPI.getProductReviews(id, { page: 1, limit: 10 }),
+    enabled: !!id,
+  });
+
   // Деструктуризация product с дефолтними значениями
   const {
     images = [], name = "", isFeatured = false, qty = 0, summary = "", weight = 0,
     shelfLife = "", storageConditions = "", description = "", ingredients = "",
-    price = 0,  discountPrice = null } = product || {}
+    price = 0,  discountPrice = null, averageRating = 0, reviewsCount = 0 } = product || {}
 
   // Получаем изображения из товара
   const imageUrls = images?.length > 0 ? images.map(img => img.url) : []
@@ -75,6 +82,22 @@ const ProductPage = () => {
   const formatPrice = (price) => {
     return `${price} грн`
   }
+
+  // Функция для рендера звездочек рейтинга
+  const renderRatingStars = (rating) => {
+    return (
+      <div className="flex items-center gap-[2px]">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <StarIcon 
+            key={star} 
+            className="w-5 h-5 pointer-events-none" 
+            fill={star <= rating ? "#DFB300" : "none"} 
+            stroke="#DFB300" 
+          />
+        ))}
+      </div>
+    );
+  };
 
   // Функция для отображения цени
   const renderPriceSection = (sizeClasses = "text-[24px] leading-[29px]", alignment = "items-center") => {
@@ -127,8 +150,19 @@ const ProductPage = () => {
       <div className="w-full">
         <div className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px]">
           {/* Mobile Title */}
-          <div className="w-full md:hidden mb-6">
+          <div className="w-full md:hidden mb-6 flex flex-col gap-2">
             <h1 className="text-[30px] leading-[36px] font-normal font-cormorant text-choco-light">{name || "Загрузка..."}</h1>
+            {reviewsCount > 0 && (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[16px] font-bold font-montserrat text-choco-light">{averageRating}</span>
+                  {renderRatingStars(averageRating)}
+                </div>
+                <span className="text-[14px] font-montserrat text-choco-light opacity-80 cursor-pointer hover:underline" onClick={() => document.getElementById('reviews-section')?.scrollIntoView({ behavior: 'smooth' })}>
+                  {reviewsCount} {reviewsCount === 1 ? 'відгук' : (reviewsCount >= 2 && reviewsCount <= 4) ? 'відгуки' : 'відгуків'}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="w-full flex flex-col md:flex-row gap-5 lg:gap-10 items-start">
@@ -207,9 +241,20 @@ const ProductPage = () => {
             <div className="w-full md:w-1/2 flex flex-col gap-6 md:gap-6">
               {/* Title & Status */}
               <div className="hidden md:flex flex-col gap-4">
-                <h3 className="text-[30px] leading-[36px] lg:text-[48px] lg:leading-[58px]font-normal lg:font-bold font-cormorant text-choco-light">
+                <h3 className="text-[30px] leading-[36px] lg:text-[48px] lg:leading-[58px] font-normal lg:font-bold font-cormorant text-choco-light">
                   {name || "Загрузка..."}
                 </h3>
+                {reviewsCount > 0 && (
+                  <div className="flex items-center gap-3 mt-[-5px]">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[18px] font-bold font-montserrat text-choco-light">{averageRating}</span>
+                      {renderRatingStars(averageRating)}
+                    </div>
+                    <span className="text-[16px] font-montserrat text-choco-light opacity-80 cursor-pointer hover:underline" onClick={() => document.getElementById('reviews-section')?.scrollIntoView({ behavior: 'smooth' })}>
+                      {reviewsCount} {reviewsCount === 1 ? 'відгук' : (reviewsCount >= 2 && reviewsCount <= 4) ? 'відгуки' : 'відгуків'}
+                    </span>
+                  </div>
+                )}
                 <span className={`text-[18px] font-semibold font-montserrat ${getStockStatus(qty || 0).colorClass}`}>
                   {getStockStatus(qty || 0).text}
                 </span>
@@ -315,6 +360,50 @@ const ProductPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Відгуки */}
+        {reviewsData && reviewsData.reviews && reviewsData.reviews.length > 0 && (
+          <div id="reviews-section" className="w-full max-w-[1440px] mx-auto px-[15px] sm:px-[30px] lg:px-[60px] mt-[20px] md:mt-[40px] pt-[30px] border-t border-creamy flex flex-col gap-6">
+            <h3 className="text-[24px] lg:text-[32px] md:leading-[36px] font-normal lg:font-bold font-cormorant text-choco-light">
+              Відгуки покупців
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
+              {reviewsData.reviews.map((review) => (
+                <div key={review._id} className="flex flex-col gap-3 border-b border-creamy pb-5 md:border-none md:pb-0">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-choco-light/10 flex items-center justify-center text-choco-light font-bold overflow-hidden shrink-0">
+                        {review.user?.avatar ? (
+                          <img src={review.user.avatar} alt={review.user.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="uppercase">{review.user?.name?.charAt(0) || 'К'}</span>
+                        )}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-[16px] text-choco-light">
+                          {review.user?.name || "Користувач"}
+                        </span>
+                        <span className="text-[12px] opacity-70 text-choco-light">
+                          {new Date(review.createdAt).toLocaleDateString('uk-UA')}
+                        </span>
+                      </div>
+                    </div>
+                    {renderRatingStars(review.rating)}
+                  </div>
+                  <p className="text-[14px] leading-[20px] font-montserrat text-choco-light opacity-90 mt-1 line-clamp-4">
+                    {review.text}
+                  </p>
+                  {review.adminReply && (
+                    <div className="mt-2 pl-3 border-l-2 border-wine-red text-[13px] font-montserrat text-choco-light flex flex-col gap-1">
+                      <span className="font-semibold">Відповідь Forchetta:</span>
+                      <p className="opacity-90">{review.adminReply}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Рекомендовані товари (Спеціальні пропозиції) */}
         {recommendedData && recommendedData.length > 0 && (

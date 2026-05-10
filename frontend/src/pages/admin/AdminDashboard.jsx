@@ -23,14 +23,30 @@ const KpiCard = ({ title, value, icon: Icon }) => (
 );
 
 // Компонент картки відгуків
-const CustomerReviewsCard = () => {
-  const reviews = [
+const CustomerReviewsCard = ({ reviewStatsData = [], totalReviewsCount = 0 }) => {
+  const defaultReviews = [
     { label: 'Чудово', percent: 77, bg: '#E8F9F0', fill: 'rgba(23, 191, 107, 0.68)' },
     { label: 'Добре', percent: 61, bg: '#E8F9F0', fill: 'rgba(65, 217, 141, 0.57)' },
     { label: 'Непогано', percent: 53, bg: '#FFF9EA', fill: 'rgba(255, 198, 50, 0.64)' },
     { label: 'Погано', percent: 33, bg: '#FCF6EB', fill: 'rgba(229, 165, 60, 0.55)' },
     { label: 'Жахливо', percent: 26, bg: '#FDEBEB', fill: 'rgba(237, 51, 51, 0.74)' },
   ];
+
+  const reviews = reviewStatsData.length > 0 ? reviewStatsData : defaultReviews;
+  
+  let averageRatingStr = "0.0";
+  let averageRatingNum = 0;
+  if (reviewStatsData.length > 0 && totalReviewsCount > 0) {
+    const totalScore = reviewStatsData.reduce((acc, curr, idx) => acc + curr.count * (5 - idx), 0);
+    averageRatingNum = totalScore / totalReviewsCount;
+    averageRatingStr = averageRatingNum.toFixed(1);
+  } else {
+    averageRatingNum = 4.0;
+    averageRatingStr = "4.0";
+  }
+
+  const fullStars = Math.floor(averageRatingNum);
+  const emptyStars = 5 - fullStars;
 
   return (
     <div className="bg-[#FFFBF2] rounded-[15px] p-[19px] px-[15px] sm:px-6 shadow-sm flex flex-col gap-[27px] min-w-0">
@@ -49,18 +65,20 @@ const CustomerReviewsCard = () => {
       {/* Stars & Rating */}
       <div className="flex justify-between items-center w-full">
         <div className="flex items-center gap-[6px]">
-          {[1, 2, 3, 4].map((i) => (
-             <svg key={i} width="24" height="24" viewBox="0 0 24 24" fill="#FFBB0B" xmlns="http://www.w3.org/2000/svg">
+          {Array(fullStars).fill().map((_, i) => (
+             <svg key={`full-${i}`} width="24" height="24" viewBox="0 0 24 24" fill="#FFBB0B" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
             </svg>
           ))}
-          {/* Empty Star */}
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFBB0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-          </svg>
+          {/* Empty Stars */}
+          {Array(emptyStars).fill().map((_, i) => (
+            <svg key={`empty-${i}`} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFBB0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+            </svg>
+          ))}
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="font-montserrat font-semibold text-[20px] text-[#323232] leading-[24px]">4.0</span>
+          <span className="font-montserrat font-semibold text-[20px] text-[#323232] leading-[24px]">{averageRatingStr}</span>
           <span className="font-montserrat font-medium text-[14px] text-[#888888] leading-[17px]">із 5</span>
         </div>
       </div>
@@ -68,11 +86,12 @@ const CustomerReviewsCard = () => {
       {/* Progress Bars */}
       <div className="flex flex-col gap-[18px]">
          {reviews.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-4 w-full">
-               <span className="w-[85px] font-montserrat font-medium text-[14px] text-[#323232]">{item.label}</span>
+            <div key={idx} className="flex items-center gap-3 w-full">
+               <span className="w-[140px] font-montserrat font-medium text-[14px] text-[#323232] truncate" title={item.label}>{item.label}</span>
                <div className="flex-1 h-[9px] rounded-[10px]" style={{ backgroundColor: item.bg }}>
                    <div className="h-full rounded-[10px] transition-all duration-1000" style={{ width: `${item.percent}%`, backgroundColor: item.fill }}></div>
                </div>
+               <span className="font-montserrat font-medium text-[12px] text-[#888888] w-[20px] text-right">{item.count !== undefined ? item.count : ''}</span>
             </div>
          ))}
       </div>
@@ -212,7 +231,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Картка відгуків покупців */}
-        <CustomerReviewsCard />
+        <CustomerReviewsCard reviewStatsData={data.reviewStatsData} totalReviewsCount={data.totalReviewsCount} />
       </div>
 
     </div>

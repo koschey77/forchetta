@@ -323,17 +323,17 @@ const OrderList = () => {
     <div className="w-full flex flex-col gap-6">
       
       {/* Header & Controls */}
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-2 border-b border-light-creamy">
+      <div className="flex flex-wrap sm:flex-nowrap justify-between items-center gap-y-4 py-2 border-b border-light-creamy">
          
          {/* Сводка количества замовлень */}
-         <div className="flex items-center w-full sm:w-auto p-2">
-            <span className="font-montserrat font-bold text-[18px] text-choco-dark whitespace-nowrap">
+         <div className="flex items-center order-1 w-auto p-2">
+            <span className="font-montserrat font-bold text-[15px] xl:text-[18px] text-choco-dark whitespace-nowrap">
               Всього замовлень: <span className="text-wine-red ml-1">{data?.total || 0}</span>
             </span>
          </div>
          
          {/* Search Input */}
-         <div className="relative w-full sm:w-[400px]">
+         <div className="relative w-full sm:w-[400px] order-3 sm:order-2">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <SearchIcon className="w-[18px] h-[18px] text-choco-light opacity-50" strokeWidth="2" />
             </div>
@@ -346,7 +346,7 @@ const OrderList = () => {
             />
          </div>
 
-         <div className="flex items-center gap-4 ml-auto w-full sm:w-auto justify-end">
+         <div className="flex items-center order-2 sm:order-3 w-auto justify-end">
             <TopPaginationControls 
                itemsPerPage={limit}
                onItemsPerPageChange={handleLimitChange}

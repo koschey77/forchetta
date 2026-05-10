@@ -127,6 +127,24 @@ export const articlesAPI = {
   uploadImage: (image) => axiosInstance.post("/articles/upload-image", { image }).then(res => res.data),
 }
 
+export const reviewsAPI = {
+  // Для користувача
+  getPending: () => axiosInstance.get("/reviews/pending").then(res => res.data),
+  getMyReviews: () => axiosInstance.get("/reviews/my-reviews").then(res => res.data),
+  create: (data) => axiosInstance.post("/reviews", data).then(res => res.data),
+  update: (id, data) => axiosInstance.put(`/reviews/my-reviews/${id}`, data).then(res => res.data),
+  delete: (id) => axiosInstance.delete(`/reviews/my-reviews/${id}`).then(res => res.data),
+  
+  // Публічні
+  getProductReviews: (productId, params) => axiosInstance.get(`/reviews/product/${productId}`, { params }).then(res => res.data),
+  
+  // Для адміна
+  getAdminAll: (params) => axiosInstance.get("/reviews/admin", { params }).then(res => res.data),
+  updateStatus: (id, status) => axiosInstance.put(`/reviews/admin/${id}/status`, { status }).then(res => res.data),
+  reply: (id, adminReply) => axiosInstance.put(`/reviews/admin/${id}/reply`, { adminReply }).then(res => res.data),
+  deleteAdmin: (id) => axiosInstance.delete(`/reviews/admin/${id}`).then(res => res.data),
+}
+
 const api = {
   products: productsAPI,
   categories: categoriesAPI,
@@ -136,6 +154,7 @@ const api = {
   cart: cartAPI,
   stats: statsAPI,
   articles: articlesAPI,
+  reviews: reviewsAPI,
 }
 
 export default api

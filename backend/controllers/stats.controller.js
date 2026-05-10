@@ -1,6 +1,7 @@
 import Order from "../models/order.model.js";
 import User from "../models/user.model.js";
 import Product from "../models/product.model.js";
+import Review from "../models/review.model.js";
 import { ORDER_ENUMS } from "../constants/enums.js";
 
 // @desc    Get dashboard statistics
@@ -93,6 +94,38 @@ export const getDashboardStats = async (req, res) => {
       };
     });
 
+    // 4. Customer Reviews Stats
+    const reviewAggregation = await Review.aggregate([
+      { $match: { status: 'published' } },
+      {
+        $group: {
+          _id: "$rating",
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+    
+    const totalReviewsCount = reviewAggregation.reduce((acc, curr) => acc + curr.count, 0);
+
+    const reviewMap = {
+      5: { label: 'Чудово (5★)', bg: '#E8F9F0', fill: 'rgba(23, 191, 107, 0.68)' },
+      4: { label: 'Добре (4★)', bg: '#E8F9F0', fill: 'rgba(65, 217, 141, 0.57)' },
+      3: { label: 'Нормально (3★)', bg: '#FFF4E5', fill: 'rgba(255, 171, 0, 0.68)' },
+      2: { label: 'Погано (2★)', bg: '#FFEBEB', fill: 'rgba(255, 86, 48, 0.57)' },
+      1: { label: 'Дуже погано (1★)', bg: '#FFEBEB', fill: 'rgba(255, 86, 48, 0.8)' },
+    };
+
+    const reviewStatsData = [5, 4, 3, 2, 1].map(rating => {
+      const match = reviewAggregation.find(r => r._id === rating);
+      const count = match ? match.count : 0;
+      const percent = totalReviewsCount > 0 ? Math.round((count / totalReviewsCount) * 100) : 0;
+      return {
+        ...reviewMap[rating],
+        percent,
+        count
+      };
+    });
+
     res.status(200).json({
       kpi: {
         totalUsers,
@@ -101,7 +134,9 @@ export const getDashboardStats = async (req, res) => {
         totalProducts
       },
       orderStatusData,
-      salesData
+      salesData,
+      reviewStatsData,
+      totalReviewsCount
     });
   } catch (error) {
     console.error("Помилка при отриманні статистики:", error.message);

@@ -1,9 +1,9 @@
 import React from "react"
 import { useUserStore } from '../stores/useUserStore'
 import { Navigate, useSearchParams } from 'react-router-dom'
-import { ExitIcon, DropdownArrowIcon, CartIcon, HeartIcon, SearchIcon, DataIcon, AddressIcon, FaqIcon, CoinIcon } from '../components/icons'
+import { ExitIcon, DropdownArrowIcon, CartIcon, HeartIcon, SearchIcon, DataIcon, AddressIcon, FaqIcon, CoinIcon, MessageIcon } from '../components/icons'
 import { MenuDropdown } from '../components/ui/dropdowns'
-import { GeneralData, Favorites, Addresses, Orders, Bonuses, ViewedProducts, Faqs } from './user'
+import { GeneralData, Favorites, Addresses, Orders, Bonuses, ViewedProducts, Reviews, Faqs } from './user'
 
 const UserPanel = () => {
   const { user, logout } = useUserStore()
@@ -16,6 +16,7 @@ const UserPanel = () => {
     history: { name: "Історія замовлень", icon: CartIcon },
     favorites: { name: "Обране", icon: HeartIcon },
     viewed: { name: "Переглянуті товари", icon: SearchIcon },
+    reviews: { name: "Відгуки", icon: MessageIcon },
     addresses: { name: "Адреси доставки", icon: AddressIcon },
     bonus: { name: "Бонуси", icon: CoinIcon },
     faq: { name: "FAQs", icon: FaqIcon },
@@ -50,6 +51,8 @@ const UserPanel = () => {
         return <Favorites />
       case 'viewed':
         return <ViewedProducts />
+      case 'reviews':
+        return <Reviews />
       case 'addresses':
         return <Addresses />
       case 'bonus':

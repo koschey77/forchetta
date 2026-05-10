@@ -39,6 +39,8 @@ const productSchema = new mongoose.Schema(
     },
     isFeatured: { type: Boolean, default: false },
     salesCount: { type: Number, default: 0 },
+    averageRating: { type: Number, default: 0 },
+    reviewsCount: { type: Number, default: 0 },
   },
   { timestamps: true },
 )

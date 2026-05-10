@@ -162,14 +162,14 @@ const Header = () => {
             className="group h-[53.75px] sm:h-[67px] w-[100px] sm:w-[125px] shrink-0 active:scale-95 transition-transform duration-300"
           >
             {/* Desktop: SVG Logo, інше: img */}
-            <div className="hidden xl:block">
+            <div className="hidden lg:block">
               <Logo className="block lg:group-hover:hidden" />
               <LogoHover className="hidden lg:group-hover:block" />
             </div>
             <img 
               src="/forchetta-logo.png" 
               alt="Forchetta Logo" 
-              className="xl:hidden w-full h-full object-contain"
+              className="lg:hidden w-full h-full object-contain"
             />
           </button>
 
