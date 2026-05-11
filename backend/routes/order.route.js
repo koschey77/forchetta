@@ -15,7 +15,7 @@ const router = express.Router();
 
 // User Routes
 router.post('/', protectRoute, createOrder);
-router.post('/:id/confirm-payment', protectRoute, confirmOrderPayment);
+router.post('/:id/confirm-payment', confirmOrderPayment); // Відкритий роут для перевірки Stripe Session
 router.get('/my-orders', protectRoute, getMyOrders);
 router.get('/my-orders/:id', protectRoute, getOrderById);
 

@@ -217,6 +217,89 @@ export const sendWelcomeEmail = async (email, name) => {
   }
 }
 
+// Отправка email со ссылкой на оплату (Для Admin POS)
+export const sendPaymentLinkEmail = async (email, name, order, paymentUrl) => {
+  try {
+    console.log('📧 Отправка payment link email через Resend для:', email);
+    
+    // Подготовка адреса
+    const addr = order.shippingAddress;
+    const addressString = addr ? `${addr.city || ''}, ${addr.street || ''} ${addr.house || ''}${addr.apartment ? ', кв. ' + addr.apartment : ''}` : 'Самовивіз';
+    
+    // Формируем HTML
+    const htmlContent = `
+      <head>
+        <style type="text/css">
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap');
+        </style>
+      </head>
+      <body style="font-family: 'Montserrat', Arial, sans-serif; font-style: normal; margin: 0; padding: 0; background-color: #ECECEC;">
+        <div style="max-width: 600px; background-color: #F5EEE0; padding: 0; margin: 20px auto; letter-spacing: 0.5px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+          <div style="padding: 40px 30px;">
+            <!-- Логотип -->
+            <div style="text-align: center; margin-bottom: 35px;">
+              <img src="${LOGO_URL}" alt="Forchetta" style="height: 100px;">
+            </div>
+            
+            <!-- Заголовок приветствия -->
+            <div style="text-align: center; margin-bottom: 25px;">
+              <h2 style="color: #6B4423; font-size: 18px; margin: 0; line-height: 1.4; font-family: 'Cormorant Garamond', serif;">Вітаємо, ${name ? name.split(" ")[0] : 'Клієнте'}!</h2>
+              <p style="color: #705A5A; font-size: 16px; margin-top: 10px;">Менеджер Forchetta щойно оформив ваше замовлення.</p>
+            </div>
+
+            <!-- Блок с номером заказа -->
+            <div style="background: #E3D6BF; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 30px;">
+              <p style="color: #705A5A; font-size: 14px; margin: 0 0 5px 0;">Номер замовлення:</p>
+              <h3 style="color: #893E3E; font-size: 24px; margin: 0; font-family: 'Montserrat', sans-serif;">${order.orderNumber}</h3>
+              <p style="color: #705A5A; font-size: 14px; margin: 10px 0 0 0;">Сума до сплати: <strong>${order.totalAmount} грн</strong></p>
+            </div>
+
+            <!-- Адреса доставки -->
+            <div style="background: #FFFFFF; padding: 20px; border-radius: 8px; border: 1px solid #E5DCC9; margin-bottom: 30px;">
+              <h4 style="color: #6B4423; font-size: 16px; margin: 0 0 15px 0; border-bottom: 1px solid #E5DCC9; padding-bottom: 8px;">Дані доставки</h4>
+              
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr><td style="padding: 4px 0; color: #705A5A; font-size: 14px;" width="100">Адреса:</td><td style="padding: 4px 0; color: #333333; font-size: 14px; font-weight: 500;">${addressString}</td></tr>
+                <tr><td style="padding: 4px 0; color: #705A5A; font-size: 14px;">Телефон:</td><td style="padding: 4px 0; color: #333333; font-size: 14px; font-weight: 500;">${order.contactPhone}</td></tr>
+              </table>
+            </div>
+            
+            <!-- Кнопка оплаты -->
+            <div style="text-align: center; margin: 40px 0 20px 0;">
+              <p style="color: #705A5A; font-size: 15px; margin-bottom: 20px;">Для передачі замовлення в роботу, будь ласка, здійсніть оплату банківською картою за безпечним посиланням:</p>
+              <a href="${paymentUrl}" style="background-color: #893E3E; color: #FFFBF2; text-decoration: none; padding: 16px 32px; font-weight: bold; font-family: 'Montserrat', sans-serif; font-size: 16px; border-radius: 30px; display: inline-block; box-shadow: 0 4px 10px rgba(137, 62, 62, 0.3);">💳 Оплатити онлайн</a>
+            </div>
+
+            <!-- Подпись -->
+            <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #E5DCC9;">
+              <p style="color: #A1926B; font-size: 13px; line-height: 1.5; margin: 0 0 5px 0;">З любов'ю,<br>команда кондитерської Forchetta</p>
+              <p style="color: #A1926B; font-size: 12px; line-height: 1.4; margin: 15px 0 0 0;">© ${new Date().getFullYear()} Forchetta. Всі права захищені.</p>
+            </div>
+          </div>
+        </div>
+      </body>
+    `;
+
+    const result = await resend.emails.send({
+      from: `Forchetta <${FROM_EMAIL}>`,
+      to: [email],
+      subject: `Оплата замовлення ${order.orderNumber} - Forchetta`,
+      html: htmlContent,
+    });
+
+    if (result.error) {
+      console.error('❌ Ошибка отправки payment link email:', result.error.message);
+      return { success: false, error: result.error.message };
+    }
+    
+    console.log('✅ Payment Link email отправлен! ID:', result.data?.id);
+    return { success: true, messageId: result.data?.id };
+  } catch (error) {
+    console.error('❌ Ошибка отправки payment link email:', error);
+    return { success: false, error: error.message };
+  }
+};
+
 // Отправка email об успешном заказе
 export const sendOrderConfirmationEmail = async (email, name, order) => {
   try {

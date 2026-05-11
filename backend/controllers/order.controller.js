@@ -2,7 +2,7 @@ import Order from "../models/order.model.js";
 import User from "../models/user.model.js";
 import Product from "../models/product.model.js";
 import Stripe from "stripe";
-import { sendOrderConfirmationEmail, sendOrderStatusEmail } from "../lib/email.service.js";
+import { sendOrderConfirmationEmail, sendOrderStatusEmail, sendPaymentLinkEmail } from "../lib/email.service.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -205,6 +205,11 @@ export const createOrder = async (req, res) => {
         cancel_url: `${process.env.CLIENT_URL}/cart`,
         client_reference_id: createdOrder._id.toString(),
       });
+
+      // Надсилаємо лінк клієнту на пошту, якщо замовлення створив адміністратор
+      if (req.user.role === 'admin') {
+         sendPaymentLinkEmail(user.email, user.name, createdOrder, session.url).catch(err => console.error('Email Link error:', err));
+      }
 
       // Отправляем письмо только если оплата наличными! Для Stripe письмо будет отправлено после успеха на SuccessPage
       // sendOrderConfirmationEmail мы убрали отсюда для карт
@@ -430,17 +435,28 @@ export const deleteOrder = async (req, res) => {
 
 // @desc Confirm Stripe payment success
 // @route POST /api/orders/:id/confirm-payment
-// @access Private
+// @access Public (with session_id checking)
 export const confirmOrderPayment = async (req, res) => {
   try {
+    const { session_id } = req.body;
+    
+    if (!session_id) {
+      return res.status(400).json({ message: "Відсутній session_id для підтвердження оплати" });
+    }
+
+    // Перевіряємо статус платежу у Stripe
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+    if (session.payment_status !== 'paid') {
+      return res.status(400).json({ message: "Оплату не завершено в системі Stripe" });
+    }
+
     // В React 18 в Strict Mode useEffect может сработать дважды
-    // Чтобы письмо не отправилось два раза, мы используем findOneAndUpdate с флагом pending,
-    // это гарантирует, что только ПЕРВЫЙ запрос изменит статус и пошлет письмо.
+    // Чтобы письмо не отправилось два раза, мы используем findOneAndUpdate с флагом pending
     const order = await Order.findOneAndUpdate(
       { _id: req.params.id, paymentStatus: 'pending' },
       { paymentStatus: 'paid' },
       { new: true }
-    ).populate('items.product', 'images');
+    ).populate('items.product', 'images').populate('user', 'name email');
 
     // Если заказ не найден по этому фильтру, значит он либо не существует, либо УЖЕ 'paid' (второй дубль)
     if (!order) {
@@ -449,13 +465,6 @@ export const confirmOrderPayment = async (req, res) => {
       
       // Возвращаем просто его текущее состояние (без повторной отправки письма)
       return res.json(existingOrder);
-    }
-
-    if (order.user.toString() !== req.user._id.toString()) {
-      // И на всякий случай откатываем, если это была попытка чужого юзера
-      order.paymentStatus = 'pending';
-      await order.save();
-      return res.status(403).json({ message: "Відмовлено в доступі" });
     }
 
     // Формируем email элементы с картинками
@@ -468,14 +477,13 @@ export const confirmOrderPayment = async (req, res) => {
 
     let packagingPrice = 0;
     // Оцениваем была ли упаковка (если нужно)
-    // В текущей схеме packagingPrice явно не хранится как поле. Мы вычисляем его из subtotal и total
     const currentItemsTotal = order.items.reduce((acc, i) => acc + (i.priceAtPurchase * i.quantity), 0);
     const diff = order.totalAmount - (currentItemsTotal - order.appliedBonuses);
     if (diff > 0) {
       packagingPrice = diff;
     }
 
-    sendOrderConfirmationEmail(req.user.email, req.user.name, {
+    sendOrderConfirmationEmail(order.user.email, order.user.name, {
       _id: order._id,
       orderNumber: order.orderNumber,
       items: emailItems,

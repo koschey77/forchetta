@@ -99,7 +99,7 @@ export const orderAPI = {
   getAll: (params) => axiosInstance.get("/orders", { params }).then(res => res.data),
   update: (id, data) => axiosInstance.put(`/orders/${id}`, data).then(res => res.data),
   updateStatus: (id, status) => axiosInstance.put(`/orders/${id}/status`, { status }).then(res => res.data),
-  confirmPayment: (id) => axiosInstance.post(`/orders/${id}/confirm-payment`).then(res => res.data),
+  confirmPayment: (id, session_id) => axiosInstance.post(`/orders/${id}/confirm-payment`, { session_id }).then(res => res.data),
   delete: (id) => axiosInstance.delete(`/orders/${id}`).then(res => res.data),
 }
 

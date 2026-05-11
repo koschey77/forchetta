@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useUserStore } from '../stores/useUserStore'
 import { Navigate, useSearchParams } from 'react-router-dom'
 import { ExitIcon, DropdownArrowIcon, DashboardIcon, ReviewsIcon, OrdersIcon, CartIcon, DotsIcon, ProfileIcon, BookIcon } from '../components/icons'
-import { ProductList, CategoryList, CategoryEditor, ProductEditor, UserList, OrderList, AdminDashboard, ArticleList, ArticleEditor, ReviewList } from './admin'
+import { ProductList, CategoryList, CategoryEditor, ProductEditor, UserList, OrderList, AdminDashboard, ArticleList, ArticleEditor, ReviewList, AdminPOS } from './admin'
 import { MenuDropdown } from '../components/ui/dropdowns'
 
 const AdminPanel = () => {
@@ -18,6 +18,7 @@ const AdminPanel = () => {
   // Мапінг сторінок для dropdown меню
   const pageMapping = {
     dashboard: { name: 'Dashboard', icon: DashboardIcon },
+    pos: { name: 'Телефонне замовлення', icon: CartIcon },
     categories: { name: 'Категорії', icon: DotsIcon },
     products: { name: 'Товари', icon: CartIcon },
     orders: { name: 'Замовлення', icon: OrdersIcon },
@@ -75,6 +76,10 @@ const AdminPanel = () => {
 
   const renderContent = () => {
     const { editingId, mode } = adminState
+
+    if (currentPage === 'pos') {
+      return <AdminPOS />
+    }
     
     // Тільки для сторінок з реальною функціональністю
     if (currentPage === 'categories') {

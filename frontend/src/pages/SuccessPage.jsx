@@ -15,7 +15,7 @@ const SuccessPage = () => {
       try {
         if (orderId) {
           if (session_id) {
-            await orderAPI.confirmPayment(orderId);
+            await orderAPI.confirmPayment(orderId, session_id);
           }
           // Отримуємо деталі оформленого замовлення
           const order = await orderAPI.getById(orderId);
