@@ -74,7 +74,7 @@ const AdminPOS = () => {
 
   const createOrderMutation = useMutation({
     mutationFn: (data) => orderAPI.create(data),
-    onSuccess: (data) => {
+    onSuccess: () => {
       if (paymentMethod === 'card') {
          toast.success('Замовлення створено! Посилання на оплату відправлено клієнту на Email', { duration: 5000 });
          // Якщо треба скопіювати лінк адміну вручну:
@@ -215,7 +215,7 @@ const AdminPOS = () => {
                 </div>
                 <input
                   type="text"
-                  placeholder="Пошук клієнта за ПІБ або телефоном..."
+                  placeholder="Пошук клієнта за ПІБ, телефоном або Email..."
                   value={userQuery}
                   onChange={(e) => setUserQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 rounded-[12px] border border-choco-light/30 focus:border-wine-red focus:outline-none bg-transparent font-montserrat text-[14px] text-choco-dark"
@@ -325,7 +325,7 @@ const AdminPOS = () => {
                    onClick={() => setPaymentMethod('cash')}
                    className={`flex-1 py-3 px-4 rounded-[12px] font-montserrat text-[13px] font-bold border transition-all ${paymentMethod === 'cash' ? 'bg-wine-red text-light-creamy border-wine-red shadow-md' : 'bg-transparent text-choco-dark border-choco-light/30 hover:border-wine-red/50'}`}
                  >
-                   Готівка (Кур'єру)
+                   Готівка (Кур&apos;єру)
                  </button>
                  <button
                    onClick={() => setPaymentMethod('card')}
