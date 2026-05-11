@@ -218,7 +218,7 @@ export const sendWelcomeEmail = async (email, name) => {
 }
 
 // Отправка email со ссылкой на оплату (Для Admin POS)
-export const sendPaymentLinkEmail = async (email, name, order, paymentUrl) => {
+export const sendPaymentLinkEmail = async (email, name, order, paymentUrl, generatedPassword = null) => {
   try {
     console.log('📧 Отправка payment link email через Resend для:', email);
     
@@ -258,12 +258,29 @@ export const sendPaymentLinkEmail = async (email, name, order, paymentUrl) => {
             <div style="background: #FFFFFF; padding: 20px; border-radius: 8px; border: 1px solid #E5DCC9; margin-bottom: 30px;">
               <h4 style="color: #6B4423; font-size: 16px; margin: 0 0 15px 0; border-bottom: 1px solid #E5DCC9; padding-bottom: 8px;">Дані доставки</h4>
               
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr><td style="padding: 4px 0; color: #705A5A; font-size: 14px;" width="100">Адреса:</td><td style="padding: 4px 0; color: #333333; font-size: 14px; font-weight: 500;">${addressString}</td></tr>
-                <tr><td style="padding: 4px 0; color: #705A5A; font-size: 14px;">Телефон:</td><td style="padding: 4px 0; color: #333333; font-size: 14px; font-weight: 500;">${order.contactPhone}</td></tr>
-              </table>
+              <p style="color: #705A5A; font-size: 14px; margin: 5px 0; line-height: 1.6;">
+                <strong>Адреса:</strong><br><span style="color: #333333;">${addressString}</span>
+              </p>
+              <p style="color: #705A5A; font-size: 14px; margin: 15px 0 5px 0; line-height: 1.6;">
+                <strong>Телефон:</strong><br><span style="color: #333333;">${order.contactPhone}</span>
+              </p>
             </div>
             
+            ${generatedPassword ? `
+            <!-- Информация об аккаунте (только для новых пользователей из POS) -->
+            <div style="background: #FFFFFF; padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #E5DCC9;">
+              <h4 style="color: #6B4423; font-size: 16px; margin: 0 0 10px 0;">Ваш персональний акаунт створено!</h4>
+              <p style="color: #705A5A; font-size: 14px; margin: 0 0 15px 0; line-height: 1.5;">
+                Ми автоматично створили для вас особистий кабінет, щоб ви могли відстежувати свої замовлення та накопичувати бонуси.
+              </p>
+              <p style="color: #705A5A; font-size: 14px; margin: 0 0 5px 0;"><strong>Логін:</strong> ${email}</p>
+              <p style="color: #705A5A; font-size: 14px; margin: 0 0 15px 0;"><strong>Тимчасовий пароль:</strong> ${generatedPassword}</p>
+              <p style="color: #705A5A; font-size: 13px; margin: 0; line-height: 1.5; color: #893E3E;">
+                Ви можете увійти на сайт за допомогою електронної пошти та цього пароля (а потім змінити його в розділі "Забули пароль?"), або просто скористатися швидким входом через <strong>Google акаунт</strong>, прив'язаний до цієї пошти.
+              </p>
+            </div>
+            ` : ''}
+
             <!-- Кнопка оплаты -->
             <div style="text-align: center; margin: 40px 0 20px 0;">
               <p style="color: #705A5A; font-size: 15px; margin-bottom: 20px;">Для передачі замовлення в роботу, будь ласка, здійсніть оплату банківською картою за безпечним посиланням:</p>
@@ -301,7 +318,7 @@ export const sendPaymentLinkEmail = async (email, name, order, paymentUrl) => {
 };
 
 // Отправка email об успешном заказе
-export const sendOrderConfirmationEmail = async (email, name, order) => {
+export const sendOrderConfirmationEmail = async (email, name, order, generatedPassword = null) => {
   try {
     console.log('📧 Отправка order confirmation email через Resend для:', email)
     
@@ -407,13 +424,34 @@ export const sendOrderConfirmationEmail = async (email, name, order) => {
             </table>
 
             <!-- Информация о доставке/оплате -->
-              <div style="background: #F5EEE0; padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #E5DCC9;">
+            <div style="background: #F5EEE0; padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #E5DCC9;">
               <h4 style="color: #6B4423; font-size: 16px; margin: 0 0 15px 0;">Інформація про доставку</h4>
-              <p style="color: #705A5A; font-size: 14px; margin: 5px 0;"><strong>Телефон:</strong> ${order.contactPhone || ''}</p>
-              <p style="color: #705A5A; font-size: 14px; margin: 5px 0;"><strong>Адреса:</strong> ${addressString}</p>
-              <p style="color: #705A5A; font-size: 14px; margin: 15px 0 5px 0; padding-top: 15px; border-top: 1px solid #eee;"><strong>Спосіб оплати:</strong> ${paymentMethodString} ${paymentStatusString}</p>
+              <p style="color: #705A5A; font-size: 14px; margin: 5px 0; line-height: 1.6;">
+                <strong>Телефон:</strong><br>${order.contactPhone || ''}
+              </p>
+              <p style="color: #705A5A; font-size: 14px; margin: 15px 0 5px 0; line-height: 1.6;">
+                <strong>Адреса:</strong><br>${addressString}
+              </p>
+              <p style="color: #705A5A; font-size: 14px; margin: 15px 0 5px 0; padding-top: 15px; border-top: 1px solid #E5DCC9; line-height: 1.6;">
+                <strong>Спосіб оплати:</strong><br>${paymentMethodString} ${paymentStatusString}
+              </p>
             </div>
             
+            ${generatedPassword ? `
+            <!-- Информация об аккаунте (только для новых пользователей из POS) -->
+            <div style="background: #FFF; padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #E5DCC9;">
+              <h4 style="color: #6B4423; font-size: 16px; margin: 0 0 10px 0;">Ваш персональний акаунт створено!</h4>
+              <p style="color: #705A5A; font-size: 14px; margin: 0 0 15px 0; line-height: 1.5;">
+                Ми автоматично створили для вас особистий кабінет, щоб ви могли відстежувати свої замовлення та накопичувати бонуси.
+              </p>
+              <p style="color: #705A5A; font-size: 14px; margin: 0 0 5px 0;"><strong>Логін:</strong> ${email}</p>
+              <p style="color: #705A5A; font-size: 14px; margin: 0 0 15px 0;"><strong>Тимчасовий пароль:</strong> ${generatedPassword}</p>
+              <p style="color: #705A5A; font-size: 13px; margin: 0; line-height: 1.5; color: #893E3E;">
+                Ви можете увійти на сайт за допомогою електронної пошти та цього пароля (а потім змінити його в розділі "Забули пароль?"), або просто скористатися швидким входом через <strong>Google акаунт</strong>, прив'язаний до цієї пошти.
+              </p>
+            </div>
+            ` : ''}
+
             ${order.bonusEarned ? `
             <!-- Бонусы за покупку -->
             <div style="background: #2B1A12; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px;">

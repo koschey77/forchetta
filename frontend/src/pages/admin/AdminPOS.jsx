@@ -16,6 +16,7 @@ const AdminPOS = () => {
   // ФОРМА НОВОГО ЮЗЕРА
   const [showNewUserForm, setShowNewUserForm] = useState(false);
   const [newUserData, setNewUserData] = useState({ name: '', phone: '', email: '' });
+  const [createdUserPassword, setCreatedUserPassword] = useState(null);
 
   // ТОВАРИ
   const [productQuery, setProductQuery] = useState('');
@@ -148,7 +149,8 @@ const AdminPOS = () => {
       packagingPrice: Number(packagingPrice),
       appliedBonuses,
       items: cart.map(i => ({ product: i.product._id, quantity: i.quantity })),
-      userNotes: finalNotes
+      userNotes: finalNotes,
+      generatedPassword: createdUserPassword
     };
 
     createOrderMutation.mutate(orderData);
@@ -188,11 +190,14 @@ const AdminPOS = () => {
                    <button onClick={() => setShowNewUserForm(false)} className="px-4 py-2 border border-choco-light/30 rounded-[8px] font-montserrat text-[13px] font-bold text-choco-dark hover:bg-choco-light/10 transition-colors">Скасувати</button>
                    <button onClick={() => {
                        if (!newUserData.name || !newUserData.phone) return toast.error('Заповніть обов\'язкові поля (ПІБ та Телефон)');
+                       // Генерируем надежный случайный пароль
+                       const randomPassword = Math.random().toString(36).substring(2, 10) + 'A1!';
+                       setCreatedUserPassword(randomPassword);
                        createUserMutation.mutate({ 
                          name: newUserData.name, 
                          phone: newUserData.phone, 
                          email: newUserData.email || `test_${Date.now()}@forchetta.com`, 
-                         password: 'PhoneOrder123!' 
+                         password: randomPassword 
                        });
                      }} 
                      disabled={createUserMutation.isPending}

@@ -11,7 +11,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 // @access Private
 export const createOrder = async (req, res) => {
   try {
-    const { items, shippingAddress, contactPhone, paymentMethod, appliedBonuses, userNotes, packagingPrice = 0 } = req.body;
+    const { items, shippingAddress, contactPhone, paymentMethod, appliedBonuses, userNotes, packagingPrice = 0, generatedPassword } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ message: "Немає товарів у замовленні" });
@@ -208,7 +208,7 @@ export const createOrder = async (req, res) => {
 
       // Надсилаємо лінк клієнту на пошту, якщо замовлення створив адміністратор
       if (req.user.role === 'admin') {
-         sendPaymentLinkEmail(user.email, user.name, createdOrder, session.url).catch(err => console.error('Email Link error:', err));
+         sendPaymentLinkEmail(user.email, user.name, createdOrder, session.url, generatedPassword).catch(err => console.error('Email Link error:', err));
       }
 
       // Отправляем письмо только если оплата наличными! Для Stripe письмо будет отправлено после успеха на SuccessPage
@@ -230,7 +230,7 @@ export const createOrder = async (req, res) => {
       contactPhone,
       paymentMethod,
       paymentStatus: 'pending' // наличними завжди pending поки кур'єр не віддасть 
-    }).catch(err => console.error('Email error:', err));
+    }, generatedPassword).catch(err => console.error('Email error:', err));
 
     return res.status(201).json({ order: createdOrder });
 
@@ -355,11 +355,10 @@ export const updateOrder = async (req, res) => {
     if (shippingAddress) order.shippingAddress = shippingAddress;
     if (contactPhone) order.contactPhone = contactPhone;
     if (userNotes !== undefined) order.userNotes = userNotes;
-    if (status) order.status = status;
-    if (paymentStatus) order.paymentStatus = paymentStatus;
-    if (paymentMethod) order.paymentMethod = paymentMethod;
-
-    const updatedOrder = await order.save();
+      if (status) {
+        order.status = status;
+        if (status === 'delivered') order.paymentStatus = 'paid';
+      }
 
     // Если статус изменился и это не pending, отправляем письмо
     if (status && status !== oldStatus && status !== 'pending') {
@@ -389,7 +388,13 @@ export const updateOrderStatus = async (req, res) => {
 
     const oldStatus = order.status;
 
-    if (status) order.status = status;
+    if (status) {
+      order.status = status;
+      // Якщо замовлення доставлено, логічно, що його оплатили
+      if (status === 'delivered') {
+        order.paymentStatus = 'paid';
+      }
+    }
     if (paymentStatus) order.paymentStatus = paymentStatus;
 
     const updatedOrder = await order.save();
