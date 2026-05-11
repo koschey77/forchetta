@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
-import { orderAPI, productsAPI } from '../../services/api';
+import { orderAPI, productsAPI, cartAPI } from '../../services/api';
+import useCartStore from '../../stores/useCartStore';
+import toast from 'react-hot-toast';
 import NoConnection from '../../components/errors/NoConnection';
 import ProductSectionSlider from '../../components/ui/carousel/ProductSectionSlider';
 
@@ -34,9 +36,25 @@ const OrderCard = ({ order }) => {
   const paymentMethodLabel = order.paymentMethod === 'card' ? 'картою' : 'готівкою';
   const hasShipping = order.shippingAddress && order.shippingAddress.city;
 
-  const handleRepeatOrder = (e) => {
+  const handleRepeatOrder = async (e) => {
     e.stopPropagation();
-    navigate('/catalog');
+    try {
+      if (order.items && order.items.length > 0) {
+        // Добавляем все товары в корзину последовательно
+        for (const item of order.items) {
+          if (item.product && (item.product._id || item.product.id)) {
+            const productId = item.product._id || item.product.id;
+            await cartAPI.add({ productId, quantity: item.quantity });
+          }
+        }
+        await useCartStore.getState().fetchCart();
+        toast.success("Товари додано до кошика");
+        navigate('/cart');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Помилка при повторенні замовлення");
+    }
   };
 
   return (
@@ -151,14 +169,6 @@ const OrderCard = ({ order }) => {
 
           {/* Buttons */}
           <div className="flex flex-col gap-[12px] mt-2 w-full max-w-[474px] mx-auto">
-            <button 
-              onClick={(e) => { e.stopPropagation(); }}
-              className="flex justify-center items-center py-[16px] px-[30px] w-full h-[40px] border border-choco-dark rounded-[31px] transition-colors hover:bg-black/5"
-            >
-              <span className="font-montserrat font-normal text-[16px] leading-[20px] text-choco-dark">
-                Залишити відгук
-              </span>
-            </button>
             <button 
               onClick={handleRepeatOrder}
               className="flex justify-center items-center py-[16px] px-[30px] w-full h-[40px] bg-wine-red rounded-[31px] transition-opacity hover:opacity-90"

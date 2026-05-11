@@ -39,10 +39,13 @@ const ProductPage = () => {
     staleTime: 5 * 60 * 1000,
   });
 
+
+  const [reviewsLimit, setReviewsLimit] = useState(10);
+
   // TanStack Query для получения отзывов
   const { data: reviewsData } = useQuery({
-    queryKey: ['productReviews', id],
-    queryFn: () => reviewsAPI.getProductReviews(id, { page: 1, limit: 10 }),
+    queryKey: ['productReviews', id, reviewsLimit],
+    queryFn: () => reviewsAPI.getProductReviews(id, { page: 1, limit: reviewsLimit }),
     enabled: !!id,
   });
 
@@ -402,6 +405,18 @@ const ProductPage = () => {
                 </div>
               ))}
             </div>
+            
+            {/* Кнопка Показати ще */}
+            {reviewsData.reviews.length < reviewsData.totalReviews && (
+              <div className="flex justify-center mt-4">
+                <button 
+                  onClick={() => setReviewsLimit(prev => prev + 10)}
+                  className="px-6 py-2 border border-choco-light text-choco-light hover:bg-choco-light hover:text-creamy font-montserrat font-medium rounded-full transition-colors"
+                >
+                  Показати ще
+                </button>
+              </div>
+            )}
           </div>
         )}
 

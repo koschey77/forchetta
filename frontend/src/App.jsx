@@ -85,7 +85,20 @@ function App() {
       </div>
       <Footer />
 
-      <Toaster />
+      <Toaster 
+        toastOptions={{
+          success: {
+            style: {
+              background: '#705A5A',
+              color: '#FFFBF2',
+            },
+            iconTheme: {
+              primary: '#FFFBF2',
+              secondary: '#705A5A',
+            },
+          },
+        }}
+      />
       <AuthRequiredModal />
       <CookieBanner />
     </div>
