@@ -1,7 +1,7 @@
 import React from "react"
 import { useUserStore } from '../stores/useUserStore'
 import { Navigate, useSearchParams } from 'react-router-dom'
-import { ExitIcon, DropdownArrowIcon, CartIcon, HeartIcon, SearchIcon, DataIcon, AddressIcon, FaqIcon, CoinIcon, MessageIcon } from '../components/icons'
+import { ExitIcon, DropdownArrowIcon, CartIcon, HeartIcon, SearchIcon, DataIcon, AddressIcon, FaqIcon, BonusIcon, MessageIcon } from '../components/icons'
 import { MenuDropdown } from '../components/ui/dropdowns'
 import { GeneralData, Favorites, Addresses, Orders, Bonuses, ViewedProducts, Reviews, Faqs } from './user'
 
@@ -18,7 +18,7 @@ const UserPanel = () => {
     viewed: { name: "Переглянуті товари", icon: SearchIcon },
     reviews: { name: "Відгуки", icon: MessageIcon },
     addresses: { name: "Адреси доставки", icon: AddressIcon },
-    bonus: { name: "Бонуси", icon: CoinIcon },
+    bonus: { name: "Бонуси", icon: BonusIcon },
     faq: { name: "FAQs", icon: FaqIcon },
   }
 
@@ -123,13 +123,13 @@ const UserPanel = () => {
         </div>
         <button 
           onClick={() => handlePageSelect('bonus')}
-          className="flex flex-row justify-center items-center py-[10px] px-[10px] sm:px-[30px] gap-[5px] sm:gap-[10px] flex-1 w-1/2 sm:w-[190px] sm:flex-none h-[44px] bg-[#E3D6BF] rounded-[30px] hover:bg-[#d6c5a8] transition-colors cursor-pointer shrink-0 min-w-0"
+          className="flex flex-row justify-center items-center py-[10px] px-[10px] sm:px-[30px] gap-[5px] sm:gap-[10px] flex-1 w-1/2 sm:w-[220px] sm:flex-none h-[44px] bg-[#E3D6BF] rounded-[30px] hover:bg-[#d6c5a8] transition-colors cursor-pointer shrink-0 min-w-0"
         >
           <div className="flex flex-row items-center justify-center gap-[5px] sm:gap-[10px] w-full overflow-hidden">
-            <CoinIcon className="w-[20px] h-[20px] sm:w-[24px] sm:h-[24px] shrink-0" stroke="#705A5A" />
-            <span className="font-montserrat font-semibold text-[14px] sm:text-[18px] leading-[18px] sm:leading-[22px] text-[#705A5A] truncate">
+            <BonusIcon className="w-[20px] h-[20px] sm:w-[24px] sm:h-[24px] shrink-0" fill="#705A5A" />
+            <span className="font-montserrat font-semibold text-[14px] sm:text-[18px] leading-[18px] sm:leading-[22px] text-[#705A5A]">
               {user?.bonusPoints || 0}
-              <span className="hidden sm:inline"> балів</span>
+              <span className="sm:inline"> балів</span>
             </span>
           </div>
         </button>

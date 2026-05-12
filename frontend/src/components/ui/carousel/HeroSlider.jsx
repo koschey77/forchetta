@@ -7,25 +7,25 @@ import clsx from 'clsx'
 const slides = [
   {
     id: 1,
-    imageDesktop: '/assets/hero-1-desktop.png',
-    imageTablet: '/assets/hero-1-tablet.png',
-    imageMobile: '/assets/hero-1-mobile.png',
+    imageDesktop: '/assets/hero/hero-1-desktop.png',
+    imageTablet: '/assets/hero/hero-1-tablet.png',
+    imageMobile: '/assets/hero/hero-1-mobile.png',
     buttonText: 'ДО КАТАЛОГУ',
     link: '/catalog'
   },
   {
     id: 2,
-    imageDesktop: '/assets/hero-2-desktop.png',
-    imageTablet: '/assets/hero-2-tablet.png',
-    imageMobile: '/assets/hero-2-mobile.png',
+    imageDesktop: '/assets/hero/hero-2-desktop.png',
+    imageTablet: '/assets/hero/hero-2-tablet.png',
+    imageMobile: '/assets/hero/hero-2-mobile.png',
     buttonText: 'ДО КАТАЛОГУ',
     link: '/catalog?category=весна'
   },
   {
     id: 3,
-    imageDesktop: '/assets/hero-3-desktop.png',
-    imageTablet: '/assets/hero-3-tablet.png',
-    imageMobile: '/assets/hero-3-mobile.png',
+    imageDesktop: '/assets/hero/hero-3-desktop.png',
+    imageTablet: '/assets/hero/hero-3-tablet.png',
+    imageMobile: '/assets/hero/hero-3-mobile.png',
     buttonText: 'ДО КАТАЛОГУ',
     link: '/catalog?category=подарункові%20набори'
   }

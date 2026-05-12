@@ -6,38 +6,38 @@ import useFilterStore from '../../stores/useFilterStore';
 const categories = [
   {
     categoryFilter: 'Торти',
-    desktopImg: '/assets/category-cakes-desktop.png',
-    tabletImg: '/assets/category-cakes-tablet.png',
-    mobileImg: '/assets/category-cakes-mobile.png',
+    desktopImg: '/assets/category/category-cakes-desktop.png',
+    tabletImg: '/assets/category/category-cakes-tablet.png',
+    mobileImg: '/assets/category/category-cakes-mobile.png',
     title: 'ТОРТИ', // За мобильным макетом (на десктопе "Торти", на мобильнике капсом, мы сделаем uppercase)
   },
   {
     categoryFilter: 'Тістечка',
-    desktopImg: '/assets/category-pastries-desktop.png',
-    tabletImg: '/assets/category-pastries-tablet.png',
-    mobileImg: '/assets/category-pastries-mobile.png',
+    desktopImg: '/assets/category/category-pastries-desktop.png',
+    tabletImg: '/assets/category/category-pastries-tablet.png',
+    mobileImg: '/assets/category/category-pastries-mobile.png',
     title: 'ТІСТЕЧКА',
   },
   {
     categoryFilter: 'Подарункові набори',
-    desktopImg: '/assets/category-gift-sets-desktop.png',
-    tabletImg: '/assets/category-gift-sets-tablet.png',
-    mobileImg: '/assets/category-gift-sets-mobile.png',
+    desktopImg: '/assets/category/category-gift-sets-desktop.png',
+    tabletImg: '/assets/category/category-gift-sets-tablet.png',
+    mobileImg: '/assets/category/category-gift-sets-mobile.png',
     title: 'ПОДАРУНКОВІ НАБОРИ',
     colSpan: true // Для десктопа этот блок широкий
   },
   {
     categoryFilter: 'Шоколад',
-    desktopImg: '/assets/category-chocolate-desktop.png',
-    tabletImg: '/assets/category-chocolate-tablet.png',
-    mobileImg: '/assets/category-chocolate-mobile.png',
+    desktopImg: '/assets/category/category-chocolate-desktop.png',
+    tabletImg: '/assets/category/category-chocolate-tablet.png',
+    mobileImg: '/assets/category/category-chocolate-mobile.png',
     title: 'ШОКОЛАД',
   },
   {
     categoryFilter: 'Цукерки',
-    desktopImg: '/assets/category-candies-desktop.png',
-    tabletImg: '/assets/category-candies-tablet.png',
-    mobileImg: '/assets/category-candies-mobile.png',
+    desktopImg: '/assets/category/category-candies-desktop.png',
+    tabletImg: '/assets/category/category-candies-tablet.png',
+    mobileImg: '/assets/category/category-candies-mobile.png',
     title: 'ЦУКЕРКИ',
   }
 ];

@@ -94,15 +94,15 @@ export const deleteProfile = async (req, res) => {
     }
 
     // Якщо замовлення є - робимо м'яке видалення (щоб не зламати статистику)
-    // Форматируем дату в DDMMYYYY для понятного префикса (напр. 12042026)
-    const date = new Date();
-    const formattedDate = ('0' + date.getDate()).slice(-2) + ('0' + (date.getMonth() + 1)).slice(-2) + date.getFullYear();
-    const timestamp = Date.now(); // Додаємо timestamp для гарантованої унікальності
+      const date = new Date();
+      const dd = String(date.getDate()).padStart(2, '0');
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const randomStr = Math.random().toString(36).substring(2, 8); // Унікальний рядок
 
-    // Мягкое удаление и анонимизация (освобождаем email для повторной регистрации)
-    user.isActive = false;
-    user.email = `deleted_${formattedDate}_${timestamp}_${user.email}`;
-    user.name = "Видалений користувач";
+      // Мягкое удаление и повна анонімізація (відповідно до норм GDPR)
+      user.isActive = false;
+      user.email = `del_${dd}${mm}_${randomStr}@anon.co`;
+      user.name = "Видалений";
     user.phone = "";
     user.avatar = "";
     user.addresses = [];
@@ -114,7 +114,7 @@ export const deleteProfile = async (req, res) => {
       // Якщо це був користувач ТІЛЬКИ через Google (без пароля), треба додати фейковий пароль, 
       // інакше Mongoose-модель видасть помилку валідації "Password is required"
       if (!user.password) {
-        user.password = `DELETED_${timestamp}_NO_PASSWORD`;
+          user.password = `DELETED_${randomStr}_NO_PASSWORD`;
       }
     }
     
@@ -579,15 +579,18 @@ export const toggleUserStatus = async (req, res) => {
       return res.status(404).json({ message: "Користувача не знайдено" });
     }
 
-    user.isActive = !user.isActive;
-    await user.save();
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { isActive: !user.isActive },
+      { new: true }
+    );
 
     res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isActive: user.isActive,
-      message: user.isActive ? "Користувача розблоковано" : "Користувача заблоковано"
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isActive: updatedUser.isActive,
+      message: updatedUser.isActive ? "Користувача розблоковано" : "Користувача заблоковано"
     });
   } catch (error) {
     console.error("Помилка в toggleUserStatus:", error.message);

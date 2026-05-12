@@ -359,7 +359,7 @@ const UserList = () => {
               </button>
               <button
                 onClick={() => toggleStatusMutation.mutate(userToToggleStatus._id)}
-                className={`flex-1 py-3 px-6 rounded-[30px] text-light-creamy font-montserrat font-medium text-[14px] transition-colors ${userToToggleStatus.isActive ? 'bg-wine-red hover:bg-[#5a1b24]' : 'bg-green-600 hover:bg-green-700'}`}
+                className={`flex-1 py-3 px-6 rounded-[30px] text-light-creamy font-montserrat font-medium text-[14px] transition-colors ${userToToggleStatus.isActive ? 'bg-wine-red hover:bg-[#5a1b24]' : 'bg-choco-light hover:bg-[#5a4848]'}`}
                 disabled={toggleStatusMutation.isPending}
               >
                 {toggleStatusMutation.isPending ? 'Обробка...' : 'Підтвердити'}
