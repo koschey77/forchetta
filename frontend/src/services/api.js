@@ -114,6 +114,7 @@ export const cartAPI = {
 
 export const statsAPI = {
   getDashboardStats: () => axiosInstance.get("/stats/dashboard").then(res => res.data),
+  getRegistrationStats: (period = 30) => axiosInstance.get(`/stats/registrations?period=${period}`).then(res => res.data),
 }
 
 export const articlesAPI = {

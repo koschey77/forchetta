@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell
+  PieChart, Pie, Cell, AreaChart, Area
 } from 'recharts';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import api from '../../services/api';
 import { CustomersCardIcon, OrdersCardIcon, DollarCardIcon, ArrowUpCardIcon } from '../../components/icons';
 import NoConnection from '../../components/errors/NoConnection';
@@ -94,6 +95,71 @@ const CustomerReviewsCard = ({ reviewStatsData = [], totalReviewsCount = 0 }) =>
                <span className="font-montserrat font-medium text-[12px] text-[#888888] w-[20px] text-right">{item.count !== undefined ? item.count : ''}</span>
             </div>
          ))}
+      </div>
+    </div>
+  );
+};
+
+const RegistrationStatsChart = () => {
+  const [period, setPeriod] = useState(30);
+
+  const { data: registrationsData, isLoading } = useQuery({
+    queryKey: ['adminDashboardRegistrations', period],
+    queryFn: () => api.stats.getRegistrationStats(period),
+    placeholderData: keepPreviousData,
+  });
+
+  return (
+    <div className="bg-[#FFFBF2] rounded-[15px] p-[18px] shadow-sm flex flex-col gap-[20px] min-w-0">
+      <div className="flex justify-between items-center w-full">
+        <h2 className="font-montserrat font-semibold text-[18px] text-[#2B1A12] leading-[22px]">Динаміка реєстрацій</h2>
+        <select
+          value={period}
+          onChange={(e) => setPeriod(Number(e.target.value))}
+          className="bg-transparent border border-choco-light/30 rounded-lg text-sm font-montserrat p-1 text-choco-dark focus:outline-none"
+        >
+          <option value={7}>За 7 днів</option>
+          <option value={14}>За 14 днів</option>
+          <option value={30}>За місяць</option>
+        </select>
+      </div>
+      <div className="w-full h-[250px] relative">
+        {isLoading && !registrationsData && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#FFFBF2]/50">
+            <div className="w-8 h-8 border-4 border-[#D4C4B7] border-t-[#893E3E] rounded-full animate-spin"></div>
+          </div>
+        )}
+        <ResponsiveContainer width="100%" height={250}>
+          <AreaChart data={registrationsData || []} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <defs>
+              <linearGradient id="colorReg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#893E3E" stopOpacity={0.8}/>
+                <stop offset="95%" stopColor="#893E3E" stopOpacity={0}/>
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E3D6BF" opacity={0.5} />
+            <XAxis 
+              dataKey="name" 
+              axisLine={false} 
+              tickLine={false} 
+              tick={{ fill: '#888888', fontSize: 12, fontFamily: 'Montserrat' }} 
+              dy={10}
+            />
+            <YAxis 
+              axisLine={false} 
+              tickLine={false} 
+              tick={{ fill: '#888888', fontSize: 12, fontFamily: 'Montserrat' }}
+              allowDecimals={false}
+            />
+            <Tooltip 
+              contentStyle={{ borderRadius: '10px', border: '1px solid #E3D6BF', backgroundColor: '#FFFBF2' }}
+              itemStyle={{ color: '#893E3E', fontWeight: 600, fontFamily: 'Montserrat' }}
+              labelStyle={{ fontWeight: 500, fontFamily: 'Montserrat', color: '#2B1A12' }}
+              formatter={(value) => [value, 'Нові клієнти']}
+            />
+            <Area type="monotone" dataKey="value" stroke="#893E3E" strokeWidth={2} fillOpacity={1} fill="url(#colorReg)" />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
@@ -232,6 +298,46 @@ const AdminDashboard = () => {
 
         {/* Картка відгуків покупців */}
         <CustomerReviewsCard reviewStatsData={data.reviewStatsData} totalReviewsCount={data.totalReviewsCount} />
+      </div>
+
+      {/* Останній ряд: Реєстрації та Розподіл по категоріях */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-2">
+        
+        {/* Графік реєстрацій (Ізольований) */}
+        <RegistrationStatsChart />
+
+        {/* Розподіл по категоріях */}
+        <div className="bg-[#FFFBF2] rounded-[15px] p-[18px] shadow-sm flex flex-col gap-[20px] min-w-0">
+          <h2 className="font-montserrat font-semibold text-[18px] text-[#2B1A12] leading-[22px]">Розподіл за категоріями (Виторг)</h2>
+          <div className="w-full h-[250px]">
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={data.categoryDistributionData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  innerRadius={40}
+                  paddingAngle={2}
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  labelLine={false}
+                  stroke="none"
+                >
+                  {data.categoryDistributionData && data.categoryDistributionData.map((entry, index) => {
+                    const colors = ['#893E3E', '#D4C4B7', '#66BC91', '#4A90E2', '#FFBB0B', '#9B51E0', '#FF6C6C', '#323232'];
+                    return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                  })}
+                </Pie>
+                <Tooltip 
+                  formatter={(value) => [`₴ ${value.toLocaleString()}`, 'Виторг']}
+                  contentStyle={{ borderRadius: '10px', border: 'none', backgroundColor: '#fff', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
       </div>
 
     </div>

@@ -85,11 +85,12 @@ const useFilterStore = create((set, get) => ({
   // Установка сортировки
   setSortOption: (sortOption) => {
     set((state) => {
-      // Сбрасываем страницу только если сортировка реально изменилась
-      if (state.sortOption !== sortOption) {
-        return { sortOption, currentPage: 1 };
+      // Якщо юзер клікнув на ту ж саму опцію сортування — скидаємо її
+      if (state.sortOption === sortOption) {
+        return { sortOption: '', currentPage: 1 };
       }
-      return { sortOption };
+      // Інакше встановлюємо нову сортувальну опцію
+      return { sortOption, currentPage: 1 };
     })
   },
   

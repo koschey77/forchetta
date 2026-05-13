@@ -126,6 +126,39 @@ export const getDashboardStats = async (req, res) => {
       };
     });
 
+    // 5. Распределение продаж по категориям (за все время)
+    const categoryDistributionData = await Order.aggregate([
+      { $match: { status: 'delivered' } },
+      { $unwind: "$items" },
+      { $lookup: {
+          from: 'products',
+          localField: 'items.product',
+          foreignField: '_id',
+          as: 'productDoc'
+      }},
+      { $unwind: { path: "$productDoc", preserveNullAndEmptyArrays: true } },
+      { $lookup: {
+          from: 'categories',
+          localField: 'productDoc.category',
+          foreignField: '_id',
+          as: 'categoryDoc'
+      }},
+      { $unwind: { path: "$categoryDoc", preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: { $ifNull: ["$categoryDoc.name", "Інше"] },
+          value: { $sum: { $multiply: ["$items.quantity", "$items.priceAtPurchase"] } }
+        }
+      },
+      {
+        $project: {
+          name: "$_id",
+          value: { $round: ["$value", 0] },
+          _id: 0
+        }
+      }
+    ]);
+
     res.status(200).json({
       kpi: {
         totalUsers,
@@ -136,10 +169,50 @@ export const getDashboardStats = async (req, res) => {
       orderStatusData,
       salesData,
       reviewStatsData,
-      totalReviewsCount
+      totalReviewsCount,
+      categoryDistributionData
     });
   } catch (error) {
     console.error("Помилка при отриманні статистики:", error.message);
+    res.status(500).json({ message: "Помилка сервера. Неможливо отримати статистику." });
+  }
+};
+
+// @desc    Get dynamic registration statistics
+// @route   GET /api/stats/registrations
+// @access  Private/Admin
+export const getRegistrationStats = async (req, res) => {
+  try {
+    const period = parseInt(req.query.period) || 30; // 7, 14, 30
+    let registrationData = [];
+    
+    // Групировка по дням
+    const startOfPeriod = new Date();
+    startOfPeriod.setUTCHours(0, 0, 0, 0);
+    startOfPeriod.setUTCDate(startOfPeriod.getUTCDate() - period + 1);
+    
+    const userAgg = await User.aggregate([
+      { $match: { role: 'customer', createdAt: { $gte: startOfPeriod } } },
+      { $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          count: { $sum: 1 }
+      }}
+    ]);
+
+    for (let i = period - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setUTCDate(d.getUTCDate() - i);
+      const yyyymmdd = d.toISOString().split('T')[0];
+      const match = userAgg.find(u => u._id === yyyymmdd);
+      registrationData.push({
+        name: `${String(d.getUTCDate()).padStart(2,'0')}.${String(d.getUTCMonth()+1).padStart(2,'0')}`,
+        value: match ? match.count : 0
+      });
+    }
+
+    res.status(200).json(registrationData);
+  } catch (error) {
+    console.error("Помилка при отриманні статистики реєстрацій:", error.message);
     res.status(500).json({ message: "Помилка сервера. Неможливо отримати статистику." });
   }
 };
