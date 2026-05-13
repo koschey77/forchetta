@@ -52,6 +52,10 @@ body {
 
 /* Прибираємо чорні контури (обведення) при кліку на графіки Recharts */
 .recharts-wrapper,
+.recharts-wrapper * {
+  outline: none !important;
+}
+
 .recharts-surface,
 .recharts-sector,
 .recharts-active-dot,

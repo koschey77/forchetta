@@ -217,7 +217,7 @@ const AdminDashboard = () => {
                 axisLine={false} 
                 tickLine={false} 
                 tick={{ fill: '#888888', fontSize: 13, fontFamily: 'Montserrat', fontWeight: 500 }}
-                tickFormatter={(val) => val === 0 ? '₴0' : `₴${val / 1000}k`}
+                  tickFormatter={(val) => val >= 1000 ? `₴${Math.round(val / 1000)}k` : `₴${val}`}
                 domain={[0, dataMax => (dataMax === 0 ? 5000 : dataMax)]}
               />
               <Tooltip 
